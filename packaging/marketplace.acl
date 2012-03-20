@@ -1,0 +1,3 @@
+/app/marketplace/ajax/is_authenticated
+/app/network/get_internet_connection_status
+/app/marketplace/ajax/get_app_details
