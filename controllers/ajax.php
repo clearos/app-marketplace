@@ -96,7 +96,6 @@ class Ajax extends ClearOS_Controller
             $this->load->library('base/Software', Marketplace::APP_PREFIX . preg_replace("/_/", "-", $details->basename));
             $details->installed = $this->software->is_installed();
 
-            // Probably should check better than compare...like parse out version and compare integers
             if ($this->software->is_installed()) {
                 $metadata = $this->_get_metadata($details->basename);
                 $details->installed_version = $metadata['version'] . '-' . $metadata['release'];

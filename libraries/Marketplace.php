@@ -43,6 +43,9 @@ use \clearos\apps\base\File as File;
 use \clearos\apps\base\Folder as Folder;
 use \clearos\apps\base\Shell as Shell;
 use \clearos\apps\base\Yum as Yum;
+use \clearos\apps\accounts\Accounts_Configuration as Accounts_Configuration;
+use \clearos\apps\mode\Mode_Engine as Mode_Engine;
+use \clearos\apps\mode\Mode_Factory as Mode_Factory;
 use \clearos\apps\clearcenter\Rest as Rest;
 
 clearos_load_library('base/Configuration_File');
@@ -50,6 +53,9 @@ clearos_load_library('base/File');
 clearos_load_library('base/Folder');
 clearos_load_library('base/Shell');
 clearos_load_library('base/Yum');
+clearos_load_library('accounts/Accounts_Configuration');
+clearos_load_library('mode/Mode_Engine');
+clearos_load_library('mode/Mode_Factory');
 clearos_load_library('clearcenter/Rest');
 
 // Exceptions
@@ -252,8 +258,7 @@ class Marketplace extends Rest
 
             $extras = array('max' => $max, 'offset' => $offset);
 
-            // Get repository list
-            $extras['repos'] = implode('|', $this->_get_repository_list());
+            $extras = array_merge($extras, $this->_get_common_extras());
 
             $result = $this->request('marketplace', 'get_apps', $extras);
 
@@ -288,8 +293,7 @@ class Marketplace extends Rest
     
             $extras = array('basename' => $basename);
 
-            // Get repository list
-            $extras['repos'] = implode('|', $this->_get_repository_list());
+            $extras = array_merge($extras, $this->_get_common_extras());
 
             $result = $this->request('marketplace', 'get_app_details', $extras);
 
@@ -597,6 +601,58 @@ class Marketplace extends Rest
                     $list[] = $repo['id'];
             }
             return $list;
+        } catch (Exception $e) {
+            throw new Engine_Exception(clearos_exception_message($e), CLEAROS_ERROR);
+        }
+    }
+
+    /**
+     * Get common extras to add to web service calls.
+     *
+     * @return array
+     * @throws Engine_Exception
+     */
+
+    function _get_common_extras()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        $extras = array();
+        try {
+            // Repository list
+            // Depending on what repos are enabled, certain and versions will be displayed
+            $extras['repos'] = implode('|', $this->_get_repository_list());
+
+            // Account driver
+            // Some apps are nto compatible with different account drivers (i.e. active directory)
+            // We need to know which driver is in use to filter out non-applicable apps
+            $driver = 'unknown';
+            if (clearos_library_installed('accounts/Accounts_Configuration')) {
+                try {
+                    $accounts = new Accounts_Configuration();
+                    $driver = $accounts->get_driver();
+                } catch (\Exception $e) {
+                    // Not really worried about
+                }
+            }
+            $extras['account_driver'] = $driver;
+
+            // Mode
+            // We can simplify the Marketplace to show only plugins when master mode is enabled...slave mode, we show disabled apps.
+            // In standalone mode, there is no need to show any plugin...just noise.
+            $mode = 'standalone';
+            if (clearos_library_installed('mode/Mode_Engine')) {
+                try {
+                    $mode_object = Mode_Factory::create();
+                    $mode = $mode_object->get_mode();
+                } catch (\Exception $e) {
+                    // Not really worried about
+                }
+            }
+
+            $extras['mode'] = $mode;
+
+            return $extras;
         } catch (Exception $e) {
             throw new Engine_Exception(clearos_exception_message($e), CLEAROS_ERROR);
         }

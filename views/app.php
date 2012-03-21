@@ -37,6 +37,9 @@ $tabinfo['overview']['content'] =
     "  <tr>" .
     "    <td valign='top' width='70%'><h2 id='app_name'></h2>" .
     "      <div id='app_description'></div>" .
+    "<div id='availability_warning_box' style='width: 95%; display: none'>" .
+    infobox_warning(lang('marketplace_not_available'), "<div id='availability_warning'></div>") .
+    "</div>" .
     "      <div>" .
     "      <span style='margin-right: 5px;'>" .
     anchor_custom('/app/software_repository/index/detailed', lang('marketplace_documentation'), 'high', array('id' => 'documentation', 'target' => '_blank')) .

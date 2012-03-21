@@ -285,12 +285,14 @@ function get_apps(realtime, search, offset) {
                 newrow += '  <div style=\'float:left; width:25%; text-align: center; padding-bottom: 25px;\'>';
                 // App logo
                 newrow += '    <a href=\'/app/marketplace/view/' + app.basename + '\'><img src=\'" . clearos_app_htdocs('marketplace') . "/market_default.png\' '
-                    + 'id=\'app-logo-' + app.basename + '\' style=\'padding-bottom: 8px;\' ' + (app.repo_enabled ? '' : 'class=\'marketplace-unavailable\'') + '></a>';
+                    + 'id=\'app-logo-' + app.basename + '\' style=\'padding-bottom: 8px;\' ' + (app.repo_enabled && app.display_mask == 0 ? '' : 'class=\'marketplace-unavailable\'') + '></a>';
                 // App rating
                 newrow += '<div>' + get_rating(app.rating, app.rating_count, false, true) + '</div>';
                 // If software is installed and latest version, don't show selector checkbox
-                if (app.up2date)
-                    newrow += '<div>' + app.latest_version + '</div>';
+                if (app.display_mask != 0)
+                    newrow += '<div style=\'padding-top: 5px;\'>" . lang('marketplace_not_available') . "</div>';
+                else if (app.up2date)
+                    newrow += '<div style=\'padding-top: 5px;\'>' + app.latest_version + '</div>';
                 else if (!app.repo_enabled)
                     newrow += '<div></div>';
                 else
@@ -506,7 +508,9 @@ function get_app_details(id) {
                 $('#field_license').hide();
                 $('#field_license_library').hide();
             }
-            if (data.installed && data.up2date) {
+            if (data.display_mask != 0) {
+                // A non-zero display_mask means the app is not available to install
+            } else if (data.installed && data.up2date) {
                 $('#a_configure').show();
             } else if (!data.repo_enabled) {
                 $('#a_repo').show();
@@ -525,6 +529,20 @@ function get_app_details(id) {
 
             $('#indiv_configure').attr('href', '/' + data.url_config);
 
+            if ((data.display_mask & 1) == 1) {
+                $('#availability_warning').html('" . lang('marketplace_professional_only') . "');
+                $('#availability_warning_box').show();
+            } else if ((data.display_mask & 2) == 2) {
+                $('#availability_warning').html('" . lang('marketplace_mode_slave_invalid') . "');
+                $('#availability_warning_box').show();
+            } else if ((data.display_mask & 4) == 4) {
+                $('#availability_warning').html('" . lang('marketplace_google_apps_not_compatible_with_ad') . "');
+                $('#availability_warning_box').show();
+            } else if ((data.display_mask & 8) == 8) {
+                $('#availability_warning').html('" . lang('marketplace_extensions_not_compatible_with_ad') . "');
+                $('#availability_warning_box').show();
+            }
+                
             if (data.url_learn_more == '')
                 $('#learn_more').hide();
             else
@@ -986,7 +1004,7 @@ $(document).ready(function() {
 
 function get_configure(app) {
     var button_html = '<div class=\'theme-button-set\'>';
-    if (app.installed) {
+    if (app.installed && app.display_mask == 0) {
         if (!app.up2date)
             button_html += get_button_anchor('/app/marketplace/view/' + app.basename, '" . lang('marketplace_upgrade') . "');
         else

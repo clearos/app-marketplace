@@ -1,9 +1,9 @@
 
 Name: app-marketplace
 Epoch: 1
-Version: 1.0.7
+Version: 1.0.8
 Release: 1%{dist}
-Summary: Marketplace
+Summary: Translation missing (marketplace_app_name)
 License: Proprietary
 Group: ClearOS/Apps
 Source: %{name}-%{version}.tar.gz
@@ -14,10 +14,10 @@ Requires: app-network
 Requires: app-registration
 
 %description
-ClearCenter's Marketplace is where you can add new apps and services to your system.  Apps available in the Marketplace have gone through a stringent quality control process by ClearCenter to ensure the quality and security of each submission.
+Translation missing (marketplace_app_description)
 
 %package core
-Summary: Marketplace - APIs and install
+Summary: Translation missing (marketplace_app_name) - APIs and install
 License: LGPLv3
 Group: ClearOS/Libraries
 Requires: app-base-core
@@ -26,7 +26,7 @@ Requires: app-registration-core
 Requires: app-base >= 1:1.0.7
 
 %description core
-ClearCenter's Marketplace is where you can add new apps and services to your system.  Apps available in the Marketplace have gone through a stringent quality control process by ClearCenter to ensure the quality and security of each submission.
+Translation missing (marketplace_app_description)
 
 This package provides the core API and libraries.
 
