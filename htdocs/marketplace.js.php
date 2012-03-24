@@ -920,12 +920,14 @@ function peer_review(id, approve, dbid) {
 }
 
 $(document).ready(function() {
-    // Wizard previous/next button handling
-    if ($(location).attr('href').match('.*marketplace\/install$') != null)
-        $('#theme_wizard_nav').hide();
 
-    if ($(location).attr('href').match('.*marketplace\/wizard\/intro$') != null)
-        $('#theme_wizard_nav').hide();
+    // Wizard previous/next button handling
+    $('#wizard_nav_next').click(function(){
+        window.location = '/app/base/wizard/next_step';
+    });
+
+    if ($(location).attr('href').match('.*marketplace\/install$') != null)
+        $('#theme_wizard_nav_next').hide();
 
     if ($(location).attr('href').match('.*marketplace\/progress$') != null) {
         $('#theme_wizard_nav').hide();

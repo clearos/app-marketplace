@@ -37,8 +37,7 @@ $left = "
 time using ClearOS, the number of apps and services in the Marketplace can be overwhelming.  The
 Marketplace wizard guides you through the process of selecting the right features.  If you don't 
 like wizards, you can skip this step and jump right into the <a style='background: transparent; border: none; float: none; padding: 0; margin: 0; color: #e1852e;' href='/app/base/wizard/finish'>Marketplace</a>.</p>
-" .
-"<p align='center'>" .  anchor_custom('/app/marketplace/wizard/index/server', 'Start the Marketplace Wizard') . "</p>";
+";
 
 echo infobox_highlight(
     'Welcome to Marketplace!',
