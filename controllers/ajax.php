@@ -557,7 +557,8 @@ class Ajax extends ClearOS_Controller
                     Array(
                         'code' => $last->code, 'details' => $last->details,
                         'progress' => $last->progress, 'overall' => $last->overall,
-                        'errmsg' => $last->errmsg, 'busy' => $this->yum->is_busy() 
+                        'errmsg' => $last->errmsg, 'busy' => $this->yum->is_busy(),
+                        'wc_busy' => $this->yum->is_wc_busy() 
                     )
                 );
                 return;

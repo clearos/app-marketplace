@@ -33,7 +33,7 @@ $app['requires'] = array(
 $app['core_requires'] = array(
     'app-clearcenter-core',
     'app-registration-core',
-    'app-base >= 1:1.0.7'
+    'app-base >= 1:1.0.10'
 );
 
 $app['core_file_manifest'] = array(

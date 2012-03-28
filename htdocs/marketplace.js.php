@@ -936,15 +936,14 @@ $(document).ready(function() {
         $('#theme_wizard_complete').show();
     }
     
-    // TODO: Hack job because the template width is set in css.
     if ($(location).attr('href').match('.*settings$|.*install$.*|progress$|.*/progress/.*|.*/install/.*$') == null) {
-        // $('#theme-content-container').css('width', '950');
         apps_to_display_per_page = $('#number_of_apps_to_display').val();
     }
     $('.filter_event').css('width', 160);
 
-    if ($(location).attr('href').match('.*progress$') != null) {
-        clearos_is_authenticated();
+    if ($(location).attr('href').match('.*progress$|.*progress\/busy$') != null) {
+        if ($(location).attr('href').match('.*progress$') != null)
+            clearos_is_authenticated();
         get_progress();
     } else if ($(location).attr('href').match('.*install$') != null || $(location).attr('href').match('.*install\/delete\/.*$') != null) {
         auth_options.reload_after_auth = true;
@@ -1032,6 +1031,11 @@ function get_progress() {
         dataType: 'json',
         success : function(json) {
 
+            // If no wc-yum process is running, some other user or service is running yum which we can't latch on to output
+            // Jump to busy page
+            if (json.busy && !json.wc_busy && $(location).attr('href').match('.*progress\/busy$') == null)
+                window.location = '/app/marketplace/progress/busy';
+
             $('#progress').animate_progressbar(parseInt(json.progress));
 
             $('#overall').animate_progressbar(parseInt(json.overall));
@@ -1047,11 +1051,20 @@ function get_progress() {
                 $('#details').html(json.errmsg);
                 return;
             }
-            if (json.overall == 100) {
+
+            if ($(location).attr('href').match('.*progress\/busy$') != null) {
+                // We're on the busy page...let's check again in 5 seconds.
+                window.setTimeout(get_progress, 5000);
+            } else if (json.overall == 100) {
                 $('#reload_button').show();
                 return;
             } else {
                 window.setTimeout(get_progress, 1000);
+            }
+
+            if (!json.busy) {
+                // If no yum process is running, go back to Marketplace
+                window.location = '/app/marketplace';
             }
         },
         error: function(xhr, text, err) {
