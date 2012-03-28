@@ -192,7 +192,7 @@ function get_eula(basename, id) {
                 clearos_dialog_box('eula_failure', '" . lang('base_warning') . "', data.errmsg);
             } else {
                 if (data.noeula != undefined) {
-                    clearos_dialog_box('invalid_po_err', '" . lang('base_warning') . "', '" . lang('marketplace_no_eula') . "');
+                    clearos_dialog_box('invalid_eula', '" . lang('base_warning') . "', '" . lang('marketplace_no_eula') . "');
                 } else {
                     clearos_eula(basename, 'eula_display', data.en_US.eula);
                 }
@@ -213,8 +213,10 @@ function update_cart(id, individual, redirect) {
         success: function(data) {
             if (data.code == 0 && redirect)
                 window.location = '/app/marketplace/install';
-            if (data.code != 0)
-                clearos_dialog_box('invalid_po_err', '" . lang('base_warning') . "', data.errmsg);
+            if (data.code != 0) {
+                $('#' + id + ':checked').attr('checked', false);
+                clearos_dialog_box('invalid_cart', '" . lang('base_warning') . "', data.errmsg);
+            }
         },
         error: function(xhr, text, err) {
             clearos_dialog_box('error', '" . lang('base_warning') . "', xhr.responseText.toString());
@@ -301,7 +303,7 @@ function get_apps(realtime, search, offset) {
                         + (app.incart ? 'CHECKED' : '') + '/>';
                 newrow += '  </div>';
                 newrow += '  <div style=\'float:right; width:75%; padding-bottom: 25px;\'>';
-                newrow += '    <h2 style=\'padding:0 0 3 0; margin: 0 0 0 0;\'><a class=\'marketplace\' href=\'/app/marketplace/view/' + app.basename + '\'>' + app.name + '</a></h2>';
+                newrow += '    <h2 style=\'padding:0px 0px 3px 0px; margin: 0px 0px 0px 0px;\'><a class=\'marketplace\' href=\'/app/marketplace/view/' + app.basename + '\'>' + app.name + '</a></h2>';
                 newrow += '    <div style=\'font-size: 8pt;\'>';
                 newrow += '      <div>' + app.description.substr(0, 85) + '...</div>';
                 newrow += '      <div>' + app.vendor.toUpperCase() + '</div>';
@@ -317,7 +319,7 @@ function get_apps(realtime, search, offset) {
                 } else {
                     newrow += '    <div>" . lang('marketplace_free') . "</div>';
                 }
-                newrow += '      <div style=\'padding:5 0 0 0;\'>';
+                newrow += '      <div style=\'padding:5px 0px 0px 0px;\'>';
                 newrow += get_configure(app);
                 newrow += '      </div>';
                 newrow += '    </div>';
@@ -371,7 +373,7 @@ function get_apps(realtime, search, offset) {
             paginate += '<a class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + next + '/' + search + '/' + category + '/' + price + '/' + intro + '/' + install + '\'> \></a>';
             paginate += '<a class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + pages + '/' + search + '/' + category + '/' + price + '/' + intro + '/' + install + '\'> \>\></a>';
             if (pages > 0) {
-                $('#pagination-top').html(paginate + '<div style=\'padding: 5 24 0 0; font-size: 7pt;\'>" . lang('marketplace_displaying') . " ' + (apps_to_display_per_page * offset + 1) + ' - ' + (apps_to_display_per_page * offset + applist.length) + ' " . lang('base_of') . " ' + data.total + '</div>');
+                $('#pagination-top').html(paginate + '<div style=\'padding: 5px 0px 0px 0px; font-size: 7pt;\'>" . lang('marketplace_displaying') . " ' + (apps_to_display_per_page * offset + 1) + ' - ' + (apps_to_display_per_page * offset + applist.length) + ' " . lang('base_of') . " ' + data.total + '</div>');
                 $('#pagination-bottom').html(paginate);
             }
             
@@ -659,7 +661,7 @@ function get_app_details(id) {
                     '<span style=\'font-size: 1.2em;\' id=\'disagree_' + ratings[index].id + '\'>' +
                     ratings[index].disagree + '</span>' +
                     '<a class=\'peer_review\' href=\'#-0-' + ratings[index].id + '\'>' +
-                    '<span style=\'padding: 0 0 0 5;\'>' +
+                    '<span style=\'padding: 0px 0px 0px 5px;\'>' +
                     '<img src=\'" . clearos_app_htdocs('marketplace') . "/icon_thumb_down.gif\'>&#160;" .
                     lang('marketplace_disagree') . "</span></a></div></div>' +
                     '<div>' +
@@ -692,7 +694,7 @@ function get_app_details(id) {
                 (index == 0 ? '<td width=\'60%\' rowspan=\'5\' valign=\'top\'>' +
                 '<p style=\'font-weight: bold; text-decoration: underline;\'>" .
                 lang('marketplace_translation_acknowledgements') . "' +
-                '</p><ol style=\'list-style-position: inside; margin: 0 0 0 0;' +
+                '</p><ol style=\'list-style-position: inside; margin: 0px 0px 0px 0px;' +
                 ' padding-left: 0px;\'>' + contributor_list + '</ol></td>' : '') +
                 '</tr>'
                 );
@@ -740,7 +742,7 @@ function get_app_details(id) {
                     '  </tr>' +
                     '  <tr>' +
                     '    <td valign=\'top\'>" . lang('marketplace_change_log') . "</td>' +
-                    '    <td><ol style=\'list-style-position: inside; margin: 0 0 0 0;' +
+                    '    <td><ol style=\'list-style-position: inside; margin: 0px 0px 0px 0px;' +
                     ' padding-left: 0px;\'>' + logs + '</ol></td>' +
                     '  </tr>' +
                     '  <tr>' +

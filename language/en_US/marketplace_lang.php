@@ -183,3 +183,4 @@ $lang['marketplace_pid_is_invalid'] = 'Invalid product ID.';
 $lang['marketplace_enable_repo'] = 'Enable Repo';
 $lang['marketplace_software_repo'] = 'Software Repository';
 $lang['marketplace_patience'] = 'Marketplace transaction in progress.  This can take a few seconds - please be patient.';
+$lang['marketplace_apps_incompatible'] = 'The app %s is not compatible with %s which is already selected for installation.';

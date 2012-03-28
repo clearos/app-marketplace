@@ -159,7 +159,7 @@ class Marketplace extends ClearOS_Controller
         // Load views
         //-----------
 
-        $this->page->view_form('marketplace/settings', $data, lang('base_settings'), array('type' => MY_Page::TYPE_SPOTLIGHT));
+        $this->page->view_form('marketplace/settings', $data, lang('base_settings'));//, array('type' => MY_Page::TYPE_SPOTLIGHT));
     }
 
     /**

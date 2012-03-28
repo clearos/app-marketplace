@@ -86,7 +86,8 @@ class Ajax extends ClearOS_Controller
 
             $details = $response->details;
 
-            $cart_item = new \clearos\apps\marketplace\Cart_Item(Marketplace::APP_PREFIX . $basename); 
+            //$cart_item = new \clearos\apps\marketplace\Cart_Item(Marketplace::APP_PREFIX . $basename); 
+            $cart_item = new \clearos\apps\marketplace\Cart_Item(Marketplace::APP_PREFIX . preg_replace("/_/", "-", $basename)); 
             $cart_item->set(get_object_vars($details->pricing));
             // Whether an item has an EULA or not is not in the pricing object
             $cart_item->set_eula($details->eula);
@@ -187,7 +188,8 @@ class Ajax extends ClearOS_Controller
             $applist = $response->list;
             foreach ($applist as $app) {
 
-                $cart_item = new \clearos\apps\marketplace\Cart_Item(Marketplace::APP_PREFIX . $app->basename); 
+                //$cart_item = new \clearos\apps\marketplace\Cart_Item(Marketplace::APP_PREFIX . $app->basename); 
+                $cart_item = new \clearos\apps\marketplace\Cart_Item(Marketplace::APP_PREFIX . preg_replace("/_/", "-", $app->basename)); 
                 $cart_item->set(get_object_vars($app->pricing));
                 // Whether an item has an EULA or not is not in the pricing object
                 $cart_item->set_eula($app->eula);
@@ -231,7 +233,7 @@ class Ajax extends ClearOS_Controller
                         $search_counter++;
                     }
                 }
-                if (array_key_exists(Marketplace::APP_PREFIX . $app->basename, $cart_items))
+                if (array_key_exists(Marketplace::APP_PREFIX . preg_replace("/_/", "-", $app->basename), $cart_items))
                     $app->incart = TRUE;
 
                 $app_counter++;
@@ -267,14 +269,14 @@ class Ajax extends ClearOS_Controller
         try {
             $this->load->library('marketplace/Marketplace');
             $this->load->library('marketplace/Cart');
-            $this->load->library('marketplace/Cart_Item', Marketplace::APP_PREFIX . $this->input->post('id'));
+            $this->load->library('marketplace/Cart_Item', Marketplace::APP_PREFIX . preg_replace("/_/", "-", $this->input->post('id')));
             if ($this->input->post('add')) {
                 $this->cart_item->unserialize($this->session->userdata('sdn_rest_id'));
                 $this->cart->add_item($this->cart_item);
             } else {
                 // Delete if found
                 try {
-                    $this->cart->remove_item(Marketplace::APP_PREFIX . $this->input->post('id'));
+                    $this->cart->remove_item(Marketplace::APP_PREFIX . preg_replace("/_/", "-", $this->input->post('id')));
                 } catch (Exception $e) {
                     // Any need to see message?
                 }
@@ -663,7 +665,7 @@ class Ajax extends ClearOS_Controller
 
     private function _is_up2date($current, $compare)
     {
-        clearos_profile(__METHOD__, __LINE__, $current . '  TODO vs. ' . $compare);
+        clearos_profile(__METHOD__, __LINE__);
 
         // May not need to go through any regex if strings are identical
         if ($current == $compare)

@@ -25,11 +25,11 @@ $this->lang->load('marketplace');
 
 echo "
 <div>
-    <div style='clear: both; float: right; padding: 0 12 0 0;'>
+    <div style='clear: both; float: right; padding: 0px 12px 0px 0px;'>
     " . anchor_custom('/app/marketplace/settings', lang('base_settings'), 'high') . "
     " . anchor_custom('/app/marketplace/install', lang('marketplace_install_selected_apps'), 'high') . "
     </div>
-  <div id='pagination-top' style='font-size: .7em; padding: 5 0 0 0;'></div>
+  <div id='pagination-top' style='font-size: .7em; padding: 5px 12px 0px 0px;'></div>
   <div class='ui-widget marketplace-footer'></div>
 </div>
 ";

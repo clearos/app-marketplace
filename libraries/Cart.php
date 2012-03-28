@@ -140,7 +140,39 @@ class Cart extends Engine
 
         $counter = 0;
         $found = FALSE;
+        // Pull in cart rules
+        include clearos_app_base('marketplace') . '/deploy/cart_rules.php';
+        include_once clearos_app_base('marketplace') . '/libraries/Cart_Item.php';
+
         foreach ($this->contents as $cart_item) {
+            if (array_key_exists($item->get_id(), $rules['incompatible'])) {
+                foreach ($rules['incompatible'][$item->get_id()] as $rule) {
+                    if ($cart_item->get_id() == $rule)
+                        throw new Engine_Exception(
+                            sprintf(lang('marketplace_apps_incompatible'),
+                                '<b>' . $item->get_description() . '</b>',
+                                '<b>' . $cart_item->get_description() . '</b>'
+                            ),
+                            CLEAROS_ERROR
+                        );
+                }
+            } else {
+                // Search for values
+                foreach ($rules['incompatible'] as $key => $rule) {
+                    if (in_array($item->get_id(), $rule)) {
+                        $cart_obj = new Cart_Item($key);
+                        $cart_obj->unserialize($this->CI->session->userdata['sdn_rest_id']);
+                        throw new Engine_Exception(
+                            sprintf(
+                                lang('marketplace_apps_incompatible'),
+                                '<b>' . $item->get_description() . '</b>',
+                                '<b>' . $cart_obj->get_description() . '</b>'
+                            ),
+                            CLEAROS_ERROR
+                        );
+                    }
+                }
+            }
             if ($cart_item->get_id() == $item->get_id()) {
                 $this->contents[$counter] = $item;
                 $found = TRUE;
@@ -204,8 +236,6 @@ class Cart extends Engine
         foreach ($this->contents as $item) {
             if ($field == 'id')
                 $list[] = $item->get_id();
-            else if ($field == 'package_name')
-                $list[] = preg_replace("/_/", "-", $item->get_id());
             else if ($field == 'pid')
                 $list[] = $item->get_pid();
             else if ($field == 'description')
