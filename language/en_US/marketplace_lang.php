@@ -1,5 +1,6 @@
 <?php
 
+$lang['marketplace_install_apps_later'] = 'Install Apps Later';
 $lang['marketplace_app_description'] = 'ClearCenter\'s Marketplace is where you can add new apps and services to your system.  Apps available in the Marketplace have gone through a stringent quality control process by ClearCenter to ensure the quality and security of each submission.';
 $lang['marketplace_app_name'] = 'Marketplace';
 $lang['marketplace_confirm_review_replace'] = 'You have already reviewed this app... would you like to update your rating?';
