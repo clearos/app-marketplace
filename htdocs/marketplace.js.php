@@ -205,6 +205,7 @@ function get_eula(basename, id) {
 }
 
 function update_cart(id, individual, redirect) {
+    
     $.ajax({
         type: 'POST',
         dataType: 'json',
@@ -214,7 +215,10 @@ function update_cart(id, individual, redirect) {
             if (data.code == 0 && redirect)
                 window.location = '/app/marketplace/install';
             if (data.code != 0) {
-                $('#' + id + ':checked').attr('checked', false);
+                if ($('#' + id).is(':checked'))
+                    $('#' + id).removeAttr('checked');
+                else
+                    $('#' + id).attr('checked', true);
                 clearos_dialog_box('invalid_cart', '" . lang('base_warning') . "', data.errmsg);
             }
         },

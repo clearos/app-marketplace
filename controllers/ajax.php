@@ -274,12 +274,7 @@ class Ajax extends ClearOS_Controller
                 $this->cart_item->unserialize($this->session->userdata('sdn_rest_id'));
                 $this->cart->add_item($this->cart_item);
             } else {
-                // Delete if found
-                try {
-                    $this->cart->remove_item(Marketplace::APP_PREFIX . preg_replace("/_/", "-", $this->input->post('id')));
-                } catch (Exception $e) {
-                    // Any need to see message?
-                }
+                $this->cart->remove_item(Marketplace::APP_PREFIX . preg_replace("/_/", "-", $this->input->post('id')));
             }
             echo json_encode(Array('code' => 0));
         } catch (Exception $e) {

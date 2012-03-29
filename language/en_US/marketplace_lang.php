@@ -186,4 +186,5 @@ $lang['marketplace_unavailable'] = 'Marketplace Unavailable';
 $lang['marketplace_package_manager_in_use'] = 'Another user or service is currently using the package manager.  Marketplace is not available until the package management system becomes available.';
 $lang['marketplace_software_repo'] = 'Software Repository';
 $lang['marketplace_patience'] = 'Marketplace transaction in progress.  This can take a few seconds - please be patient.';
-$lang['marketplace_apps_incompatible'] = 'The app %s is not compatible with %s which is already selected for installation.';
+$lang['marketplace_apps_rule_incompatible'] = 'The app %s is not compatible with %s which is already selected for installation.';
+$lang['marketplace_apps_rule_requires'] = 'The app %s requires the %s to be selected for installation or already installed.';

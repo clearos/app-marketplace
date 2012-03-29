@@ -144,12 +144,46 @@ class Cart extends Engine
         include clearos_app_base('marketplace') . '/deploy/cart_rules.php';
         include_once clearos_app_base('marketplace') . '/libraries/Cart_Item.php';
 
+        // Get installed apps
+        $marketplace = new Marketplace();
+        $installed_apps = $marketplace->get_installed_apps();
+
+        // Requires
+        // --------
+        if (array_key_exists($item->get_id(), $rules['requires'])) {
+            $found = FALSE;
+            foreach ($this->contents as $cart_item) {
+                if ($cart_item->get_id() == $rules['requires'][$item->get_id()]) {
+                    $found = TRUE;
+                    break;
+                }
+            }
+            // If not found, is it already installed
+            if (!$found) {
+                if (array_key_exists($rules['requires'][$item->get_id()], $installed_apps))
+                    $found = TRUE;
+            }
+            if (!$found) {
+                $cart_obj = new Cart_Item($rules['requires'][$item->get_id()]);
+                $cart_obj->unserialize($this->CI->session->userdata['sdn_rest_id']);
+                throw new Engine_Exception(
+                    sprintf(
+                        lang('marketplace_apps_rule_requires'),
+                        '<b>' . $item->get_description() . '</b>',
+                        '<b>' . $cart_obj->get_description() . '</b>'
+                    ),
+                    CLEAROS_ERROR
+                );
+            }
+        }
+        // Incompatible
+        // ------------
         foreach ($this->contents as $cart_item) {
             if (array_key_exists($item->get_id(), $rules['incompatible'])) {
                 foreach ($rules['incompatible'][$item->get_id()] as $rule) {
                     if ($cart_item->get_id() == $rule)
                         throw new Engine_Exception(
-                            sprintf(lang('marketplace_apps_incompatible'),
+                            sprintf(lang('marketplace_apps_rule_incompatible'),
                                 '<b>' . $item->get_description() . '</b>',
                                 '<b>' . $cart_item->get_description() . '</b>'
                             ),
@@ -164,7 +198,7 @@ class Cart extends Engine
                         $cart_obj->unserialize($this->CI->session->userdata['sdn_rest_id']);
                         throw new Engine_Exception(
                             sprintf(
-                                lang('marketplace_apps_incompatible'),
+                                lang('marketplace_apps_rule_incompatible'),
                                 '<b>' . $item->get_description() . '</b>',
                                 '<b>' . $cart_obj->get_description() . '</b>'
                             ),
@@ -173,6 +207,8 @@ class Cart extends Engine
                     }
                 }
             }
+            // Reset our found variable
+            $found = FALSE;
             if ($cart_item->get_id() == $item->get_id()) {
                 $this->contents[$counter] = $item;
                 $found = TRUE;
@@ -203,10 +239,37 @@ class Cart extends Engine
         if (! $this->is_loaded)
             $this->_load_from_file();
 
+        // Pull in cart rules
+        include clearos_app_base('marketplace') . '/deploy/cart_rules.php';
+        include_once clearos_app_base('marketplace') . '/libraries/Cart_Item.php';
+
+        // Get installed apps
+        $marketplace = new Marketplace();
+        $installed_apps = $marketplace->get_installed_apps();
+
+        // Requires
+        // --------
+        if (in_array($key, $rules['requires'])) {
+            foreach ($this->contents as $cart_item) {
+                foreach ($rules['requires'] as $app => $requires) {
+                    if ($cart_item->get_id() == $app && !array_key_exists($requires, $installed_apps)) {
+                        $cart_obj = new Cart_Item($requires);
+                        $cart_obj->unserialize($this->CI->session->userdata['sdn_rest_id']);
+                        throw new Engine_Exception(
+                            sprintf(
+                                lang('marketplace_apps_rule_requires'),
+                                '<b>' . $cart_item->get_description() . '</b>',
+                                '<b>' . $cart_obj->get_description() . '</b>'
+                            ),
+                            CLEAROS_ERROR
+                        );
+                    }
+                }
+            }
+        }
+
         if (array_key_exists($key, $this->contents))
             unset($this->contents[$key]);
-        else
-            throw new Engine_Exception(lang('marketplace_item_not_found'), CLEAROS_ERROR);
 
         $this->_save_to_file();
     }
