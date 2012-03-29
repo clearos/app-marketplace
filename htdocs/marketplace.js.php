@@ -359,8 +359,8 @@ function get_apps(realtime, search, offset) {
             var next = offset + 1;
             if (data.total / apps_to_display_per_page < next)
                 next = Math.round(data.total / apps_to_display_per_page + .49999) - 1;
-            var paginate = '<a class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/0/' + search + '/' + category + '/' + price + '/' + intro + '\'>\<\< </a>';
-            paginate += '<a class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + previous + '/' + search + '/' + category + '/' + price + '/' + intro + '\'>\< </a>';
+            var paginate = '<a style=\'margin-right: 2px;\' class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/0/' + search + '/' + category + '/' + price + '/' + intro + '\'>\<\<</a>';
+            paginate += '<a style=\'margin-right: 2px;\' class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + previous + '/' + search + '/' + category + '/' + price + '/' + intro + '\'>\<</a>';
             var pages = 0;
             if (apps_to_display_per_page > 0)
                 pages = Math.round(data.total / apps_to_display_per_page + .49999) - 1;
@@ -370,8 +370,8 @@ function get_apps(realtime, search, offset) {
             //        paginate += '<a class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + index + '/' + search + '/' + category + '/' + price + '/' + intro + '\'>' + (index + 1) + '</a>';
             //    }
             //}
-            paginate += '<a class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + next + '/' + search + '/' + category + '/' + price + '/' + intro + '/' + install + '\'> \></a>';
-            paginate += '<a class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + pages + '/' + search + '/' + category + '/' + price + '/' + intro + '/' + install + '\'> \>\></a>';
+            paginate += '<a style=\'margin-right: 2px;\' class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + next + '/' + search + '/' + category + '/' + price + '/' + intro + '/' + install + '\'>\></a>';
+            paginate += '<a class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + pages + '/' + search + '/' + category + '/' + price + '/' + intro + '/' + install + '\'>\>\></a>';
             if (pages > 0) {
                 $('#pagination-top').html(paginate + '<div style=\'padding: 5px 0px 0px 0px; font-size: 7pt;\'>" . lang('marketplace_displaying') . " ' + (apps_to_display_per_page * offset + 1) + ' - ' + (apps_to_display_per_page * offset + applist.length) + ' " . lang('base_of') . " ' + data.total + '</div>');
                 $('#pagination-bottom').html(paginate);
@@ -497,7 +497,7 @@ function get_app_details(id) {
             else
                 $('#app_installed_version').html(data.installed_version);
             $('#app_latest_version').html(data.latest_version);
-            $('#app_latest_release_date').html((new Date(data.latest_release_date)).toLocaleDateString());
+            $('#app_latest_release_date').html($.datepicker.formatDate('MM d, yy', new Date(data.latest_release_date)));
   
             $('.actions').hide();
 
@@ -569,7 +569,7 @@ function get_app_details(id) {
             $('#app_tags').html(data.tags);
             $('#app_license').html(data.license);
             $('#app_license_library').html(data.license_library);
-            $('#app_introduced').html((new Date(data.introduced)).toLocaleDateString());
+            $('#app_introduced').html($.datepicker.formatDate('MM d, yy', new Date(data.introduced)));
             $('#app_devel_org').html(data.devel_org);
             $('#app_devel_contact').html(data.devel_contact);
             $('#app_devel_email').html(data.devel_email);
@@ -667,7 +667,7 @@ function get_app_details(id) {
                     '<div>' +
                     get_rating(ratings[index].rating, -1, false, false) +
                     ' " . lang('marketplace_by') . " ' + ratings[index].pseudonym + ' - ' +
-                    $.datepicker.formatDate('MM d, yy', new Date(ratings[index].timestamp))+ 
+                    $.datepicker.formatDate('MM d, yy', new Date(ratings[index].timestamp)) +
                     '</div>' + (show_full_comment ? '<p>' + ratings[index].comment.replace(/\\n/g, '</p><p>') + '</p></div>' : '')
                 );
             }
