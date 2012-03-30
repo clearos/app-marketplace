@@ -194,16 +194,18 @@ class Cart extends Engine
                 // Search for values
                 foreach ($rules['incompatible'] as $key => $rule) {
                     if (in_array($item->get_id(), $rule)) {
-                        $cart_obj = new Cart_Item($key);
-                        $cart_obj->unserialize($this->CI->session->userdata['sdn_rest_id']);
-                        throw new Engine_Exception(
-                            sprintf(
-                                lang('marketplace_apps_rule_incompatible'),
-                                '<b>' . $item->get_description() . '</b>',
-                                '<b>' . $cart_obj->get_description() . '</b>'
-                            ),
-                            CLEAROS_ERROR
-                        );
+                        if ($cart_item->get_id() == $key) {
+                            $cart_obj = new Cart_Item($key);
+                            $cart_obj->unserialize($this->CI->session->userdata['sdn_rest_id']);
+                            throw new Engine_Exception(
+                                sprintf(
+                                    lang('marketplace_apps_rule_incompatible'),
+                                    '<b>' . $item->get_description() . '</b>',
+                                    '<b>' . $cart_obj->get_description() . '</b>'
+                                ),
+                                CLEAROS_ERROR
+                            );
+                        }
                     }
                 }
             }
