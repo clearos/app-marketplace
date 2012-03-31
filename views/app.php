@@ -71,7 +71,7 @@ $tabinfo['overview']['content'] =
     "        <div class='app_actions' id='a_repo' style='display: none; padding-top: 5;'>" .
     anchor_custom('/app/software_repository/index/detailed', lang('marketplace_enable_repo'), 'high', array('id' => 'indiv_repo')) .
     "        </div>" .
-    "        <div class='app_actions' id=':_configure' style='display: none; padding-top: 5;'>" .
+    "        <div class='app_actions' id='a_configure' style='display: none; padding-top: 5;'>" .
     anchor_custom('/app/' . $basename, lang('base_configure'), 'high', array('id' => 'indiv_configure')) .
     "        </div>" .
     "        <div class='app_actions' id='a_buy' style='display: none; padding-top: 5;'>" .
