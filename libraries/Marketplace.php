@@ -624,7 +624,7 @@ class Marketplace extends Rest
             $extras['repos'] = implode('|', $this->_get_repository_list());
 
             // Account driver
-            // Some apps are nto compatible with different account drivers (i.e. active directory)
+            // Some apps are not compatible with different account drivers (i.e. active directory)
             // We need to know which driver is in use to filter out non-applicable apps
             $driver = 'unknown';
             if (clearos_library_installed('accounts/Accounts_Configuration')) {

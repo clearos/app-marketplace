@@ -167,7 +167,7 @@ if (count($rows) === 0) {
     if ($this->session->userdata('wizard'))
         $anchors = array(anchor_custom('/app/base/wizard/stop', lang('marketplace_install_apps_later')));
     else
-        $anchors = array(form_submit_custom('free_checkout', lang('madfasdarketplace_install'), 'high', array ('id' => 'free_checkout')));
+        $anchors = array(form_submit_custom('free_checkout', lang('marketplace_install'), 'high', array ('id' => 'free_checkout')));
 } else if ($total == 0) {
     $anchors = array(form_submit_custom('free_checkout', lang('marketplace_install'), 'high', array ('id' => 'free_checkout')));
 } else {
