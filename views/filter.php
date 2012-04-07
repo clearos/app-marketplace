@@ -23,7 +23,6 @@ $this->lang->load('marketplace');
 // Marketplace filter
 ///////////////////////////////////////////////////////////////////////////////
 
-// FIXME: translate
 // TODO: cleanup the "menu" theme stuff - for later.
 // TODO: general cleanup
 
@@ -36,7 +35,7 @@ echo "
 <div style='display: $display;'>
     <div id='theme-left-menu-top'></div>
     <div id='theme-left-menu'>
-        <h3 class='theme-left-menu-category'><a href='#'>Marketplace Options</a></h3>
+        <h3 class='theme-left-menu-category'><a href='#'>" . lang('marketplace_marketplace_options') . "</a></h3>
         <div>
 ";
 

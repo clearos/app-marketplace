@@ -63,15 +63,6 @@ class Wizard extends ClearOS_Controller
         $data['number_of_apps_to_display'] = '30';
         $data['hide_banner'] = TRUE;
 
-            $this->load->library('marketplace/Cart');
-            $cart_items = $this->cart->get_items();
-
-        if ($category == 'server') {
-            // FIXME: just an example
-            $data['wizard_subcategory']  = 'Directory';
-            $data['wizard_help'] = 'Blurb on what directory services is...'; 
-        }
-
         $this->page->view_form('marketplace/marketplace_wizard', $data, lang('marketplace_marketplace'), array('type' => MY_Page::TYPE_SPOTLIGHT));
     }
 

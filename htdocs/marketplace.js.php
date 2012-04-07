@@ -1072,7 +1072,7 @@ function get_progress() {
             }
         },
         error: function(xhr, text, err) {
-            // FIXME: This seems problematic on my slow network connection (PB).  More digging required.
+            // TODO: This seems problematic on my slow network connection (PB).  More digging required.
             // clearos_dialog_box('error', '" . lang('base_warning') . "', xhr.responseText.toString());
             window.setTimeout(get_progress, 1000);
         }

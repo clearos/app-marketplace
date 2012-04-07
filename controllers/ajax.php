@@ -79,7 +79,7 @@ class Ajax extends ClearOS_Controller
 
             $response = json_decode($this->marketplace->get_app_details($basename, $realtime));
 
-            // FIXME: map these response codes to the following
+            // TODO: map these response codes to the following
             // CLEAROS_INFO, CLEAROS_WARNING or CLEAROS_ERROR
             if ($response->code != 0)
                 throw new Engine_Exception($response->errmsg, $response->code);
