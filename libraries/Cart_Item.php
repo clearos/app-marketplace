@@ -145,19 +145,32 @@ class Cart_Item extends Engine
         $this->set_unit_price($info['unit_price']);
         $this->set_discount($info['discount']);
         $this->set_currency($info['currency']);
-        $this->set_note($info['note']);
+
+        if (isset($info['note']))
+            $this->set_note($info['note']);
+        else 
+            $this->set_note('');
+
         $this->set_exempt($info['exempt']);
         $this->set_evaluation($info['evaluation']);
-        $this->set_prorated($info['prorated']);
+
+        if (isset($info['prorated']))
+            $this->set_prorated($info['prorated']);
+        else
+            $this->set_prorated('');
+
         $this->set_pid_bitmask($info['pid_bitmask']);
+
         if (isset($info['eula']))
             $this->set_eula($info['eula']);
         else
             $this->set_eula(FALSE);
+
         if (isset($info['class']))
             $this->set_class($info['class']);
         else
             $this->set_class(self::CLASS_MISC);
+
         if (isset($info['group']))
             $this->set_group($info['group']);
         else
