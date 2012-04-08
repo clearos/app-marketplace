@@ -20,26 +20,28 @@ $this->lang->load('base');
 $this->lang->load('marketplace');
 
 ///////////////////////////////////////////////////////////////////////////////
+// Content 
+///////////////////////////////////////////////////////////////////////////////
+
+// TODO: translate
+// TODO: convert image to text
+// TODO: move style elements to theme
+
+if ($is_professional)
+    $image = 'pro-marketplace.png';
+else
+    $image = 'community-marketplace.png';
+
+$banner = "<div style='background: url(" . clearos_app_htdocs('marketplace') . "/$image) no-repeat; height:370px; width:682; margin-left: 15px; margin-top: 15px;'></div>";
+
+///////////////////////////////////////////////////////////////////////////////
 // Form
 ///////////////////////////////////////////////////////////////////////////////
-// FIXME: translate
-// TODO: hard-coded anchor... fix later.  It should match order in base/libraries/Install_Wizard.php.
-// TODO: standardize style for simple <a href..>" links.
 
-$right = "<p>Hi beta users.  Some graphic will go here to help folks understand Marketplace.</p><p align='center'><img src='" . clearos_app_htdocs('graphical_console') . "/browsers.png' alt=''></p>";
+echo form_open('marketplace/wizard/intro', array('id' => 'marketplace_intro'));
+echo form_header(lang('marketplace_welcome_to_marketplace'));
 
-$left = "
-<h3>Introducing Marketplace</h3>
-<p>With the basic configuration under your belt, you are now ready to install apps and integrated cloud services through the ClearCenter Marketplace.  You will find a large selection of both free a paid apps all of which are available to install in a few short steps.</p>
+echo form_banner($banner);
 
-<h3>Getting Started</h3>
-<p>If this is the first
-time using ClearOS, the number of apps and services in the Marketplace can be overwhelming.  The
-Marketplace wizard guides you through the process of selecting the right features.  If you don't 
-like wizards, you can skip this step and jump right into the <a style='background: transparent; border: none; float: none; padding: 0; margin: 0; color: #e1852e;' href='/app/base/wizard/finish'>Marketplace</a>.</p>
-";
-
-echo infobox_highlight(
-    'Welcome to Marketplace!',
-    "<table cellpadding='7'><tr><td width='50%'>$left</td><td valign='top'>$right</td></tr></table>"
-);
+echo form_footer();
+echo form_close();

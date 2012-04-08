@@ -52,8 +52,8 @@ class Wizard extends ClearOS_Controller
         $this->lang->load('marketplace');
         $this->load->library('marketplace/Marketplace');
 
-        // Load dependencies
-        //------------------
+        // Load view
+        //----------
 
         $data = array();
 
@@ -74,7 +74,27 @@ class Wizard extends ClearOS_Controller
 
     function intro()
     {
+        // Load dependencies
+        //------------------
+
         $this->lang->load('marketplace');
-        $this->page->view_form('marketplace/wizard_intro', array(), lang('marketplace_marketplace'), array('type' => MY_Page::TYPE_SPOTLIGHT));
+        $this->load->library('base/OS');
+
+        // Load view data
+        //---------------
+
+        try {
+            $os_name = $this->os->get_name();
+
+            $data['is_professional'] = (preg_match('/ClearOS Professional/', $os_name)) ? TRUE : FALSE;
+        } catch (Exception $e) {
+            $this->page->view_exception($e);
+            return;
+        }
+
+        // Load view
+        //----------
+
+        $this->page->view_form('marketplace/wizard_intro', $data, lang('marketplace_marketplace'), array('type' => MY_Page::TYPE_SPOTLIGHT));
     }
 }

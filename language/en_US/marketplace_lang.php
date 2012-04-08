@@ -189,3 +189,4 @@ $lang['marketplace_software_repo'] = 'Software Repository';
 $lang['marketplace_patience'] = 'Marketplace transaction in progress.  This can take a few seconds - please be patient.';
 $lang['marketplace_apps_rule_incompatible'] = 'The app %s is not compatible with %s which is already selected for installation.';
 $lang['marketplace_apps_rule_requires'] = 'The app %s requires the %s to be selected for installation or already installed.';
+$lang['marketplace_welcome_to_marketplace'] = 'Welcome to Marketplace';
