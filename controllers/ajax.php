@@ -558,7 +558,14 @@ class Ajax extends ClearOS_Controller
                 );
                 return;
             }
-            echo json_encode(Array('code' => -999, 'errmsg' => lang('marketplace_no_data')));
+            echo json_encode(
+                Array(
+                    'code' => -999,
+                    'wc_busy' => $this->yum->is_wc_busy(),
+                    'busy' => $this->yum->is_busy(),
+                    'errmsg' => lang('marketplace_no_data')
+                )
+            );
         } catch (Exception $e) {
             echo json_encode(Array('code' => clearos_exception_code($e), 'errmsg' => clearos_exception_message($e)));
         }
