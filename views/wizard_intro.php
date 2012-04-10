@@ -24,7 +24,6 @@ $this->lang->load('marketplace');
 ///////////////////////////////////////////////////////////////////////////////
 
 // TODO: translate
-// TODO: convert image to text
 // TODO: move style elements to theme
 
 if ($is_professional)
@@ -32,7 +31,12 @@ if ($is_professional)
 else
     $image = 'community-marketplace.png';
 
-$banner = "<div style='background: url(" . clearos_app_htdocs('marketplace') . "/$image) no-repeat; height:370px; width:682; margin-left: 15px; margin-top: 15px;'></div>";
+$banner = "<h2 style='font-size: 1.8em; color: #909090; width: 687px;'>Getting Started</h2>";
+$banner .= "<img style='float: right; padding-left: 20px;' src='" . clearos_app_htdocs('marketplace') . "/marketplace.png' alt=''>";
+$banner .= "<p style='font-size: 1.2em; line-height: 20px;'>Congratulations!  You are now ready to install apps and integrated cloud services through the ClearCenter Marketplace.  You will find a large selection of both free and paid apps that can be installed in a few short steps.";
+$banner .= "<p style='font-size: 1.2em; line-height: 20px;'>If this is your first time using ClearOS, the number of apps and services in the Marketplace can be overwhelming.  The Marketplace Wizard guides you through the process of selecting the right features for your system.</p>";
+
+$banner .= "<div style='background: url(" . clearos_app_htdocs('marketplace') . "/$image) no-repeat 80 0; height:160px; width:682; margin-left: 15px;'></div>";
 
 ///////////////////////////////////////////////////////////////////////////////
 // Form
