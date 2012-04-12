@@ -1,7 +1,7 @@
 
 Name: app-marketplace
 Epoch: 1
-Version: 1.0.14
+Version: 1.0.16
 Release: 1%{dist}
 Summary: Marketplace
 License: Proprietary
@@ -41,6 +41,11 @@ cp -r * %{buildroot}/usr/clearos/apps/marketplace/
 install -d -m 755 %{buildroot}/var/clearos/marketplace
 install -D -m 0644 packaging/marketplace.acl %{buildroot}/var/clearos/base/access_control/authenticated/marketplace
 install -D -m 0644 packaging/marketplace.conf %{buildroot}/etc/clearos/marketplace.conf
+
+if [ -d %{buildroot}/usr/clearos/apps/marketplace/libraries_zendguard ]; then
+    rm -rf %{buildroot}/usr/clearos/apps/marketplace/libraries
+    mv %{buildroot}/usr/clearos/apps/marketplace/libraries_zendguard %{buildroot}/usr/clearos/apps/marketplace/libraries
+fi
 
 %post
 logger -p local6.notice -t installer 'app-marketplace - installing'
