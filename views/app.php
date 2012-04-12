@@ -78,7 +78,7 @@ $tabinfo['overview']['content'] =
     form_submit_custom('but_buy', lang('marketplace_buy'), 'high', array ('id' => 'indiv_buy')) .
     "        </div>" .
     "        <div class='app_actions' id='a_install' style='display: none; padding-top: 5;'>" .
-    form_submit_custom('but_install', lang('marketplace_install'), 'high', array ('id' => 'indiv_install')) .
+    form_submit_custom('but_install', lang('marketplace_download_and_install'), 'high', array ('id' => 'indiv_install')) .
     "        </div>" .
     "      </div>" .
     "      <div style='padding: 5 0 15 0;'>" . strtoupper(lang('marketplace_about_this_app')) . "</div>" .
