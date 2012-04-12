@@ -21,6 +21,18 @@ $app['name'] = lang('marketplace_app_name');
 $app['category'] = lang('base_category_spotlight');
 $app['subcategory'] = lang('base_subcategory_overview');
 
+// Wizard extras
+$app['controllers']['server']['wizard_name'] = lang('marketplace_server_apps');
+$app['controllers']['server']['wizard_description'] = lang('marketplace_server_apps_description');
+$app['controllers']['gateway']['wizard_name'] = lang('marketplace_gateway_apps');
+$app['controllers']['gateway']['wizard_description'] = lang('marketplace_gateway_apps_description');
+$app['controllers']['network']['wizard_name'] = lang('marketplace_network_apps');
+$app['controllers']['network']['wizard_description'] = lang('marketplace_network_apps_description');
+$app['controllers']['system']['wizard_name'] = lang('marketplace_system_apps');
+$app['controllers']['system']['wizard_description'] = lang('marketplace_system_apps_description');
+$app['controllers']['install']['wizard_name'] = lang('marketplace_app_review');
+$app['controllers']['install']['wizard_description'] = lang('marketplace_app_review_description');
+
 /////////////////////////////////////////////////////////////////////////////
 // Packaging
 /////////////////////////////////////////////////////////////////////////////
