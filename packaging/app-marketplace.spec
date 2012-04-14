@@ -1,7 +1,7 @@
 
 Name: app-marketplace
 Epoch: 1
-Version: 1.0.16
+Version: 1.1.0
 Release: 1%{dist}
 Summary: Marketplace
 License: Proprietary
@@ -17,7 +17,7 @@ Requires: app-registration
 ClearCenter's Marketplace is where you can add new apps and services to your system.  Apps available in the Marketplace have gone through a stringent quality control process by ClearCenter to ensure the quality and security of each submission.
 
 %package core
-Summary: Marketplace - APIs and install
+Summary: Marketplace - Core
 License: LGPLv3
 Group: ClearOS/Libraries
 Requires: app-base-core
