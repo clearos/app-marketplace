@@ -37,9 +37,12 @@ $app['controllers']['install']['wizard_description'] = lang('marketplace_app_rev
 // Packaging
 /////////////////////////////////////////////////////////////////////////////
 
+// TODO: push software-updates and dashboard to comps
 $app['requires'] = array(
     'app-network',
-    'app-registration'
+    'app-registration',
+    'app-software-updates',
+    'app-dashboard',
 );
 
 $app['core_requires'] = array(

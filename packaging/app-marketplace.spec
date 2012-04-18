@@ -12,6 +12,8 @@ Requires: %{name}-core = 1:%{version}-%{release}
 Requires: app-base
 Requires: app-network
 Requires: app-registration
+Requires: app-software-updates
+Requires: app-dashboard
 
 %description
 ClearCenter's Marketplace is where you can add new apps and services to your system.  Apps available in the Marketplace have gone through a stringent quality control process by ClearCenter to ensure the quality and security of each submission.
