@@ -1060,7 +1060,8 @@ function get_progress() {
                 // We're on the busy page...let's check again in 5 seconds.
                 window.setTimeout(get_progress, 5000);
             } else if (json.overall == 100) {
-                $('#reload_button').show();
+                if ($('#theme_wizard_nav_next').length == 0)
+                    $('#reload_button').show();
                 return;
             } else {
                 window.setTimeout(get_progress, 1000);
