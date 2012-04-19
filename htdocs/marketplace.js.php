@@ -37,6 +37,7 @@ var apps_to_display_per_page = 10;
 var UNIT = [];
 var reg_info_ok = false;
 var reg_default_name = '" . lang('base_name') . "';
+var installation_complete = '" . lang('marketplace_installation_complete') . "';
 var my_systems = new Array();
 var my_subscriptions = new Array();
 UNIT[0] = '';
@@ -396,6 +397,9 @@ function populate_wizard(data) {
     jQuery.each(data.list, function(index, app) { 
         if (app.installed)
             return true;
+        if (app.display_mask != 0)
+            return true;
+
         category = app.sub_category.replace(/\s/g, '').toLowerCase();
         if ($.inArray(category, categorylist) < 0) {
             $('#marketplace').append(
@@ -1060,8 +1064,10 @@ function get_progress() {
                 // We're on the busy page...let's check again in 5 seconds.
                 window.setTimeout(get_progress, 5000);
             } else if (json.overall == 100) {
-                if ($('#theme_wizard_nav_next').length == 0)
+                if ($('#theme_wizard_nav_next').length == 0) {
                     $('#reload_button').show();
+                    $('#details').html(installation_complete);
+                }
                 return;
             } else {
                 window.setTimeout(get_progress, 1000);
