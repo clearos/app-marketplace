@@ -640,7 +640,6 @@ class Marketplace extends Rest
             // Mode
             // We can simplify the Marketplace to show only plugins when master mode is enabled...slave mode, we show disabled apps.
             // In standalone mode, there is no need to show any plugin...just noise.
-            $mode = 'standalone';
             if (clearos_library_installed('mode/Mode_Engine')) {
                 try {
                     $mode_object = Mode_Factory::create();
@@ -649,6 +648,9 @@ class Marketplace extends Rest
                     // Not really worried about
                 }
             }
+
+            if (empty($mode))
+                $mode = 'standalone';
 
             $extras['mode'] = $mode;
 
