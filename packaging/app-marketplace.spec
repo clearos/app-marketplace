@@ -25,7 +25,7 @@ Group: ClearOS/Libraries
 Requires: app-base-core
 Requires: app-clearcenter-core
 Requires: app-registration-core
-Requires: app-base >= 1:1.0.10
+Requires: yum-marketplace-plugin
 
 %description core
 ClearCenter's Marketplace is where you can add new apps and services to your system.  Apps available in the Marketplace have gone through a stringent quality control process by ClearCenter to ensure the quality and security of each submission.
