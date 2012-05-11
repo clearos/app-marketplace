@@ -152,14 +152,16 @@ function update_install_form(data) {
             
             // Show/hide PO input
             toggle_payment_display();
-            if (!has_valid_payment_method || !data.verify_contact) {
+            if ((!has_valid_payment_method || !data.verify_contact) && !(data.annual_evaluation || data.monthly_evaluation)) {
                 $('#payment_method').html('" . lang('marketplace_not_applicable') . "');
                 clearos_sdn_account_setup(data.sdn_url_payment, data.sdn_username, data.sdn_device_id);
             } else {
-                if (data.annual_evaluation)
+                if (data.annual_evaluation || data.monthly_evaluation) {
+                    $('#payment_method').html('" . lang('marketplace_not_applicable') . "');
                     $('#r_eval_install').show();
-                else
+                } else {
                     $('#r_fee_install').show();
+                }
             }
         }
     }
