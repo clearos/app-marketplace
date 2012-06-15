@@ -91,6 +91,7 @@ class Marketplace extends Rest
     ///////////////////////////////////////////////////////////////////////////////
 
     const FILE_CONFIG = '/etc/clearos/marketplace.conf';
+    const FILE_SEARCH_HISTORY= 'search_history';
     const COMMAND_RPM = '/bin/rpm';
     const FOLDER_MARKETPLACE = '/var/clearos/marketplace';
     const MAX_RECORDS = 10;
@@ -113,6 +114,16 @@ class Marketplace extends Rest
     ///////////////////////////////////////////////////////////////////////////////
 
     protected $applist = array();
+    protected $filter_category = array('all', 'server', 'network', 'gateway', 'system');
+    protected $filter_price = array('all', 'free', 'paid');
+    protected $filter_intro = array('all', '7', '30', '180', '365');
+    protected $filter_status = array('all', 'installed', 'upgrade_available', 'new');
+    protected $filter_default = array(
+        'category' => 'all',
+        'price' => 'all',
+        'intro' => 'all',
+        'status' => 'new'
+    );
 
     ///////////////////////////////////////////////////////////////////////////////
     // M E T H O D S
@@ -147,6 +158,184 @@ class Marketplace extends Rest
     }
 
     /**
+     * Set the search/filter criteria.
+     *
+     * @param string $search search
+     * @param string $category category
+     * @param string $price price
+     * @param string $intro intro
+     * @param string $status status
+     *
+     * @return void
+     * @throws Engine_Exception
+     */
+
+    function set_search_criteria($search, $category, $price, $intro, $status)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        Validation_Exception::is_valid($this->validate_search($search));
+        Validation_Exception::is_valid($this->validate_filter_category($category));
+        Validation_Exception::is_valid($this->validate_filter_price($price));
+        Validation_Exception::is_valid($this->validate_filter_intro($intro));
+        Validation_Exception::is_valid($this->validate_filter_status($status));
+
+        try {
+            $extras = array(
+                'search' => $search,
+                'category' => $category,
+                'price' => $price,
+                'intro' => $intro,
+                'status' => $status,
+                'active' => TRUE,
+                'time' => time()
+            );
+
+            $file = new File(self::FOLDER_MARKETPLACE . '/' . self::FILE_SEARCH_HISTORY . '.' . $this->CI->session->userdata['username']);
+            if (!$file->exists())
+                $file->create('webconfig','webconfig', '0644');
+            $contents = $file->get_contents_as_array();
+
+            $index = 0;
+            foreach ($contents as $line) {
+                $info = (array)json_decode($line);
+                // Remove duplicate search strings or non-search (filter only)
+                if ($info['search'] == $search || $info['search'] == '') {
+                    unset($contents[$index]);
+                    $index++;
+                    continue;
+                }
+                $info['active'] = FALSE;
+                $contents[$index] = json_encode($info);
+                $index++;
+            }
+
+            // Keep last 20 entries
+            if (count($contents) >= 20)
+                array_pop($contents);
+
+            array_unshift($contents, json_encode($extras));
+
+            $file->dump_contents_from_array($contents);
+
+            try {
+                if ($search != '')
+                    $this->request('marketplace', 'search', $extras);
+            } catch (Exception $ignore) {
+                // No need to bail
+            }
+
+        } catch (Exception $e) {
+            throw new Engine_Exception(clearos_exception_message($e), CLEAROS_ERROR);
+        }
+    }
+
+    /**
+     * Clear the search/filter history.
+     *
+     * @return void
+     * @throws Engine_Exception
+     */
+
+    function clear_search_history()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+        try {
+            $file = new File(self::FOLDER_MARKETPLACE . '/' . self::FILE_SEARCH_HISTORY . '.' . $this->CI->session->userdata['username']);
+            if (!$file->exists())
+                $file->create('webconfig','webconfig', '0644');
+
+            $file->dump_contents_from_array(json_encode($this->filter_default));
+        } catch (Exception $e) {
+            throw new Engine_Exception(clearos_exception_message($e), CLEAROS_ERROR);
+        }
+    }
+
+    /**
+     * Reset the search/filter criteria to default.
+     *
+     * @return void
+     * @throws Engine_Exception
+     */
+
+    function reset_search_criteria()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+        try {
+            $this->set_search_criteria(
+                '',
+                $this->filter_default['category'],
+                $this->filter_default['price'],
+                $this->filter_default['intro'],
+                $this->filter_default['status']
+            );
+        } catch (Exception $e) {
+            throw new Engine_Exception(clearos_exception_message($e), CLEAROS_ERROR);
+        }
+    }
+
+    /**
+     * Get the search/filter criteria.
+     *
+     * @return mixed
+     * @throws Engine_Exception
+     */
+
+    function get_search_criteria()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+        try {
+            $file = new File(self::FOLDER_MARKETPLACE . '/' . self::FILE_SEARCH_HISTORY . '.' . $this->CI->session->userdata['username']);
+
+            // If we haven't yet initialized, set default
+            if (!$file->exists())
+                $this->reset_search_criteria();
+
+            $contents = $file->get_contents_as_array();
+
+            foreach ($contents as $search) {
+                $keys = (array)json_decode($search);
+                if ($keys['active'])
+                    return $keys;
+            }
+
+        } catch (Exception $e) {
+            throw new Engine_Exception(clearos_exception_message($e), CLEAROS_ERROR);
+        }
+    }
+
+    /**
+     * Get the search/filter history.
+     *
+     * @return array
+     * @throws Engine_Exception
+     */
+
+    function get_search_history()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+        try {
+            $file = new File(self::FOLDER_MARKETPLACE . '/' . self::FILE_SEARCH_HISTORY . '.' . $this->CI->session->userdata['username']);
+            $history = array();
+
+            // If we haven't yet initialized, set default
+            if (!$file->exists())
+                $this->reset_search_criteria();
+
+            $contents = $file->get_contents_as_array();
+
+            foreach ($contents as $search) {
+                $info = (array)json_decode($search);
+                array_push($history, $info);
+            }
+            return $history;
+
+        } catch (Exception $e) {
+            throw new Engine_Exception(clearos_exception_message($e), CLEAROS_ERROR);
+        }
+    }
+
+    /**
      * Set the pseudonym used to identify reviews.
      *
      * @param string $pseudonym pseudonym
@@ -162,6 +351,28 @@ class Marketplace extends Rest
         Validation_Exception::is_valid($this->validate_pseudonym($pseudonym));
 
         $this->_set_parameter('pseudonym', $pseudonym);
+    }
+
+    /**
+     * Get no-auth mods status.
+     *
+     * @return Object JSON-encoded response
+     *
+     * @throws Webservice_Exception
+     */
+
+    public function get_noauth_mods()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        try {
+
+            $result = $this->request('marketplace', 'get_noauth_mods');
+
+            return $result;
+        } catch (Exception $e) {
+            throw new Webservice_Exception(clearos_exception_message($e), CLEAROS_ERROR);
+        }
     }
 
     /**
@@ -746,5 +957,83 @@ class Marketplace extends Rest
 
         if (! preg_match("/^[A-Za-z0-9\\ \\-\\_]+$/", $pseudonym))
             return lang('marketplace_pseudonym_is_invalid');
+    }
+
+    /**
+     * Validation routine for search query.
+     *
+     * @param string $search search
+     *
+     * @return mixed void if search is valid, errmsg otherwise
+     */
+
+    public function validate_search($search)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        if (! preg_match("/^[\w\W\s]*$/", $search))
+            return lang('marketplace_search_is_invalid');
+    }
+
+    /**
+     * Validation routine for category query.
+     *
+     * @param string $category category
+     *
+     * @return mixed void if category is valid, errmsg otherwise
+     */
+
+    public function validate_filter_category($category)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        if (! in_array($category, $this->filter_category))
+            return lang('marketplace_filter_category_is_invalid');
+    }
+
+    /**
+     * Validation routine for price query.
+     *
+     * @param string $price price
+     *
+     * @return mixed void if price is valid, errmsg otherwise
+     */
+
+    public function validate_filter_price($price)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        if (! in_array($price, $this->filter_price))
+            return lang('marketplace_filter_price_is_invalid');
+    }
+    /**
+     * Validation routine for introprice query.
+     *
+     * @param string $introprice introprice
+     *
+     * @return mixed void if introprice is valid, errmsg otherwise
+     */
+
+    public function validate_filter_intro($intro)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        if (! in_array($intro, $this->filter_intro))
+            return lang('marketplace_filter_intro_is_invalid');
+    }
+    /**
+     * Validation routine for status query.
+     *
+     * @param string $status status
+     *
+     * @return mixed void if status is valid, errmsg otherwise
+     */
+
+    public function validate_filter_status($status)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        if (! in_array($status, $this->filter_status))
+            return lang('marketplace_filter_status_is_invalid');
     }
 }

@@ -59,6 +59,9 @@ class Marketplace extends ClearOS_Controller
  
         $data['number_of_apps_to_display'] = $this->marketplace->get_number_of_apps_to_display();
 
+        // Search and filter history
+        $data['filter'] = $this->marketplace->get_search_history();
+
         $this->page->view_form('marketplace', $data, lang('marketplace_marketplace'), array('type' => MY_Page::TYPE_SPOTLIGHT));
     }
 

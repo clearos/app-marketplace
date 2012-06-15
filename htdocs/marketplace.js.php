@@ -36,7 +36,6 @@ echo "
 var apps_to_display_per_page = 10;
 var UNIT = [];
 var reg_info_ok = false;
-var reg_default_name = '" . lang('base_name') . "';
 var installation_complete = '" . lang('marketplace_installation_complete') . "';
 var my_systems = new Array();
 var my_subscriptions = new Array();
@@ -207,6 +206,28 @@ function get_eula(basename, id) {
     });
 }
 
+function allow_noauth_mods() {
+    
+    $.ajax({
+        type: 'POST',
+        dataType: 'json',
+        url: '/app/marketplace/ajax/allow_noauth_mods',
+        data: 'ci_csrf_token=' + $.cookie('ci_csrf_token'),
+        success: function(data) {
+            if (data.code == 0 && data.allow) {
+                $('#infotable').hide();
+                return;
+            } else {
+                auth_options.reload_after_auth = true;
+                clearos_is_authenticated();
+            }
+        },
+        error: function(xhr, text, err) {
+            clearos_dialog_box('error', '" . lang('base_warning') . "', xhr.responseText.toString());
+        }
+    });
+}
+
 function update_cart(id, individual, redirect) {
     
     $.ajax({
@@ -232,32 +253,12 @@ function update_cart(id, individual, redirect) {
 }
 
 function get_apps(realtime, search, offset) {
-    var category = $('#filter_category').val();
-    var price = $('#filter_price').val();
-    var intro = $('#filter_intro').val();
-    var install = $('#filter_install').val();
-    var search_str = '';
-    var filter = '';
-    if (search != undefined && search.replace(/^\s*/, '').replace(/\s*$/, '').length > 0) {
-        if (search != 'search_all')
-            search_str = '&search=' + search;
-    } else {
-        search = 'search_all';
-    }
-    if (category != 'category_all')
-        filter = '&category=' + category;
-    if (price != 'price_all')
-        filter += '&price=' + price;
-    if (intro != 'intro_all')
-        filter += '&intro=' + intro;
-    if (install != 'install_all')
-        filter += '&install=' + install;
     $.ajax({
         type: 'POST',
         dataType: 'json',
         url: '/app/marketplace/ajax/get_apps',
         data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&max=' + apps_to_display_per_page +
-            '&offset=' + (apps_to_display_per_page * offset) + (realtime ? '&realtime=1' : '&realtime=0') + search_str + filter,
+            '&offset=' + (apps_to_display_per_page * offset) + (realtime ? '&realtime=1' : '&realtime=0'),
         success: function(data) {
             if (data.code != undefined && data.code != 0) {
                 // Code 3 is 'Device Not Registered'
@@ -366,19 +367,19 @@ function get_apps(realtime, search, offset) {
             var next = offset + 1;
             if (data.total / apps_to_display_per_page < next)
                 next = Math.round(data.total / apps_to_display_per_page + .49999) - 1;
-            var paginate = '<a style=\'margin-right: 2px;\' class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/0/' + search + '/' + category + '/' + price + '/' + intro + '\'>\<\<</a>';
-            paginate += '<a style=\'margin-right: 2px;\' class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + previous + '/' + search + '/' + category + '/' + price + '/' + intro + '\'>\<</a>';
+            var paginate = '<a style=\'margin-right: 2px;\' class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/0\'>\<\<</a>';
+            paginate += '<a style=\'margin-right: 2px;\' class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + previous + '\'>\<</a>';
             var pages = 0;
             if (apps_to_display_per_page > 0)
                 pages = Math.round(data.total / apps_to_display_per_page + .49999) - 1;
             // Reduce count in line below to have individual buttons (<< < 2 3 4 > >> etc.)
             //if (data.total / apps_to_display_per_page > 1000) {
             //    for (index = previous -1; index <= next + 1; index++) {
-            //        paginate += '<a class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + index + '/' + search + '/' + category + '/' + price + '/' + intro + '\'>' + (index + 1) + '</a>';
+            //        paginate += '<a class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + index + '</a>';
             //    }
             //}
-            paginate += '<a style=\'margin-right: 2px;\' class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + next + '/' + search + '/' + category + '/' + price + '/' + intro + '/' + install + '\'>\></a>';
-            paginate += '<a class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + pages + '/' + search + '/' + category + '/' + price + '/' + intro + '/' + install + '\'>\>\></a>';
+            paginate += '<a style=\'margin-right: 2px;\' class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + next + '\'>\></a>';
+            paginate += '<a class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + pages + '\'>\>\></a>';
             if (pages > 0) {
                 $('#pagination-top').html(paginate + '<div style=\'padding: 5px 0px 0px 0px; font-size: 7pt;\'>" . lang('marketplace_displaying') . " ' + (apps_to_display_per_page * offset + 1) + ' - ' + (apps_to_display_per_page * offset + applist.length) + ' " . lang('base_of') . " ' + data.total + '</div>');
                 $('#pagination-bottom').html(paginate);
@@ -946,22 +947,24 @@ $(document).ready(function() {
         $('#theme_wizard_complete').show();
     }
     
-    if ($(location).attr('href').match('.*settings$|.*install$.*|progress$|.*/progress/.*|.*/install/.*$') == null) {
+    if ($('#number_of_apps_to_display').length != 0)
         apps_to_display_per_page = $('#number_of_apps_to_display').val();
-    }
+
     $('.filter_event').css('width', 160);
 
     if ($(location).attr('href').match('.*progress$|.*progress\/busy$') != null) {
-        if ($(location).attr('href').match('.*progress$') != null)
-            clearos_is_authenticated();
         get_progress();
     } else if ($(location).attr('href').match('.*install$') != null || $(location).attr('href').match('.*install\/delete\/.*$') != null) {
-        auth_options.reload_after_auth = true;
-        clearos_is_authenticated();
-        if ($('#total').val() > 0)
-            get_account_info(false);
-        else
-            $('#account_information').remove();
+        if ($('#total').val() == 0) {
+            allow_noauth_mods();
+        } else {
+            auth_options.reload_after_auth = true;
+            clearos_is_authenticated();
+            if ($('#total').val() > 0)
+                get_account_info(false);
+            else
+                $('#account_information').remove();
+        }
     }
 
     $('#comment').keyup(function() {
@@ -978,6 +981,7 @@ $(document).ready(function() {
     });
 
     $('.filter_event').change(function(event) {
+        console.log(this.form);
       this.form.submit();
     });
 
@@ -988,6 +992,10 @@ $(document).ready(function() {
         get_eula($('#' + this.id).parent().attr('id').substr(9, $('#' + this.id).parent().attr('id').length), this.id.substr(5, this.id.length));
     });
 
+    $('.marketplace-search-bar').click(function (e) {
+        e.preventDefault();
+        $('.marketplace-search-bar').closest('form').submit();
+    });
     $('input').click(function() {
         if (this.id == 'add_review')
             add_review(this.id);

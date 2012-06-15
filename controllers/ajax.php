@@ -140,36 +140,9 @@ class Ajax extends ClearOS_Controller
             $max = $this->input->post('max');
             $offset = $this->input->post('offset');
 
-            $filter = array();
-            $search_or_filter = FALSE;
-
-            if ($this->input->post('search')) {
-                $search_or_filter = TRUE;
-                $filter['search'] = $this->input->post('search');
-            }
-            
-            if ($this->input->post('category') != FALSE && $this->input->post('category') != 'category_all') {
-                $search_or_filter = TRUE;
-                $filter['category'] = $this->input->post('category');
-            }
-            if ($this->input->post('price') != FALSE && $this->input->post('price') != 'price_all') {
-                $search_or_filter = TRUE;
-                if ($this->input->post('price') == 'free')
-                    $filter['price'] = 'free';
-                else
-                    $filter['price'] = 'paid';
-            }
-            if ($this->input->post('intro') != FALSE && $this->input->post('intro') != 'intro_all') {
-                $search_or_filter = TRUE;
-                $filter['intro'] = (time() - ($this->input->post('intro') * 60 * 60 * 24)) * 1000;
-            }
-            if ($this->input->post('install') != FALSE && $this->input->post('install') != 'install_all') {
-                $search_or_filter = TRUE;
-                $filter['install'] = $this->input->post('install');
-            }
-
             // On searches or filtering, we grab all apps, so override max, offset will be ignored 
-            if ($search_or_filter)
+            $filter = $this->marketplace->get_search_criteria();
+            if (is_array($filter))
                 $response = json_decode($this->marketplace->get_apps($realtime, 0, 0)); 
             else
                 $response = json_decode($this->marketplace->get_apps($realtime, $max, $offset)); 
@@ -202,7 +175,7 @@ class Ajax extends ClearOS_Controller
                     $app->up2date = $this->_is_up2date($installed_apps[$rpm]['version'] . '-' . $installed_apps[$rpm]['release'], $app->latest_version);
                 }
 
-                if ($search_or_filter) {
+                if (is_array($filter)) {
                     if (!$this->_search($filter['search'], $app)) {
                         unset($applist[$app_counter]);
                         $app_counter++;
@@ -219,7 +192,7 @@ class Ajax extends ClearOS_Controller
                         unset($applist[$app_counter]);
                         $app_counter++;
                         continue;
-                    } else if (!$this->_filter($filter['install'], array('installed' => $app->installed, 'up2date' => $app->up2date), 'install')) {
+                    } else if (!$this->_filter($filter['status'], array('installed' => $app->installed, 'up2date' => $app->up2date), 'status')) {
                         unset($applist[$app_counter]);
                         $app_counter++;
                         continue;
@@ -244,7 +217,7 @@ class Ajax extends ClearOS_Controller
             // Re-encode to JSON and return
 
             // If we searched on a term, use total_apps...otherwise, use total_apps coming back from SDN
-            if ($search_or_filter)
+            if (is_array($filter))
                 echo json_encode(array('list' => $applist, 'total' => $total_apps));
             else
                 echo json_encode(array('list' => $applist, 'total' => $response->total));
@@ -303,6 +276,27 @@ class Ajax extends ClearOS_Controller
         try {
             $this->load->library('marketplace/Marketplace');
             echo $this->marketplace->get_image($_REQUEST['type'], $_REQUEST['id']);
+        } catch (Exception $e) {
+            echo json_encode(Array('code' => clearos_exception_code($e), 'errmsg' => clearos_exception_message($e)));
+        }
+    }
+
+    /**
+     * Ajax get non-auth mods (install/delete) controller
+     *
+     * @return JSON
+     */
+
+    function allow_noauth_mods()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        header('Cache-Control: no-cache, must-revalidate');
+        header('Content-type: application/json');
+
+        try {
+            $this->load->library('marketplace/Marketplace');
+            echo $this->marketplace->get_noauth_mods();
         } catch (Exception $e) {
             echo json_encode(Array('code' => clearos_exception_code($e), 'errmsg' => clearos_exception_message($e)));
         }
@@ -629,19 +623,23 @@ class Ajax extends ClearOS_Controller
     {
         clearos_profile(__METHOD__, __LINE__);
         try {
-            if (!isset($compare1) || $compare1 === '')
+            if (!isset($compare1) || $compare1 === '' || $compare1 == 'all')
                 return TRUE;
 
             if ($type == 'free' && $compare2 == 0) {
                 return TRUE;
             } else if ($type == 'paid' && $compare2 > 0) {
                 return TRUE;
-            } else if ($type == 'date' && $compare1 < $compare2) {
-                return TRUE;
-            } else if ($type == 'install') {
+            } else if ($type == 'date') {
+                // First compare is coming in as 'days ago'.
+                // Second is epoch timestamp in millis
+                $convert = (time() - $compare1 * 24 * 60 * 60) * 1000;
+                if ($compare2 > $convert)
+                    return TRUE;
+            } else if ($type == 'status') {
                 if ($compare1 == 'installed' && $compare2['installed'] && $compare2['up2date'])
                     return TRUE;
-                else if ($compare1 == 'upgrades' && $compare2['installed'] && !$compare2['up2date'])
+                else if ($compare1 == 'upgrade_available' && $compare2['installed'] && !$compare2['up2date'])
                     return TRUE;
                 else if ($compare1 == 'new' && !$compare2['installed'])
                     return TRUE;
