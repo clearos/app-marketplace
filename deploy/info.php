@@ -51,7 +51,7 @@ $app['core_requires'] = array(
     'app-base-core => 1:1.2.0',
     'yum-marketplace-plugin',
     'theme-default >= 6.2.3',
-    'clearos-release-community >= 6.2.1'
+    'clearos-release-community >= 6-6.2.1'
 );
 
 $app['core_file_manifest'] = array(
