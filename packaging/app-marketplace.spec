@@ -1,7 +1,7 @@
 
 Name: app-marketplace
 Epoch: 1
-Version: 1.1.3
+Version: 1.2.0
 Release: 1%{dist}
 Summary: Marketplace
 License: Proprietary
@@ -19,13 +19,16 @@ Requires: app-dashboard
 ClearCenter's Marketplace is where you can add new apps and services to your system.  Apps available in the Marketplace have gone through a stringent quality control process by ClearCenter to ensure the quality and security of each submission.
 
 %package core
-Summary: Marketplace - Core
+Summary: Marketplace - APIs and install
 License: LGPLv3
 Group: ClearOS/Libraries
 Requires: app-base-core
 Requires: app-clearcenter-core
 Requires: app-registration-core
+Requires: app-base-core => 1:1.2.0
 Requires: yum-marketplace-plugin
+Requires: theme-default >= 6.2.3
+Requires: clearos-release-community >= 6.2.1
 
 %description core
 ClearCenter's Marketplace is where you can add new apps and services to your system.  Apps available in the Marketplace have gone through a stringent quality control process by ClearCenter to ensure the quality and security of each submission.
@@ -43,11 +46,6 @@ cp -r * %{buildroot}/usr/clearos/apps/marketplace/
 install -d -m 755 %{buildroot}/var/clearos/marketplace
 install -D -m 0644 packaging/marketplace.acl %{buildroot}/var/clearos/base/access_control/authenticated/marketplace
 install -D -m 0644 packaging/marketplace.conf %{buildroot}/etc/clearos/marketplace.conf
-
-if [ -d %{buildroot}/usr/clearos/apps/marketplace/libraries_zendguard ]; then
-    rm -rf %{buildroot}/usr/clearos/apps/marketplace/libraries
-    mv %{buildroot}/usr/clearos/apps/marketplace/libraries_zendguard %{buildroot}/usr/clearos/apps/marketplace/libraries
-fi
 
 %post
 logger -p local6.notice -t installer 'app-marketplace - installing'

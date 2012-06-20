@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 $app['basename'] = 'marketplace';
-$app['version'] = '1.1.3';
+$app['version'] = '1.2.0';
 $app['release'] = '1';
 $app['vendor'] = 'ClearCenter';
 $app['packager'] = 'ClearCenter';
@@ -48,7 +48,10 @@ $app['requires'] = array(
 $app['core_requires'] = array(
     'app-clearcenter-core',
     'app-registration-core',
-    'yum-marketplace-plugin'
+    'app-base-core => 1:1.2.0',
+    'yum-marketplace-plugin',
+    'theme-default >= 6.2.3',
+    'clearos-release-community >= 6.2.1'
 );
 
 $app['core_file_manifest'] = array(
