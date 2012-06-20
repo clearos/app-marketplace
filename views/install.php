@@ -165,7 +165,7 @@ foreach ($items as $item) {
 
 if (count($rows) === 0) {
     if ($this->session->userdata('wizard'))
-        $anchors = array(anchor_custom('/app/base/wizard/stop', lang('marketplace_install_apps_later')));
+        $anchors = array(anchor_custom('/app/marketplace/wizard/stop', lang('marketplace_install_apps_later')));
     else
         $anchors = array(form_submit_custom('free_checkout', lang('marketplace_download_and_install'), 'high', array ('id' => 'free_checkout')));
 } else if ($total == 0) {

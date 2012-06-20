@@ -57,10 +57,15 @@ class Wizard extends ClearOS_Controller
 
         $data = array();
 
-        // Note: commenting out the next line is handy for testing
-        $data['install']['select']['new'] = ' SELECTED';
-        $data['category']['select'][$category] = ' SELECTED';
-        $data['number_of_apps_to_display'] = '30';
+        // Note: setting 'new' to 'all' below is handy for testing
+        $this->marketplace->set_search_criteria (
+            '',
+            $category,
+            'all',
+            'all',
+            'new'
+        );
+        $data['number_of_apps_to_display'] = '50';
         $data['hide_banner'] = TRUE;
 
         $this->page->view_form('marketplace/marketplace_wizard', $data, lang('marketplace_marketplace'), array('type' => MY_Page::TYPE_SPOTLIGHT));
@@ -96,5 +101,26 @@ class Wizard extends ClearOS_Controller
         //----------
 
         $this->page->view_form('marketplace/wizard_intro', $data, lang('marketplace_marketplace'), array('type' => MY_Page::TYPE_SPOTLIGHT));
+    }
+
+    /**
+     * Wizard exit.
+     *
+     * @return void
+     */
+
+    function stop()
+    {
+        // Load dependencies
+        //------------------
+
+        $this->load->library('marketplace/Marketplace');
+
+        // Reset our Marketplace search so the last category is not displayed by default
+        $this->marketplace->reset_search_criteria();
+
+        redirect('base/wizard/stop');
+        return;
+
     }
 }
