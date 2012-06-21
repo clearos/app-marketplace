@@ -1,7 +1,7 @@
 
 Name: app-marketplace
 Epoch: 1
-Version: 1.2.0
+Version: 1.2.1
 Release: 1%{dist}
 Summary: Marketplace
 License: Proprietary
@@ -28,7 +28,7 @@ Requires: app-registration-core
 Requires: app-base-core => 1:1.2.0
 Requires: yum-marketplace-plugin
 Requires: theme-default >= 6.2.3
-Requires: clearos-release-community >= 6-6.2.1
+Requires: clearos-release-jws >= 1.1
 
 %description core
 ClearCenter's Marketplace is where you can add new apps and services to your system.  Apps available in the Marketplace have gone through a stringent quality control process by ClearCenter to ensure the quality and security of each submission.
