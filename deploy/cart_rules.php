@@ -21,6 +21,11 @@ $rules = array(
         'app-remote-backup-10gb' => 'app-remote-backup',
         'app-remote-backup-25gb' => 'app-remote-backup',
         'app-remote-backup-50gb' => 'app-remote-backup',
-        'app-remote-backup-100gb' => 'app-remote-backup'
+        'app-remote-backup-100gb' => 'app-remote-backup',
+        'app-zarafa-professional-5-users' => 'app-zarafa-professional',
+        'app-zarafa-professional-10-users' => 'app-zarafa-professional',
+        'app-zarafa-professional-25-users' => 'app-zarafa-professional',
+        'app-zarafa-professional-50-users' => 'app-zarafa-professional',
+        'app-zarafa-professional-100-users' => 'app-zarafa-professional'
     )
 );
