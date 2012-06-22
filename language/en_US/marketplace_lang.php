@@ -24,6 +24,7 @@ $lang['marketplace_google_apps_not_compatible_with_ad'] = 'The Google Apps Synch
 $lang['marketplace_extensions_not_compatible_with_ad'] = 'This app is not compatible with Windows Active Directory Connector.';
 $lang['marketplace_professional_only'] = 'This app requires a commercial support subscription to ClearOS Professional Edition.'; //FIXME
 $lang['marketplace_mode_slave_invalid'] = 'This app is not available to systems configured in Slave mode.  Please install the plugin on the system acting as the Master node.';
+$lang['marketplace_not_available_during_eval'] = 'This app is not available during the evaluation/free trial period.';
 $lang['marketplace_not_rated'] = 'This app has not been reviewed.';
 $lang['marketplace_unit'] = 'Unit';
 $lang['marketplace_localization'] = 'Localization';

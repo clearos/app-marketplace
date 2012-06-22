@@ -554,6 +554,12 @@ function get_app_details(id) {
             } else if ((data.display_mask & 8) == 8) {
                 $('#availability_warning').html('" . lang('marketplace_extensions_not_compatible_with_ad') . "');
                 $('#availability_warning_box').show();
+            } else if ((data.display_mask & 16) == 16) {
+                $('#availability_warning').html('" . lang('marketplace_not_available_during_eval') . "');
+                $('#availability_warning_box').show();
+            } else if (data.display_mask > 0) {
+                $('#availability_warning').html('" . lang('marketplace_not_available') . "');
+                $('#availability_warning_box').show();
             }
                 
             if (data.url_learn_more == '')
@@ -731,10 +737,12 @@ function get_app_details(id) {
                     '    <td>" . lang('marketplace_released') . "</td>' +
                     '    <td>' + $.datepicker.formatDate('MM d, yy', new Date(versions[index].released)) + '</td>' +
                     '  </tr>' +
+                    (versions[index].md5 != undefined && versions[index].md5 != '' ?
                     '  <tr>' +
                     '    <td>" . lang('marketplace_md5') . "</td>' +
                     '    <td>' + versions[index].md5 + '</td>' +
-                    '  </tr>' +
+                    '  </tr>'
+                    : '') +
                     '  <tr>' +
                     '    <td>" . lang('marketplace_copyright') . "</td>' +
                     '    <td>' + versions[index].copyright + '</td>' +
