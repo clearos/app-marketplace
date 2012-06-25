@@ -440,8 +440,8 @@ function populate_wizard(data) {
 
         $('#row-' + category).after(
             '<tr class=\'' + category + '\'>' +
-            '<td width=\'15%\' align=\'center\'>' + newrow + '</td>' +
-            '<td width=\'50%\' valign=\'top\'><h3>' + app.name + '</h3>' + app.description + '</td>' +
+            '<td width=\'15%\' valign=\'top\' align=\'center\'>' + newrow + '</td>' +
+            '<td width=\'50%\' valign=\'top\'><h3>' + app.name + '</h3><p>' + app.description.replace(/\\n/g, '</p><p>') + '</p></td>' +
             '<td width=\'25%\' valign=\'top\'><table border=\'0\'>' + vendor + '</table></td>' +
             '</tr>'
         );
