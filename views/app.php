@@ -115,6 +115,18 @@ $tabinfo['overview']['content'] =
     "      <div id='field_introduced' style='padding: 0 0 5 0;'>" . strtoupper(lang('marketplace_app_introduced')) . ":" .
     "        <div style='padding: 0 0 10 0;' id='app_introduced'></div>" .
     "      </div>" .
+    "      <div id='field_supported' style='padding: 0 0 5 0;'>" . strtoupper(lang('marketplace_app_supported')) . ":" .
+    "        <div style='padding: 0 0 10 0;' id='app_supported'>" .
+    anchor_custom('#', lang('marketplace_view_policy'), 'high', array('id' => 'supported_link', 'target' => '_blank')) .
+    "        </div>" .
+    "      </div>" .
+    "      <div id='field_warranty' style='padding: 0 0 5 0;'>" . strtoupper(lang('marketplace_app_warranty')) . ":" .
+    "        <div style='padding: 0 0 10 0;' id='app_warranty'>" .
+    anchor_custom('#', lang('marketplace_view_policy'), 'high', array('id' => 'warranty_link', 'target' => '_blank')) .
+    "        </div>" .
+    "      </div>" .
+    "    </td>" .
+    "    </td>" .
     "    </td>" .
     "  </tr>" . 
     "</table>"

@@ -592,6 +592,14 @@ function get_app_details(id) {
             $('#app_devel_email').html(data.devel_email);
             $('#app_devel_website').html('<a href=\'' + data.devel_website + '\' target=\'_blank\'>'
                 + data.devel_website + '</a>');
+            if (data.supported > 0)
+                $('#supported_link').attr('href', data.url_redirect + '/marketplace/supported/' + data.supported);
+            else
+                $('#field_supported').hide();
+            if (data.warranty > 0)
+                $('#warranty_link').attr('href', data.url_redirect + '/marketplace/warranty/' + data.supported);
+            else
+                $('#field_warranty').hide();
             // Screenshots
             var screenshots = data.screenshots;
             if (screenshots.length == 0)
@@ -777,6 +785,8 @@ function get_app_details(id) {
             $('#learn_more').css('padding', '1 5 1 5');
             $('#indiv_repo').css('padding', '1 5 1 5');
             $('#indiv_configure').css('padding', '1 5 1 5');
+            $('#supported_link').css('padding', '1 5 1 5');
+            $('#warranty_link').css('padding', '1 5 1 5');
 
             $(function() {
                 // TODO - We need some PHP function to grab image path
