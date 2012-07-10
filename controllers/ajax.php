@@ -486,6 +486,10 @@ class Ajax extends ClearOS_Controller
             if ($response->code !== 0)
                 throw new Engine_Exception($response->errmsg, CLEAROS_WARNING);
 
+            // Before we sent to YUM, better do a registration sync check of the local flag
+            $this->load->library('registration/Registration');
+            $this->registration->set_local_registration_status(TRUE);
+
             // Initiate Yum install
             $this->load->library('base/Yum');
             $list = $this->cart->get_items();

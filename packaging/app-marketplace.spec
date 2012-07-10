@@ -1,7 +1,7 @@
 
 Name: app-marketplace
 Epoch: 1
-Version: 1.2.5
+Version: 1.2.6
 Release: 1%{dist}
 Summary: Marketplace
 License: Proprietary
@@ -24,7 +24,7 @@ License: LGPLv3
 Group: ClearOS/Libraries
 Requires: app-base-core
 Requires: app-clearcenter-core
-Requires: app-registration-core
+Requires: app-registration-core => 1:1.2.4
 Requires: app-base-core => 1:1.2.0
 Requires: yum-marketplace-plugin
 Requires: theme-default >= 6.2.3
