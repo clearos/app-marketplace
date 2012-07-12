@@ -745,10 +745,16 @@ function get_app_details(id) {
                     '    <td>" . lang('marketplace_released') . "</td>' +
                     '    <td>' + $.datepicker.formatDate('MM d, yy', new Date(versions[index].released)) + '</td>' +
                     '  </tr>' +
-                    (versions[index].md5 != undefined && versions[index].md5 != '' ?
+                    (versions[index].repo_name != undefined && versions[index].repo_name != '' ?
                     '  <tr>' +
-                    '    <td>" . lang('marketplace_md5') . "</td>' +
-                    '    <td>' + versions[index].md5 + '</td>' +
+                    '    <td>" . lang('marketplace_software_repo') . "</td>' +
+                    '    <td>' + versions[index].repo_name + '</td>' +
+                    '  </tr>'
+                    : '') +
+                    (versions[index].hash != undefined && versions[index].hash != '' ?
+                    '  <tr>' +
+                    '    <td>" . lang('marketplace_sha256') . "</td>' +
+                    '    <td>' + versions[index].hash + '</td>' +
                     '  </tr>'
                     : '') +
                     '  <tr>' +

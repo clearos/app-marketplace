@@ -219,7 +219,7 @@ class Cart extends Engine
             $counter++;
         }
 
-        if (!$found)
+        if (!$found || empty($this->contents))
             $this->contents[] = $item;
 
         $this->_save_to_file();
@@ -351,9 +351,11 @@ class Cart extends Engine
                 $file->delete();
 
             $file->create('webconfig', 'webconfig', 600);
-            foreach ($this->contents as $lineitem) {
+            foreach ($this->contents as $lineitem)
                 $file->add_lines(serialize($lineitem));
-            }
+
+            // Force reload
+            $this->is_loaded = FALSE;
         } catch (Exception $e) {
             throw new Engine_Exception(clearos_exception_message($e), CLEAROS_WARNING);
         }

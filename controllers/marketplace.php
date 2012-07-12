@@ -99,6 +99,7 @@ class Marketplace extends ClearOS_Controller
     {
         clearos_profile(__METHOD__, __LINE__);
 
+        $this->load->library('marketplace/Marketplace');
         $this->load->library('marketplace/Cart');
         clearos_load_language('marketplace');
 
@@ -110,6 +111,10 @@ class Marketplace extends ClearOS_Controller
             $data['itemnotfound'] = clearos_exception_message($e);
         }
 
+        // Search and filter history
+        $data['filter'] = $this->marketplace->get_search_history();
+
+        // Get items in cart
         $data['items'] = $this->cart->get_items();
         $this->page->view_form('marketplace/install', $data, lang('marketplace_install'), array('type' => MY_Page::TYPE_SPOTLIGHT));
     }

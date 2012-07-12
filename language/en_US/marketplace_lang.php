@@ -76,6 +76,7 @@ $lang['marketplace_redemption'] = 'Expired - cancellation pending';
 $lang['marketplace_expired_no_subsription'] = 'No subscription';
 $lang['marketplace_renewal_date'] = 'Renewal Date';
 $lang['marketplace_md5'] = 'MD5 Sum';
+$lang['marketplace_sha256'] = 'SHA-256';
 $lang['marketplace_copyright'] = 'Copyright';
 $lang['marketplace_packager'] = 'Packager';
 $lang['marketplace_vendor'] = 'Vendor';
