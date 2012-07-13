@@ -107,7 +107,7 @@ echo "
         <select style='font-size: 8pt; margin-bottom: 2px;' class='filter_event' name='filter_status' id='filter_status'>
             <option value='all'" . $status_select['all'] . ">" . lang('marketplace_filter_by_install') . "</option>
             <option value='installed'" . $status_select['installed'] . ">" . lang('marketplace_installed_apps') . "</option>
-            <option value='upgrade_available'" . $status_select['upgrades'] . ">" . lang('marketplace_upgrade_apps') . "</option>
+            <option value='upgrade_available'" . $status_select['upgrade_available'] . ">" . lang('marketplace_upgrade_apps') . "</option>
             <option value='new'" . $status_select['new'] . ">" . lang('marketplace_new_apps') . "</option>
         </select>
         <select style='font-size: 8pt; margin-bottom: 2px;' class='filter_event' name='filter_intro' id='filter_intro'>
