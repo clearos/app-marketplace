@@ -963,6 +963,12 @@ $(document).ready(function() {
         window.location = '/app/base/wizard/next_step';
     });
 
+    if ($('#search').val() != '' && $('#search').val() != '" . lang('marketplace_search_terms') . "') {
+        // Change search icon to cancel and add hidden input
+        $('.marketplace-search-bar').addClass('marketplace-search-bar-cancel');
+        $('.marketplace-search-bar').append('<input type=\'hidden\' name=\'search_cancel\' value=\'cancel\'>');
+    }
+
     if ($(location).attr('href').match('.*marketplace\/install$') != null)
         $('#theme_wizard_nav_next').hide();
 

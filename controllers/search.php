@@ -80,7 +80,7 @@ class Search extends ClearOS_Controller
         if ($this->input->post('filter_category') && $form_ok) {
             try {
                 $this->marketplace->set_search_criteria (
-                    $this->input->post('search'),
+                    ($this->input->post('search_cancel') ? '' : $this->input->post('search')),
                     $this->input->post('filter_category'),
                     $this->input->post('filter_price'),
                     $this->input->post('filter_intro'),
