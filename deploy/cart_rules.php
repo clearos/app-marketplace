@@ -26,6 +26,12 @@ $rules = array(
         'app-zarafa-professional-10-users' => 'app-zarafa-professional',
         'app-zarafa-professional-25-users' => 'app-zarafa-professional',
         'app-zarafa-professional-50-users' => 'app-zarafa-professional',
-        'app-zarafa-professional-100-users' => 'app-zarafa-professional'
+        'app-zarafa-professional-100-users' => 'app-zarafa-professional',
+        'app-kaspersky-gateway-50-users' => 'app-kaspersky-gateway',
+        'app-kaspersky-gateway-100-users' => 'app-kaspersky-gateway',
+        'app-kaspersky-gateway-255-users' => 'app-kaspersky-gateway',
+        'app-kaspersky-mail-50-users' => 'app-kaspersky-mail',
+        'app-kaspersky-mail-100-users' => 'app-kaspersky-mail',
+        'app-kaspersky-mail-250-users' => 'app-kaspersky-mail'
     )
 );

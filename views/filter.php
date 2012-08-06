@@ -87,7 +87,7 @@ echo "
 
 " . form_open('/marketplace/search') . "
     <h3>" . lang('marketplace_search') . "</h3>
-    <div style='margin: 6px 10px 10px 0px; border: solid 1px #D1D3D4;'>
+    <div style='margin: 6px 24px 10px 0px; border: solid 1px #D1D3D4;'>
       <input type='text' name='search' id='search' value='$search_string' class='marketplace-search-no-focus' onfocus='clear_entry();' style='height: 20px; border: none; float: left; width: 140px; font-size: 8pt; padding-left:3px;' /><div class='marketplace-search-bar'></div>
     </div>
     <h3 style='clear: both;'>" . lang('marketplace_filters') . "</h3>
@@ -123,7 +123,7 @@ echo "
 echo form_close();
 
 echo form_open('/marketplace/search');
-echo "<div style='text-align: center'>";
+echo "<div style='text-align: center; width: 160px;' class='ui-corner-tl'>";
 echo form_submit_custom('reset_filter', lang('marketplace_reset_filters'), 'high');
 echo "</div>";
 echo form_close();

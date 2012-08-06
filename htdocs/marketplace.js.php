@@ -787,12 +787,13 @@ function get_app_details(id) {
                 );
             }
             // Hack because of some interference with JQuery UI and tabs
-            $('#documentation').css('padding', '1 5 1 5');
-            $('#learn_more').css('padding', '1 5 1 5');
-            $('#indiv_repo').css('padding', '1 5 1 5');
-            $('#indiv_configure').css('padding', '1 5 1 5');
-            $('#supported_link').css('padding', '1 5 1 5');
-            $('#warranty_link').css('padding', '1 5 1 5');
+            $('#documentation').css('padding', '1px 5px 1px 5px');
+            $('#learn_more').css('padding', '1px 5px 1px 5px');
+            $('#indiv_install').css('padding', '1px 5px 1px 5px');
+            $('#indiv_repo').css('padding', '1px 5px 1px 5px');
+            $('#indiv_configure').css('padding', '1px 5px 1px 5px');
+            $('#supported_link').css('padding', '1px 5px 1px 5px');
+            $('#warranty_link').css('padding', '1px 5px 1px 5px');
 
             $(function() {
                 // TODO - We need some PHP function to grab image path
