@@ -676,11 +676,11 @@ function get_app_details(id) {
                 }
                 $('#app_ratings').append(
 					'<div class=\'reviews\'>' +
-                    '<div style=\'padding: 5 0 5 0;\'><b style=\'font-size: 1.2em;\'>' +
+                    '<div style=\'padding: 5px 0px 5px 0px;\'><b style=\'font-size: 1.2em;\'>' +
                     rating_header + '</b><div style=\'float: right; font-weight: bold;\'>' +
                     '<span style=\'font-size: 1.2em;\' id=\'agree_' + ratings[index].id + '\'>' +
                     ratings[index].agree + '</span><a class=\'peer_review\' href=\'#-1-' + ratings[index].id + '\'>' +
-                    '<span style=\'padding: 0 15 0 5;\'>' +
+                    '<span style=\'padding: 0px 15px 0px 5px;\'>' +
                     '<img src=\'" . clearos_app_htdocs('marketplace') . "/icon_thumb_up.gif\'>&#160;" .
                     lang('marketplace_agree') . "</span></a>' +
                     '<span style=\'font-size: 1.2em;\' id=\'disagree_' + ratings[index].id + '\'>' +

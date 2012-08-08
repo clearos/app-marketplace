@@ -20,18 +20,18 @@ $this->lang->load('base');
 $this->lang->load('marketplace');
 $this->load->view('marketplace/banner');
 
-echo "<div id='app_list_overview' style='text-align: center; padding: 60 10 30 10;'>";
+echo "<div id='app_list_overview' style='text-align: center; padding: 60px 10px 30px 10px;'>";
 if (!isset($search))
-    echo "<div style='padding: 10 0 0 0;'>" . loading('normal', lang('marketplace_loading')) . "</div>";
+    echo "<div style='padding: 10px 0px 0px 0px;'>" . loading('normal', lang('marketplace_loading')) . "</div>";
 else
-    echo "<div style='padding: 10 0 0 0;'>" . loading('normal', lang('marketplace_searching_marketplace'), array('icon-below' => TRUE)) . "</div>";
+    echo "<div style='padding: 10px 0px 0px 0px;'>" . loading('normal', lang('marketplace_searching_marketplace'), array('icon-below' => TRUE)) . "</div>";
 echo "</div>";
 
 if (!isset($search))
     $search = lang('marketplace_search_terms');
 
 echo "<table width='100%' border='0' id='app_list'></table>";
-echo "<div id='pagination-bottom' style='font-size: .7em; padding: 0 10 30 0;'></div>";
+echo "<div id='pagination-bottom' style='font-size: .7em; padding: 0px 10px 30px 0px;'></div>";
 echo "<script type='text/javascript'>\n";
 echo "  $(document).ready(function() {\n";
 echo "    get_apps(\n";

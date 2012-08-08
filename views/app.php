@@ -20,9 +20,9 @@ $this->lang->load('base');
 $this->lang->load('marketplace');
 $this->load->view('marketplace/banner');
 
-echo "<div id='app_overview' style='text-align: center; padding: 60 10 30 10;'>";
+echo "<div id='app_overview' style='text-align: center; padding: 60px 10px 30px 10px;'>";
 echo lang('marketplace_loading');
-echo "<div style='padding: 10 0 10 0;'>" . loading() . "</div>";
+echo "<div style='padding: 10px 0px 10px 0px;'>" . loading() . "</div>";
 echo "</div>";
 
 
@@ -33,7 +33,7 @@ $tabinfo['reviews']['title'] = lang('marketplace_reviews');
 $tabinfo['versions']['title'] = lang('marketplace_version_information');
 
 $tabinfo['overview']['content'] = 
-    "<table width='100%' style='margin-top: 10;' border='0'>" .
+    "<table width='100%' style='margin-top: 10px;' border='0'>" .
     "  <tr>" .
     "    <td valign='top' width='70%'><h2 id='app_name'></h2>" .
     "      <div id='app_description'></div>" .
@@ -64,64 +64,64 @@ $tabinfo['overview']['content'] =
     "      <div style='position: relative; width: 100%; clear: both;' id='app_other_by_devel'></div>" .
     "    </td>" .
     "    <td valign='top' width='30%'><img id='detail_img' src='" . clearos_app_htdocs('marketplace') . "/market_default.png' alt=''>" .
-    "      <div style='padding: 15 0 15 0;' id='app_action'>" .
-    "        <div class='app_actions' id='a_upgrade' style='display: none; padding-top: 5;'>" .
+    "      <div style='padding: 15px 0px 15px 0px;' id='app_action'>" .
+    "        <div class='app_actions' id='a_upgrade' style='display: none; padding-top: 5px;'>" .
     form_submit_custom('but_upgrade', lang('marketplace_install_upgrade'), 'high', array ('id' => 'indiv_upgrade')) .
     "        </div>" .
-    "        <div class='app_actions' id='a_repo' style='display: none; padding-top: 5;'>" .
+    "        <div class='app_actions' id='a_repo' style='display: none; padding-top: 5px;'>" .
     anchor_custom('/app/software_repository/index/detailed', lang('marketplace_enable_repo'), 'high', array('id' => 'indiv_repo')) .
     "        </div>" .
-    "        <div class='app_actions' id='a_configure' style='display: none; padding-top: 5;'>" .
+    "        <div class='app_actions' id='a_configure' style='display: none; padding-top: 5px;'>" .
     anchor_custom('/app/' . $basename, lang('base_configure'), 'high', array('id' => 'indiv_configure')) .
     "        </div>" .
-    "        <div class='app_actions' id='a_buy' style='display: none; padding-top: 5;'>" .
+    "        <div class='app_actions' id='a_buy' style='display: none; padding-top: 5px;'>" .
     form_submit_custom('but_buy', lang('marketplace_buy'), 'high', array ('id' => 'indiv_buy')) .
     "        </div>" .
-    "        <div class='app_actions' id='a_install' style='display: none; padding-top: 5;'>" .
+    "        <div class='app_actions' id='a_install' style='display: none; padding-top: 5px;'>" .
     form_submit_custom('but_install', lang('marketplace_download_and_install'), 'high', array ('id' => 'indiv_install')) .
     "        </div>" .
     "      </div>" .
-    "      <div style='padding: 5 0 15 0;'>" . strtoupper(lang('marketplace_about_this_app')) . "</div>" .
-    "      <div id='field_rating' style='padding: 0 0 5 0;'>" . strtoupper(lang('marketplace_rating')) . ":" .
-    "        <div style='padding: 0 0 10 0;' id='app_rating'></div>" .
+    "      <div style='padding: 5px 0px 15px 0px;'>" . strtoupper(lang('marketplace_about_this_app')) . "</div>" .
+    "      <div id='field_rating' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_rating')) . ":" .
+    "        <div style='padding: 0px 0px 10px 0px;' id='app_rating'></div>" .
     "      </div>" .
-    "      <div id='field_installed_version' style='padding: 0 0 5 0;'>" . strtoupper(lang('marketplace_installed_version')) . ":" .
-    "        <div style='padding: 0 0 10 0;' id='app_installed_version'></div>" .
+    "      <div id='field_installed_version' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_installed_version')) . ":" .
+    "        <div style='padding: 0px 0px 10px 0px;' id='app_installed_version'></div>" .
     "      </div>" .
-    "      <div id='field_latest_version' style='padding: 0 0 5 0;'>" . strtoupper(lang('marketplace_latest_version')) . ":" .
-    "        <div style='padding: 0 0 10 0;' id='app_latest_version'></div>" .
+    "      <div id='field_latest_version' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_latest_version')) . ":" .
+    "        <div style='padding: 0px 0px 10px 0px;' id='app_latest_version'></div>" .
     "      </div>" .
-    "      <div id='field_releast_date' style='padding: 0 0 5 0;'>" . strtoupper(lang('marketplace_latest_release_date')) . ":" .
-    "        <div style='padding: 0 0 10 0;' id='app_latest_release_date'></div>" .
+    "      <div id='field_releast_date' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_latest_release_date')) . ":" .
+    "        <div style='padding: 0px 0px 10px 0px;' id='app_latest_release_date'></div>" .
     "      </div>" .
-    "      <div id='field_repo' style='padding: 0 0 5 0;'>" . strtoupper(lang('marketplace_software_repo')) . ":" .
-    "        <div style='padding: 0 0 10 0;' id='app_repo'></div>" .
+    "      <div id='field_repo' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_software_repo')) . ":" .
+    "        <div style='padding: 0px 0px 10px 0px;' id='app_repo'></div>" .
     "      </div>" .
-    "      <div id='field_cost' style='padding: 0 0 5 0;'>" . strtoupper(lang('marketplace_cost')) . ":" .
-    "        <div style='padding: 0 0 10 0;' id='app_cost'></div>" .
+    "      <div id='field_cost' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_cost')) . ":" .
+    "        <div style='padding: 0px 0px 10px 0px;' id='app_cost'></div>" .
     "      </div>" .
-    "      <div id='field_category' style='padding: 0 0 5 0;'>" . strtoupper(lang('marketplace_category')) . ":" .
-    "        <div style='padding: 0 0 10 0;' id='app_category'></div>" .
+    "      <div id='field_category' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_category')) . ":" .
+    "        <div style='padding: 0px 0px 10px 0px;' id='app_category'></div>" .
     "      </div>" .
-    "      <div id='field_tags' style='padding: 0 0 5 0;'>" . strtoupper(lang('marketplace_tags')) . ":" .
-    "        <div style='padding: 0 0 10 0;' id='app_tags'></div>" .
+    "      <div id='field_tags' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_tags')) . ":" .
+    "        <div style='padding: 0px 0px 10px 0px;' id='app_tags'></div>" .
     "      </div>" .
-    "      <div id='field_license' style='padding: 0 0 5 0;'>" . strtoupper(lang('marketplace_license')) . ":" .
-    "        <div style='padding: 0 0 10 0;' id='app_license'></div>" .
+    "      <div id='field_license' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_license')) . ":" .
+    "        <div style='padding: 0px 0px 10px 0px;' id='app_license'></div>" .
     "      </div>" .
-    "      <div id='field_license_library' style='padding: 0 0 5 0;'>" . strtoupper(lang('marketplace_license_library')) . ":" .
-    "        <div style='padding: 0 0 10 0;' id='app_license_library'></div>" .
+    "      <div id='field_license_library' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_license_library')) . ":" .
+    "        <div style='padding: 0px 0px 10px 0px;' id='app_license_library'></div>" .
     "      </div>" .
-    "      <div id='field_introduced' style='padding: 0 0 5 0;'>" . strtoupper(lang('marketplace_app_introduced')) . ":" .
-    "        <div style='padding: 0 0 10 0;' id='app_introduced'></div>" .
+    "      <div id='field_introduced' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_app_introduced')) . ":" .
+    "        <div style='padding: 0px 0px 10px 0px;' id='app_introduced'></div>" .
     "      </div>" .
-    "      <div id='field_supported' style='padding: 0 0 5 0;'>" . strtoupper(lang('marketplace_app_supported')) . ":" .
-    "        <div style='padding: 0 0 10 0;' id='app_supported'>" .
+    "      <div id='field_supported' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_app_supported')) . ":" .
+    "        <div style='padding: 0px 0px 10px 0px;' id='app_supported'>" .
     anchor_custom('#', lang('marketplace_view_policy'), 'high', array('id' => 'supported_link', 'target' => '_blank')) .
     "        </div>" .
     "      </div>" .
-    "      <div id='field_warranty' style='padding: 0 0 5 0;'>" . strtoupper(lang('marketplace_app_warranty')) . ":" .
-    "        <div style='padding: 0 0 10 0;' id='app_warranty'>" .
+    "      <div id='field_warranty' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_app_warranty')) . ":" .
+    "        <div style='padding: 0px 0px 10px 0px;' id='app_warranty'>" .
     anchor_custom('#', lang('marketplace_view_policy'), 'high', array('id' => 'warranty_link', 'target' => '_blank')) .
     "        </div>" .
     "      </div>" .
@@ -132,7 +132,7 @@ $tabinfo['overview']['content'] =
     "</table>"
 ;
 $tabinfo['reviews']['content'] = "<h2 style='position: relative; float: left'>" . lang('marketplace_user_reviews') . "</h2>" .
-    "<div style='position: relative; float: right; padding-top: 10;'>" . form_submit_custom('review', lang('marketplace_submit_review'), 'high', array ('id' => ($is_installed ? 'add_review' : 'prevent_review'))) .
+    "<div style='position: relative; float: right; padding-top: 10px;'>" . form_submit_custom('review', lang('marketplace_submit_review'), 'high', array ('id' => ($is_installed ? 'add_review' : 'prevent_review'))) .
     "</div><br clear='all'>" .
     "<div id='review_form' style='display: none;'>" .
     "  <h2>" . lang('marketplace_write_a_review') . "</h2>" .
@@ -148,7 +148,7 @@ $tabinfo['reviews']['content'] = "<h2 style='position: relative; float: left'>" 
     "          <input type='hidden' name='rating' id='rating' value='0' />" .
     "        </td>" .
     "      </tr>" .
-    "      <tr class='rating'><td valign='top'>" . lang('marketplace_comment') . "</td><td><textarea id='comment' style='font-size: 9pt; width: 400; height: 80;'></textarea><div id='char-remaining'>1000 " . lang('marketplace_remaining') . "</div></td></tr>" .
+    "      <tr class='rating'><td valign='top'>" . lang('marketplace_comment') . "</td><td><textarea id='comment' style='font-size: 9pt; width: 400px; height: 80px;'></textarea><div id='char-remaining'>1000 " . lang('marketplace_remaining') . "</div></td></tr>" .
     "      <tr class='rating'><td>" . lang('marketplace_submitted_by') . "</td>" .
     "        <td><input type='text' id='pseudonym' name='pseudonym' value='$pseudonym' /></td>" .
     "      </tr>" .
