@@ -15,6 +15,9 @@ $rules = array(
             'app-account-synchronization',
             'app-password-policies'
         ),
+        'app-zarafa-small-business' => array(
+            'app-zarafa-professional'
+        )
     ),
     'requires' => array(
         'app-remote-backup-5gb' => 'app-remote-backup',
@@ -27,6 +30,11 @@ $rules = array(
         'app-zarafa-professional-25-users' => 'app-zarafa-professional',
         'app-zarafa-professional-50-users' => 'app-zarafa-professional',
         'app-zarafa-professional-100-users' => 'app-zarafa-professional',
+        'app-zarafa-small-business-5-users' => 'app-zarafa-small-business',
+        'app-zarafa-small-business-10-users' => 'app-zarafa-small-business',
+        'app-zarafa-small-business-25-users' => 'app-zarafa-small-business',
+        'app-zarafa-small-business-50-users' => 'app-zarafa-small-business',
+        'app-zarafa-small-business-100-users' => 'app-zarafa-small-business',
         'app-kaspersky-gateway-50-users' => 'app-kaspersky-gateway',
         'app-kaspersky-gateway-100-users' => 'app-kaspersky-gateway',
         'app-kaspersky-gateway-255-users' => 'app-kaspersky-gateway',
