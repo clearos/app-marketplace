@@ -178,6 +178,31 @@ class Cart extends Engine
         }
         // Incompatible
         // ------------
+        if (array_key_exists($item->get_id(), $rules['incompatible'])) {
+            foreach ($rules['incompatible'][$item->get_id()] as $rule) {
+                if (in_array($rule, array_keys($installed_apps)))
+                    throw new Engine_Exception(
+                        sprintf(lang('marketplace_apps_rule_incompatible_with_installed'),
+                            '<b>' . $item->get_description() . '</b>',
+                            '<b>' . $rule . '</b>'
+                        ),
+                        CLEAROS_ERROR
+                    );
+            }
+        } else {
+            foreach ($rules['incompatible'] as $key => $rule) {
+                if (in_array($item->get_id(), $rule)) {
+                    if (in_array($key, array_keys($installed_apps)))
+                        throw new Engine_Exception(
+                            sprintf(lang('marketplace_apps_rule_incompatible_with_installed'),
+                                '<b>' . $item->get_description() . '</b>',
+                                '<b>' . $key . '</b>'
+                            ),
+                            CLEAROS_ERROR
+                        );
+                }
+            }
+        }
         foreach ($this->contents as $cart_item) {
             if (array_key_exists($item->get_id(), $rules['incompatible'])) {
                 foreach ($rules['incompatible'][$item->get_id()] as $rule) {
