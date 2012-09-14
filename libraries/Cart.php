@@ -149,7 +149,7 @@ class Cart extends Engine
         $installed_apps = $marketplace->get_installed_apps();
 
         // Upgrade?
-        if (in_array($item->get_id(), $installed_apps))
+        if (in_array($item->get_id(), array_keys($installed_apps)))
             $item->set_upgrade(TRUE);
 
         // Requires

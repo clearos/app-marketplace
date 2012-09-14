@@ -179,7 +179,7 @@ class Cart_Item extends Engine
         if (isset($info['upgrade']))
             $this->set_upgrade($info['upgrade']);
         else
-            $this->set_upgrade('upgrade');
+            $this->set_upgrade(FALSE);
     }
 
     /**
