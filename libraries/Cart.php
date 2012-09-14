@@ -148,6 +148,10 @@ class Cart extends Engine
         $marketplace = new Marketplace();
         $installed_apps = $marketplace->get_installed_apps();
 
+        // Upgrade?
+        if (in_array($item->get_id(), $installed_apps))
+            $item->set_upgrade(TRUE);
+
         // Requires
         // --------
         if (array_key_exists($item->get_id(), $rules['requires'])) {
@@ -304,17 +308,18 @@ class Cart extends Engine
     /**
      * Returns a list of item fields in cart
      *
-     * @param String $field specifies what Cart_Item field you want to return
+     * @param String  $field         specifies what Cart_Item field you want to return
      *  - id
      *  - pid
      *  - description
+     * @param boolean $hide_upgrades boolean flag to hide upgrades from array
      *
      * @return array an array
      *
      * @throws Engine_Exception
      */
 
-    public function get_list($field = 'id')
+    public function get_list($field = 'id', $hide_upgrades = FALSE)
     {
         clearos_profile(__METHOD__, __LINE__);
 
@@ -324,6 +329,8 @@ class Cart extends Engine
         $list = Array();
 
         foreach ($this->contents as $item) {
+            if ($hide_upgrades && $item->get_upgrade())
+                continue;
             if ($field == 'id')
                 $list[] = $item->get_id();
             else if ($field == 'pid')

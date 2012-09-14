@@ -466,33 +466,37 @@ class Ajax extends ClearOS_Controller
         try {
             $this->load->library('marketplace/Marketplace');
             $this->load->library('marketplace/Cart');
-            $pid = $this->cart->get_list('pid');
+            $list = $this->cart->get_items();
 
-            if (empty($pid)) {
+            if (empty($list)) {
                 echo json_encode(Array('code' => 1, 'errmsg' => lang('marketplace_no_apps_selected')));
                 return;
             }
                 
-            // Complete the purchase (if req'd).
-            $response = json_decode(
-                $this->marketplace->app_store_purchase(
-                    $this->input->post('payment'), $pid, ($this->input->post('po')) ? $this->input->post('po') : NULL
-                )
-            ); 
+            // Just send non-upgrades to Marketplace webservice engine
+            $pids_to_process = $this->cart->get_list('pid', TRUE);
 
-            // Check if everything went OK
-            if (!is_object($response))
-                throw new Engine_Exception(lang('marketplace_expecting_json_reply'), CLEAROS_WARNING);
-            if ($response->code !== 0)
-                throw new Engine_Exception($response->errmsg, CLEAROS_WARNING);
+            if (!empty($pids_to_process)) {
+                // Complete the purchase (if req'd).
+                $response = json_decode(
+                    $this->marketplace->app_store_purchase(
+                        $this->input->post('payment'), $pids_to_process, ($this->input->post('po')) ? $this->input->post('po') : NULL
+                    )
+                ); 
 
-            // Before we sent to YUM, better do a registration sync check of the local flag
-            $this->load->library('registration/Registration');
-            $this->registration->set_local_registration_status(TRUE);
+                // Check if everything went OK
+                if (!is_object($response))
+                    throw new Engine_Exception(lang('marketplace_expecting_json_reply'), CLEAROS_WARNING);
+                if ($response->code !== 0)
+                    throw new Engine_Exception($response->errmsg, CLEAROS_WARNING);
+
+                // Before we send to YUM, better do a registration sync check of the local flag
+                $this->load->library('registration/Registration');
+                $this->registration->set_local_registration_status(TRUE);
+            }
 
             // Initiate Yum install
             $this->load->library('base/Yum');
-            $list = $this->cart->get_items();
 
             // Check for cart items that do not have an RPM
             $install_list = array();

@@ -175,6 +175,11 @@ class Cart_Item extends Engine
             $this->set_group($info['group']);
         else
             $this->set_group('group');
+
+        if (isset($info['upgrade']))
+            $this->set_upgrade($info['upgrade']);
+        else
+            $this->set_upgrade('upgrade');
     }
 
     /**
@@ -417,6 +422,22 @@ class Cart_Item extends Engine
         clearos_profile(__METHOD__, __LINE__);
 
         $this->item[$this->id]['group'] = $group;
+    }
+
+    /**
+     * Sets the cart upgrade flag.
+     *
+     * @param boolean $upgrade the upgrade flag
+     *
+     * @return void
+     * @throws ValidationException
+     */
+
+    public function set_upgrade($upgrade)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        $this->item[$this->id]['upgrade'] = $upgrade;
     }
 
     /**
@@ -667,6 +688,19 @@ class Cart_Item extends Engine
     }
 
     /**
+     * Gets the cart item's upgrade flag.
+     *
+     * @return boolean the item's upgrade type
+     */
+
+    public function get_upgrade()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        return $this->item[$this->id]['upgrade'];
+    }
+
+    /**
      * Gets the cart item's EULA flag.
      *
      * @return boolean the item's eula flag
@@ -728,6 +762,7 @@ class Cart_Item extends Engine
             $this->set_pid_bitmask($newobj->get_pid_bitmask());
             $this->set_class($newobj->get_class());
             $this->set_group($newobj->get_group());
+            $this->set_upgrade($newobj->get_upgrade());
             $this->set_eula($newobj->get_eula());
         } catch (Exception $e) {
             throw new Engine_Exception(clearos_exception_message($e), CLEAROS_ERROR);
@@ -960,6 +995,22 @@ class Cart_Item extends Engine
 
         if (FALSE)
             return lang('marketplace_group_is_invalid');
+    }
+
+    /**
+     * Validation routine for upgrade flag.
+     *
+     * @param string $upgrade cart item upgrade flag.
+     *
+     * @return string error message if upgrade is invalid
+     */
+
+    public function validate_upgrade($upgrade)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        if (!is_bool($upgrade))
+            return lang('marketplace_upgrade_is_invalid');
     }
 
     /**

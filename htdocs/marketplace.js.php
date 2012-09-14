@@ -315,7 +315,9 @@ function get_apps(realtime, search, offset) {
                 newrow += '    <div style=\'font-size: 8pt;\'>';
                 newrow += '      <div>' + app.description.substr(0, 85) + '...</div>';
                 newrow += '      <div>' + app.vendor.toUpperCase() + '</div>';
-                if (app.pricing.unit_price > 0 && app.pricing.exempt) {
+                if (app.up2date) {
+                    // Don't show pricing information if its installed
+                } else if (app.pricing.unit_price > 0 && app.pricing.exempt) {
                     newrow += '    <div>';
                     newrow += '      <span style=\'text-decoration: line-through;\'>';
                     newrow += '' + app.pricing.currency + app.pricing.unit_price + ' ' + UNIT[app.pricing.unit];
@@ -1098,7 +1100,6 @@ function get_progress() {
                 $('#progress').progressbar({value: 0});
                 $('#overall').progressbar({value: 0});
                 $('#details').html(json.errmsg);
-                return;
             }
 
             if ($(location).attr('href').match('.*progress\/busy$') != null) {

@@ -122,7 +122,7 @@ class Marketplace extends Rest
         'category' => 'all',
         'price' => 'all',
         'intro' => 'all',
-        'status' => 'new'
+        'status' => 'all'
     );
 
     ///////////////////////////////////////////////////////////////////////////////

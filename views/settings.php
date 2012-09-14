@@ -16,6 +16,7 @@
 // Load dependencies
 ///////////////////////////////////////////////////////////////////////////////
 
+$this->load->helper('number');
 $this->lang->load('base');
 $this->lang->load('marketplace');
 
@@ -33,6 +34,7 @@ echo form_header(lang('base_settings'));
 $read_only = FALSE;
 $buttons = array(
     form_submit_update('submit'),
+    form_submit_custom('delete_cache', lang('marketplace_clear_cache')),
     anchor_cancel('/app/marketplace')
 );
 
@@ -47,6 +49,11 @@ $apps_per_page_options = array(
 );
 echo field_dropdown('number_of_apps_to_display', $apps_per_page_options, $number_of_apps_to_display, lang('marketplace_apps_per_page'), $read_only);
 echo field_input('pseudonym', $pseudonym, lang('marketplace_pseudonym'), $read_only);
+echo field_info(
+    'clear_cache',
+    lang('marketplace_cache_data'),
+    byte_format($cache_size)
+);
 echo field_button_set($buttons);
 
 ///////////////////////////////////////////////////////////////////////////////

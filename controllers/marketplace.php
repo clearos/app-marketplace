@@ -133,6 +133,18 @@ class Marketplace extends ClearOS_Controller
 
         $this->load->library('marketplace/Marketplace');
 
+        // Delete/clear Cache
+        if ($this->input->post('delete_cache')) {
+            try {
+                $this->marketplace->delete_cache(NULL, TRUE);
+                $this->page->set_message(lang('marketplace_cache_confirm'), 'info');
+            } catch (Exception $e) {
+                $this->page->view_exception($e);
+                return;
+            }
+        }
+
+        // Handle form submit
         // Set validation rules
         //---------------------
          
@@ -140,7 +152,6 @@ class Marketplace extends ClearOS_Controller
         $this->form_validation->set_policy('pseudonym', 'marketplace/Marketplace', 'validate_pseudonym', TRUE);
         $form_ok = $this->form_validation->run();
 
-        // Handle form submit
         //-------------------
 
         if (($this->input->post('submit') && $form_ok)) {
@@ -160,6 +171,7 @@ class Marketplace extends ClearOS_Controller
         try {
             $data['pseudonym'] = $this->marketplace->get_pseudonym();
             $data['number_of_apps_to_display'] = $this->marketplace->get_number_of_apps_to_display();
+            $data['cache_size'] = $this->marketplace->get_cache_size();
         } catch (Exception $e) {
             $data['number_of_apps_to_display'] = 9;
         }
