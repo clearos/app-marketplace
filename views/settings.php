@@ -49,13 +49,13 @@ $apps_per_page_options = array(
 );
 echo field_dropdown('number_of_apps_to_display', $apps_per_page_options, $number_of_apps_to_display, lang('marketplace_apps_per_page'), $read_only);
 echo field_input('pseudonym', $pseudonym, lang('marketplace_pseudonym'), $read_only);
+echo field_checkbox('hide_support_policy', !$hide_support_policy, lang('marketplace_display_support_policy'), $read_only);
+echo field_checkbox('hide_recommended_apps', !$hide_recommended_apps, lang('marketplace_display_recommended_apps'), $read_only);
 echo field_info(
     'clear_cache',
     lang('marketplace_cache_data'),
     byte_format($cache_size)
 );
-echo field_checkbox('hide_support_policy', !$hide_support_policy, lang('marketplace_display_support_policy'), $read_only);
-echo field_checkbox('hide_recommended_apps', !$hide_recommended_apps, lang('marketplace_display_recommended_apps'), $read_only);
 echo field_button_set($buttons);
 
 ///////////////////////////////////////////////////////////////////////////////

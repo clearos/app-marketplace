@@ -542,34 +542,34 @@ function get_app_details(id) {
                 $('#a_install').show();
             }
 
-            var circle = '\u2b1b';
+            var symbol = '\u2b1b';
             $('#app_support_policy').html(
                 '<a id=\'support_policy_trigger\' href=\'javascript: void(0)\'>' +
-                '<div class=\'theme-support-' + (data.supported & 1) + '\'>' + circle + '</div>' +
-                '<div class=\'theme-support-' + (data.supported & 2) + '\'>' + circle + '</div>' +
-                '<div class=\'theme-support-' + (data.supported & 4) + '\'>' + circle + '</div>' +
-                '<div class=\'theme-support-' + (data.supported & 8) + '\'>' + circle + '</div>' +
-                '<div class=\'theme-support-' + (data.supported & 16) + '\'>' + circle + '</div>' +
+                '<div class=\'theme-support-' + (data.supported & 1) + '\'>' + symbol + '</div>' +
+                '<div class=\'theme-support-' + (data.supported & 2) + '\'>' + symbol + '</div>' +
+                '<div class=\'theme-support-' + (data.supported & 4) + '\'>' + symbol + '</div>' +
+                '<div class=\'theme-support-' + (data.supported & 8) + '\'>' + symbol + '</div>' +
+                '<div class=\'theme-support-' + (data.supported & 16) + '\'>' + symbol + '</div>' +
                 '</a>' +
-                '<div class=\'theme-support-tooltip\'>' +
+                '<div class=\'theme-rhs-tooltip\'>' +
                 '<p class=\'theme-support-legend-title\'>' + lang_marketplace_support_legend + '</p>' +
-                '<p><div class=\'theme-support-1\' style=\'padding-right: 5px;\'>' + circle + '</div>' +
+                '<p><div class=\'theme-support-1\' style=\'padding-right: 5px;\'>' + symbol + '</div>' +
                 '<div class=\'theme-support-type\'>' + lang_marketplace_support_1_title + '</div>' +
                 lang_marketplace_support_1_description +
                 '</p>' +
-                '<p><div class=\'theme-support-2\' style=\'padding-right: 5px;\'>' + circle + '</div>' +
+                '<p><div class=\'theme-support-2\' style=\'padding-right: 5px;\'>' + symbol + '</div>' +
                 '<div class=\'theme-support-type\'>' + lang_marketplace_support_2_title + '</div>' +
                 lang_marketplace_support_2_description +
                 '</p>' +
-                '<p><div class=\'theme-support-4\' style=\'padding-right: 5px;\'>' + circle + '</div>' +
+                '<p><div class=\'theme-support-4\' style=\'padding-right: 5px;\'>' + symbol + '</div>' +
                 '<div class=\'theme-support-type\'>' + lang_marketplace_support_4_title + '</div>' +
                 lang_marketplace_support_4_description +
                 '</p>' +
-                '<p><div class=\'theme-support-8\' style=\'padding-right: 5px;\'>' + circle + '</div>' +
+                '<p><div class=\'theme-support-8\' style=\'padding-right: 5px;\'>' + symbol + '</div>' +
                 '<div class=\'theme-support-type\'>' + lang_marketplace_support_8_title + '</div>' +
                 lang_marketplace_support_8_description +
                 '</p>' +
-                '<p><div class=\'theme-support-16\' style=\'padding-right: 5px;\'>' + circle + '</div>' +
+                '<p><div class=\'theme-support-16\' style=\'padding-right: 5px;\'>' + symbol + '</div>' +
                 '<div class=\'theme-support-type\'>' + lang_marketplace_support_16_title + '</div>' +
                 lang_marketplace_support_16_description +
                 '</p>' +
