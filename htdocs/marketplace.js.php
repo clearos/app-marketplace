@@ -574,7 +574,7 @@ function get_app_details(id) {
                 lang_marketplace_support_16_description +
                 '</p>' +
                 '<div class=\'theme-support-learn-more\'>' +
-                '<a href=\'http://www.clearcenter.com/clearcare\' target=\'_blank\'>' + lang_marketplace_learn_more + '...</a>' +
+                '<a href=\'http://www.clearcenter.com/clearcare/landing\' target=\'_blank\'>' + lang_marketplace_learn_more + '...</a>' +
                 '</div>' +
                 '</div>'
             );

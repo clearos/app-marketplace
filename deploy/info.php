@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 $app['basename'] = 'marketplace';
-$app['version'] = '1.2.14';
+$app['version'] = '1.2.15';
 $app['release'] = '1';
 $app['vendor'] = 'ClearCenter';
 $app['packager'] = 'ClearCenter';
