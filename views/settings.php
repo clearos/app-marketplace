@@ -54,6 +54,8 @@ echo field_info(
     lang('marketplace_cache_data'),
     byte_format($cache_size)
 );
+echo field_checkbox('hide_support_policy', !$hide_support_policy, lang('marketplace_display_support_policy'), $read_only);
+echo field_checkbox('hide_recommended_apps', !$hide_recommended_apps, lang('marketplace_display_recommended_apps'), $read_only);
 echo field_button_set($buttons);
 
 ///////////////////////////////////////////////////////////////////////////////

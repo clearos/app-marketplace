@@ -86,7 +86,12 @@ class Ajax extends ClearOS_Controller
 
             $details = $response->details;
 
-            //$cart_item = new \clearos\apps\marketplace\Cart_Item(Marketplace::APP_PREFIX . $basename); 
+            // Add flag to display recommended apps in RHS bar
+            $details->hide_recommended_apps = $this->marketplace->get_hide_recommended_apps();
+
+            // Add flag to hide support policy
+            $details->hide_support_policy = $this->marketplace->get_hide_support_policy();
+
             $cart_item = new \clearos\apps\marketplace\Cart_Item(Marketplace::APP_PREFIX . preg_replace("/_/", "-", $basename)); 
             $cart_item->set(get_object_vars($details->pricing));
             // Whether an item has an EULA or not is not in the pricing object
@@ -592,6 +597,8 @@ class Ajax extends ClearOS_Controller
             $needle = "/" . str_replace(" ", "|", $search) . "/i";
             // I was just serializing the object and searching the string, but it turned up
             // false positives (i.e. 'anti' in 'quantity' field)
+            if (preg_match($needle, $app->name))
+                return TRUE;
             if (preg_match($needle, $app->description))
                 return TRUE;
             if (preg_match($needle, $app->description_en_US))

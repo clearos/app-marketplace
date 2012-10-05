@@ -94,6 +94,9 @@ $tabinfo['overview']['content'] =
     "      <div id='field_releast_date' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_latest_release_date')) . ":" .
     "        <div style='padding: 0px 0px 10px 0px;' id='app_latest_release_date'></div>" .
     "      </div>" .
+    "      <div id='field_support_policy' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_app_supported')) . ":" .
+    "        <div style='padding: 0px 0px 25px 0px;' id='app_support_policy'></div>" .
+    "      </div>" .
     "      <div id='field_repo' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_software_repo')) . ":" .
     "        <div style='padding: 0px 0px 10px 0px;' id='app_repo'></div>" .
     "      </div>" .

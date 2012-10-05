@@ -542,6 +542,52 @@ function get_app_details(id) {
                 $('#a_install').show();
             }
 
+            var circle = '\u2b1b';
+            $('#app_support_policy').html(
+                '<a id=\'support_policy_trigger\' href=\'javascript: void(0)\'>' +
+                '<div class=\'theme-support-' + (data.supported & 1) + '\'>' + circle + '</div>' +
+                '<div class=\'theme-support-' + (data.supported & 2) + '\'>' + circle + '</div>' +
+                '<div class=\'theme-support-' + (data.supported & 4) + '\'>' + circle + '</div>' +
+                '<div class=\'theme-support-' + (data.supported & 8) + '\'>' + circle + '</div>' +
+                '<div class=\'theme-support-' + (data.supported & 16) + '\'>' + circle + '</div>' +
+                '</a>' +
+                '<div class=\'theme-support-tooltip\'>' +
+                '<p class=\'theme-support-legend-title\'>' + lang_marketplace_support_legend + '</p>' +
+                '<p><div class=\'theme-support-1\' style=\'padding-right: 5px;\'>' + circle + '</div>' +
+                '<div class=\'theme-support-type\'>' + lang_marketplace_support_1_title + '</div>' +
+                lang_marketplace_support_1_description +
+                '</p>' +
+                '<p><div class=\'theme-support-2\' style=\'padding-right: 5px;\'>' + circle + '</div>' +
+                '<div class=\'theme-support-type\'>' + lang_marketplace_support_2_title + '</div>' +
+                lang_marketplace_support_2_description +
+                '</p>' +
+                '<p><div class=\'theme-support-4\' style=\'padding-right: 5px;\'>' + circle + '</div>' +
+                '<div class=\'theme-support-type\'>' + lang_marketplace_support_4_title + '</div>' +
+                lang_marketplace_support_4_description +
+                '</p>' +
+                '<p><div class=\'theme-support-8\' style=\'padding-right: 5px;\'>' + circle + '</div>' +
+                '<div class=\'theme-support-type\'>' + lang_marketplace_support_8_title + '</div>' +
+                lang_marketplace_support_8_description +
+                '</p>' +
+                '<p><div class=\'theme-support-16\' style=\'padding-right: 5px;\'>' + circle + '</div>' +
+                '<div class=\'theme-support-type\'>' + lang_marketplace_support_16_title + '</div>' +
+                lang_marketplace_support_16_description +
+                '</p>' +
+                '<div class=\'theme-support-learn-more\'>' +
+                '<a href=\'http://www.clearcenter.com/clearcare\' target=\'_blank\'>' + lang_marketplace_learn_more + '...</a>' +
+                '</div>' +
+                '</div>'
+            );
+
+            $('#support_policy_trigger').tooltip({
+                offset: [-240, -315],
+                position: 'center left',
+                effect: 'slide',
+                direction: 'left',
+                slideOffset: 110, 
+                opacity: 0.95
+            });
+
             $('#indiv_configure').attr('href', '/' + data.url_config);
 
             if ((data.display_mask & 1) == 1) {
@@ -558,6 +604,9 @@ function get_app_details(id) {
                 $('#availability_warning_box').show();
             } else if ((data.display_mask & 16) == 16) {
                 $('#availability_warning').html('" . lang('marketplace_not_available_during_eval') . "');
+                $('#availability_warning_box').show();
+            } else if ((data.display_mask & 32) == 32) {
+                $('#availability_warning').html('" . lang('marketplace_not_available_repo_settings') . "');
                 $('#availability_warning_box').show();
             } else if (data.display_mask > 0) {
                 $('#availability_warning').html('" . lang('marketplace_not_available') . "');

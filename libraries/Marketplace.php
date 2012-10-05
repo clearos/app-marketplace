@@ -354,6 +354,48 @@ class Marketplace extends Rest
     }
 
     /**
+     * Set the hide support policy setting.
+     *
+     * @param boolean $hide hide
+     *
+     * @return void
+     * @throws Validation_Exception
+     */
+
+    function set_hide_support_policy($hide)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        Validation_Exception::is_valid($this->validate_hide_support_policy($hide));
+
+        if ($hide === 'on' || $hide == 1 || $hide == TRUE)
+            $this->_set_parameter('hide_support_policy', 0);
+        else
+            $this->_set_parameter('hide_support_policy', 1);
+    }
+
+    /**
+     * Set the hide recommended apps setting.
+     *
+     * @param boolean $hide hide
+     *
+     * @return void
+     * @throws Validation_Exception
+     */
+
+    function set_hide_recommended_apps($hide)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        Validation_Exception::is_valid($this->validate_hide_recommended_apps($hide));
+
+        if ($hide === 'on' || $hide == 1 || $hide == TRUE)
+            $this->_set_parameter('hide_recommended_apps', 0);
+        else
+            $this->_set_parameter('hide_recommended_apps', 1);
+    }
+
+    /**
      * Get no-auth mods status.
      *
      * @return Object JSON-encoded response
@@ -440,6 +482,48 @@ class Marketplace extends Rest
                 $pseudonym = lang('marketplace_anonymous');
         }
         return $pseudonym;
+    }
+
+    /**
+     * Get the hide support policy setting
+     *
+     * @return Boolean
+     */
+
+    function get_hide_support_policy()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        if (!$this->is_loaded)
+            $this->_load_config();
+
+        $hide = $this->config['hide_support_policy'];
+
+        if ($hide == NULL || !$hide)
+            return FALSE;
+        else
+            return TRUE;
+    }
+
+    /**
+     * Get the hide recommended app setting
+     *
+     * @return Boolean
+     */
+
+    function get_hide_recommended_apps()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        if (!$this->is_loaded)
+            $this->_load_config();
+
+        $hide = $this->config['hide_recommended_apps'];
+
+        if ($hide == NULL || !$hide)
+            return FALSE;
+        else
+            return TRUE;
     }
 
     /**
@@ -957,6 +1041,32 @@ class Marketplace extends Rest
 
         if (! preg_match("/^[A-Za-z0-9\\ \\-\\_]+$/", $pseudonym))
             return lang('marketplace_pseudonym_is_invalid');
+    }
+
+    /**
+     * Validation routine for hide support policy info.
+     *
+     * @param boolean $hide hide
+     *
+     * @return mixed void if support policy is valid, errmsg otherwise
+     */
+
+    public function validate_hide_support_policy($hide)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+    }
+
+    /**
+     * Validation routine for hide recommended apps.
+     *
+     * @param boolean $hide hide
+     *
+     * @return mixed void if recommended apps is valid, errmsg otherwise
+     */
+
+    public function validate_hide_recommended_apps($hide)
+    {
+        clearos_profile(__METHOD__, __LINE__);
     }
 
     /**

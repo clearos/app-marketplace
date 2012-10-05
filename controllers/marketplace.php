@@ -150,6 +150,8 @@ class Marketplace extends ClearOS_Controller
          
         $this->form_validation->set_policy('number_of_apps_to_display', 'marketplace/Marketplace', 'validate_number_of_apps_to_display', TRUE);
         $this->form_validation->set_policy('pseudonym', 'marketplace/Marketplace', 'validate_pseudonym', TRUE);
+        $this->form_validation->set_policy('hide_support_policy', 'marketplace/Marketplace', 'validate_hide_support_policy', FALSE);
+        $this->form_validation->set_policy('hide_recommended_apps', 'marketplace/Marketplace', 'validate_hide_recommended_apps', FALSE);
         $form_ok = $this->form_validation->run();
 
         //-------------------
@@ -158,6 +160,8 @@ class Marketplace extends ClearOS_Controller
             try {
                 $this->marketplace->set_number_of_apps_to_display($this->input->post('number_of_apps_to_display'));
                 $this->marketplace->set_pseudonym($this->input->post('pseudonym'));
+                $this->marketplace->set_hide_support_policy($this->input->post('hide_support_policy'));
+                $this->marketplace->set_hide_recommended_apps($this->input->post('hide_recommended_apps'));
                 redirect('/marketplace');
             } catch (Exception $e) {
                 $this->page->view_exception($e);
@@ -172,6 +176,8 @@ class Marketplace extends ClearOS_Controller
             $data['pseudonym'] = $this->marketplace->get_pseudonym();
             $data['number_of_apps_to_display'] = $this->marketplace->get_number_of_apps_to_display();
             $data['cache_size'] = $this->marketplace->get_cache_size();
+            $data['hide_support_policy'] = $this->marketplace->get_hide_support_policy();
+            $data['hide_recommended_apps'] = $this->marketplace->get_hide_recommended_apps();
         } catch (Exception $e) {
             $data['number_of_apps_to_display'] = 9;
         }
