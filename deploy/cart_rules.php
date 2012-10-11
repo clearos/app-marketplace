@@ -13,7 +13,6 @@ $rules = array(
             'app-zarafa-small-business',
             'app-zarafa-professional',
             'app-zarafa-extension',
-            'app-account-synchronization',
             'app-password-policies'
         ),
         'app-zarafa-community' => array(
