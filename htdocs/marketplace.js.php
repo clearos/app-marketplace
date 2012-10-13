@@ -643,14 +643,6 @@ function get_app_details(id) {
             $('#app_devel_email').html(data.devel_email);
             $('#app_devel_website').html('<a href=\'' + data.devel_website + '\' target=\'_blank\'>'
                 + data.devel_website + '</a>');
-            if (data.supported > 0)
-                $('#supported_link').attr('href', data.url_redirect + '/marketplace/supported/' + data.supported);
-            else
-                $('#field_supported').hide();
-            if (data.warranty > 0)
-                $('#warranty_link').attr('href', data.url_redirect + '/marketplace/warranty/' + data.supported);
-            else
-                $('#field_warranty').hide();
             // Screenshots
             var screenshots = data.screenshots;
             if (screenshots.length == 0)
@@ -843,7 +835,6 @@ function get_app_details(id) {
             $('#indiv_install').css('padding', '1px 5px 1px 5px');
             $('#indiv_repo').css('padding', '1px 5px 1px 5px');
             $('#indiv_configure').css('padding', '1px 5px 1px 5px');
-            $('#supported_link').css('padding', '1px 5px 1px 5px');
             $('#warranty_link').css('padding', '1px 5px 1px 5px');
 
             $(function() {
