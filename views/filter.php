@@ -98,6 +98,7 @@ echo "
             <option value='network'" . $category_select['network'] . ">" . lang('base_network') . "</option>
             <option value='gateway'" . $category_select['gateway'] . ">" . lang('base_gateway') . "</option>
             <option value='system'" . $category_select['system'] . ">" . lang('base_system') . "</option>
+            <option value='reports'" . $category_select['reports'] . ">" . lang('base_reports') . "</option>
         </select>
         <select style='font-size: 8pt; margin-bottom: 2px;' class='filter_event' name='filter_price' id='filter_price'>
             <option value='all'" . $price_select['all'] . ">" . lang('marketplace_filter_by_price') . "</option>

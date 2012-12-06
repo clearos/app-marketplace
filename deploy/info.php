@@ -30,6 +30,8 @@ $app['controllers']['network']['wizard_name'] = lang('marketplace_network_apps')
 $app['controllers']['network']['wizard_description'] = lang('marketplace_network_apps_description');
 $app['controllers']['system']['wizard_name'] = lang('marketplace_system_apps');
 $app['controllers']['system']['wizard_description'] = lang('marketplace_system_apps_description');
+$app['controllers']['report']['wizard_name'] = lang('marketplace_report_apps');
+$app['controllers']['report']['wizard_description'] = lang('marketplace_report_apps_description');
 $app['controllers']['install']['wizard_name'] = lang('marketplace_app_review');
 $app['controllers']['install']['wizard_description'] = lang('marketplace_app_review_description');
 
