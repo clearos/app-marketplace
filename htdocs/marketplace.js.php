@@ -634,7 +634,13 @@ function get_app_details(id) {
             get_image('app-logo', data.basename, 'detail_img');
             $('#app_rating').html(get_rating(data.rating, data.rating_count, true, true));
             $('#app_category').html(data.category);
-            $('#app_tags').html(data.tags);
+            var tags = data.tags.split(' ');
+            var my_tags = '';
+            $.each(tags, function(index, tag) {
+                if (!$.isNumeric(tag.substring(0, 2)))
+                    my_tags += tag + ' ';
+            });
+            $('#app_tags').html(my_tags);
             $('#app_license').html(data.license);
             $('#app_license_library').html(data.license_library);
             $('#app_introduced').html($.datepicker.formatDate('MM d, yy', new Date(data.introduced)));
