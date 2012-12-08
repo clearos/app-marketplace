@@ -17,6 +17,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 use \clearos\apps\marketplace\Marketplace as Marketplace;
+use \clearos\apps\marketplace\Cart_Item as Cart_Item;
 use \clearos\apps\base\Yum as Yum;
 use \clearos\apps\base\Engine_Exception as Engine_Exception;
 
@@ -228,6 +229,49 @@ class Ajax extends ClearOS_Controller
             
         } catch (Exception $e) {
             echo json_encode(Array('code' => clearos_exception_code($e), 'errmsg' => clearos_exception_message($e)));
+        }
+    }
+
+    /**
+     * Ajax bulk update cart controller
+     *
+     * @return JSON
+     */
+
+    function bulk_cart_update()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        header('Cache-Control: no-cache, must-revalidate');
+        header('Content-type: application/json');
+        $apps = array();
+        try {
+            $this->load->library('marketplace/Marketplace');
+            $this->load->library('marketplace/Cart');
+            include_once clearos_app_base('marketplace') . '/libraries/Cart_Item.php';
+            $apps = json_decode($this->input->post('apps')); 
+            // Reverse the array so dependent apps (eg. Kaspersky 50 user) gets removed first
+            if ($this->input->post('state') == 'none')
+                $apps = array_reverse($apps);
+            foreach ($apps as $index => $app) {
+                if ($this->input->post('state') == 'all') {
+                    $cart_obj = new Cart_Item(Marketplace::APP_PREFIX . preg_replace("/_/", "-", $app));
+                    $cart_obj->unserialize($this->session->userdata('sdn_rest_id'));
+                    $this->cart->add_item($cart_obj);
+                } else {
+                    $this->cart->remove_item(Marketplace::APP_PREFIX . preg_replace("/_/", "-", $app));
+                }
+                unset($apps[$index]);
+            }
+            echo json_encode(Array('code' => 0));
+        } catch (Exception $e) {
+            echo json_encode(
+                Array(
+                    'code' => clearos_exception_code($e) + 100,
+                    'errmsg' => clearos_exception_message($e),
+                    'apps' => array_values($apps)
+                )
+            );
         }
     }
 

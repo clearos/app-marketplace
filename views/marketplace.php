@@ -30,7 +30,9 @@ echo "</div>";
 if (!isset($search))
     $search = lang('marketplace_search_terms');
 
+echo form_open('marketplace/settings', array('method' => 'GET', 'name' => 'form_app_list', 'id' => 'form_app_list'));
 echo "<table width='100%' border='0' id='app_list'></table>";
+echo form_close();
 echo "<div id='pagination-bottom' style='font-size: .7em; padding: 0px 10px 30px 0px;'></div>";
 echo "<script type='text/javascript'>\n";
 echo "  $(document).ready(function() {\n";

@@ -228,6 +228,39 @@ function allow_noauth_mods() {
     });
 }
 
+function bulk_cart_update(state, bulk_apps) {
+    $.ajax({
+        type: 'POST',
+        dataType: 'json',
+        url: '/app/marketplace/ajax/bulk_cart_update',
+        data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&state=' + state + '&apps=' + bulk_apps,
+        success: function(data) {
+            if (data.code != 0) {
+                if (state == 'all')
+                    $('#toggle_select').html('<span class=\'ui-button-text\'>" . lang('marketplace_select_all') . "</span>');
+                else
+                    $('#toggle_select').html('<span class=\'ui-button-text\'>" . lang('marketplace_select_none') . "</span>');
+                // Which apps to reset
+                $.each(data.apps, function (key, value) {
+                    $('#' + value).attr('checked', (state == 'all' ? false : true));
+                });
+                clearos_dialog_box('invalid_bulk_cart', '" . lang('base_warning') . "', data.errmsg);
+            } else {
+                if (state == 'all') {
+                    $('#toggle_select').html('<span class=\'ui-button-text\'>" . lang('marketplace_select_none') . "</span>');
+                    $('#toggle_select').attr('href', '/app/marketplace/none');
+                } else {
+                    $('#toggle_select').html('<span class=\'ui-button-text\'>" . lang('marketplace_select_all') . "</span>');
+                    $('#toggle_select').attr('href', '/app/marketplace/all');
+                }
+            }
+        },
+        error: function(xhr, text, err) {
+            clearos_dialog_box('error', '" . lang('base_warning') . "', xhr.responseText.toString());
+        }
+    });
+}
+
 function update_cart(id, individual, redirect) {
     
     $.ajax({
@@ -1008,7 +1041,7 @@ function peer_review(id, approve, dbid) {
 $(document).ready(function() {
 
     // Wizard previous/next button handling
-    $('#wizard_nav_next').click(function(){
+    $('#wizard_nav_next').click(function() {
         window.location = '/app/base/wizard/next_step';
     });
 
@@ -1044,7 +1077,31 @@ $(document).ready(function() {
             else
                 $('#account_information').remove();
         }
+        $('#install_apps_table tbody tr').each(function(){
+            $(this).find('td:eq(1)').attr('nowrap', 'nowrap');
+            $(this).find('td:eq(4)').attr('nowrap', 'nowrap');
+        });
     }
+
+    $('#toggle_select').click(function(e) {
+        e.preventDefault();
+        $('#toggle_select').html('<span class=\'theme-loading-small\'></span>');
+        $('.theme-loading-small').css('margin', '0px 7px -2px 9px');
+        var state = 'all';
+        if (!$('#toggle_select').attr('href').match('.*all$'))
+            state = 'none';
+        var apps = new Array();
+        var index = 0;
+        $.each($('#form_app_list input[type=\'checkbox\']'), function () {
+            if (state == 'all')
+                $('#' + this.id).attr('checked', 'checked');
+            else
+                $('#' + this.id).removeAttr('checked');
+            apps[index] = this.id;
+            index++;
+        });
+        bulk_cart_update(state, JSON.stringify(apps));
+    });
 
     $('#comment').keyup(function() {
         var charLength = $(this).val().length;
@@ -1060,7 +1117,6 @@ $(document).ready(function() {
     });
 
     $('.filter_event').change(function(event) {
-        console.log(this.form);
       this.form.submit();
     });
 

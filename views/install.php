@@ -150,7 +150,7 @@ foreach ($items as $item) {
         $extended,
         ($item->get_eula() > 0 ? 
         "<div id='basename-" . $item->get_id() . "'>" .
-        "<a class='eula-link highlight-link' href='#' id='eula-" . $item->get_eula() . "'>" . lang('marketplace_eula') . "</a>" .
+        "<a class='eula-link highlight-link' href='/app/marketplace/install' id='eula-" . $item->get_eula() . "'>" . lang('marketplace_eula') . "</a>" .
         "</div>" : lang('marketplace_none'))
     );
     $rows[] = $row;
@@ -179,6 +179,7 @@ if (count($rows) === 0) {
 ///////////////////////////////////////////////////////////////////////////////
 
 $options['default_rows'] = 100;
+$options['id'] = 'install_apps_table';
 
 echo summary_table(
     lang('marketplace_app_install_list'),

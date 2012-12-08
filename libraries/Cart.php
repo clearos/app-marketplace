@@ -241,7 +241,7 @@ class Cart extends Engine
             // Reset our found variable
             $found = FALSE;
             if ($cart_item->get_id() == $item->get_id()) {
-                $this->contents[$counter] = $item;
+                $this->contents[$item->get_id()] = $item;
                 $found = TRUE;
                 break;
             }
@@ -249,7 +249,7 @@ class Cart extends Engine
         }
 
         if (!$found || empty($this->contents))
-            $this->contents[] = $item;
+            $this->contents[$item->get_id()] = $item;
 
         $this->_save_to_file();
     }
@@ -283,7 +283,7 @@ class Cart extends Engine
         if (in_array($key, $rules['requires'])) {
             foreach ($this->contents as $cart_item) {
                 foreach ($rules['requires'] as $app => $requires) {
-                    if ($cart_item->get_id() == $app && !array_key_exists($requires, $installed_apps)) {
+                    if ($cart_item->get_id() == $app && $key == $requires && !array_key_exists($requires, $installed_apps)) {
                         $cart_obj = new Cart_Item($requires);
                         $cart_obj->unserialize($this->CI->session->userdata['sdn_rest_id']);
                         throw new Engine_Exception(
@@ -383,8 +383,11 @@ class Cart extends Engine
                 $file->delete();
 
             $file->create('webconfig', 'webconfig', 600);
+            $lines = '';
             foreach ($this->contents as $lineitem)
-                $file->add_lines(serialize($lineitem));
+                $lines .= serialize($lineitem) . "\n";
+
+            $file->add_lines($lines);
 
             // Force reload
             $this->is_loaded = FALSE;

@@ -242,3 +242,5 @@ $lang['marketplace_support_16_description'] = 'ClearCenter engineering may provi
 $lang['marketplace_support_policy'] = 'Support Policy';
 $lang['marketplace_support_legend'] = 'Support Policy Legend';
 $lang['marketplace_display_support_policy'] = 'Display Support Policy';
+$lang['marketplace_select_all'] = 'Select All';
+$lang['marketplace_select_none'] = 'Select None';

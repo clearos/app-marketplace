@@ -93,30 +93,30 @@ echo "
     <h3 style='clear: both;'>" . lang('marketplace_filters') . "</h3>
     <div id='filter' style='margin: 10px 0px 0px 0px;'>
         <select style='font-size: 8pt; margin-bottom: 2px;' class='filter_event' name='filter_category' id='filter_category'>
-            <option value='all'" . $category_select['all'] . ">" . lang('marketplace_filter_by_category') . "</option>
-            <option value='server'" . $category_select['server'] . ">" . lang('base_server') . "</option>
-            <option value='network'" . $category_select['network'] . ">" . lang('base_network') . "</option>
-            <option value='gateway'" . $category_select['gateway'] . ">" . lang('base_gateway') . "</option>
-            <option value='system'" . $category_select['system'] . ">" . lang('base_system') . "</option>
-            <option value='reports'" . $category_select['reports'] . ">" . lang('base_reports') . "</option>
+            <option value='all'" . (isset($category_select['all']) ? $category_select['all'] : '') . ">" . lang('marketplace_filter_by_category') . "</option>
+            <option value='server'" . (isset($category_select['server']) ? $category_select['server'] : '') . ">" . lang('base_server') . "</option>
+            <option value='network'" . (isset($category_select['network']) ? $category_select['network'] : '') . ">" . lang('base_network') . "</option>
+            <option value='gateway'" . (isset($category_select['gateway']) ? $category_select['gateway'] : '') . ">" . lang('base_gateway') . "</option>
+            <option value='system'" . (isset($category_select['system']) ? $category_select['system'] : '') . ">" . lang('base_system') . "</option>
+            <option value='reports'" . (isset($category_select['reports']) ? $category_select['reports'] : '') . ">" . lang('base_reports') . "</option>
         </select>
         <select style='font-size: 8pt; margin-bottom: 2px;' class='filter_event' name='filter_price' id='filter_price'>
-            <option value='all'" . $price_select['all'] . ">" . lang('marketplace_filter_by_price') . "</option>
-            <option value='free'" . $price_select['free'] . ">" . lang('marketplace_free') . "</option>
-            <option value='paid'" . $price_select['paid'] . ">" . lang('marketplace_paid') . "</option>
+            <option value='all'" . (isset($price_select['all']) ? $price_select['all'] : '') . ">" . lang('marketplace_filter_by_price') . "</option>
+            <option value='free'" . (isset($price_select['free']) ? $price_select['free'] : '') . ">" . lang('marketplace_free') . "</option>
+            <option value='paid'" . (isset($price_select['paid']) ? $price_select['paid'] : '') . ">" . lang('marketplace_paid') . "</option>
         </select>
         <select style='font-size: 8pt; margin-bottom: 2px;' class='filter_event' name='filter_status' id='filter_status'>
-            <option value='all'" . $status_select['all'] . ">" . lang('marketplace_filter_by_install') . "</option>
-            <option value='installed'" . $status_select['installed'] . ">" . lang('marketplace_installed_apps') . "</option>
-            <option value='upgrade_available'" . $status_select['upgrade_available'] . ">" . lang('marketplace_upgrade_apps') . "</option>
-            <option value='new'" . $status_select['new'] . ">" . lang('marketplace_new_apps') . "</option>
+            <option value='all'" . (isset($status_select['all']) ? $status_select['all'] : '') . ">" . lang('marketplace_filter_by_install') . "</option>
+            <option value='installed'" . (isset($status_select['installed']) ? $status_select['installed'] : '') . ">" . lang('marketplace_installed_apps') . "</option>
+            <option value='upgrade_available'" . (isset($status_select['upgrade_available']) ? $status_select['upgrade_available'] : '') . ">" . lang('marketplace_upgrade_apps') . "</option>
+            <option value='new'" . (isset($status_select['new']) ? $status_select['new'] : '') . ">" . lang('marketplace_new_apps') . "</option>
         </select>
         <select style='font-size: 8pt; margin-bottom: 2px;' class='filter_event' name='filter_intro' id='filter_intro'>
-            <option value='all'" . $intro_select['all'] . ">" . lang('marketplace_filter_by_intro') . "</option>
-            <option value='7'" . $intro_select['7'] . ">" . lang('marketplace_added_7_day') . "</option>
-            <option value='30'" . $intro_select['30'] . ">" . lang('marketplace_added_30_day') . "</option>
-            <option value='180'" . $intro_select['180'] . ">" . lang('marketplace_added_6_month') . "</option>
-            <option value='365'" . $intro_select['365'] . ">" . lang('marketplace_added_1_year') . "</option>
+            <option value='all'" . (isset($intro_select['all']) ? $intro_select['all'] : '') . ">" . lang('marketplace_filter_by_intro') . "</option>
+            <option value='7'" . (isset($intro_select['7']) ? $intro_select['7'] : '') . ">" . lang('marketplace_added_7_day') . "</option>
+            <option value='30'" . (isset($intro_select['30']) ? $intro_select['30'] : '') . ">" . lang('marketplace_added_30_day') . "</option>
+            <option value='180'" . (isset($intro_select['180']) ? $intro_select['180'] : '') . ">" . lang('marketplace_added_6_month') . "</option>
+            <option value='365'" . (isset($intro_select['365']) ? $intro_select['365'] : '') . ">" . lang('marketplace_added_1_year') . "</option>
         </select>
     </div>
     <input type='hidden' name='" . $this->security->csrf_token_name . "' value='" . $this->security->csrf_hash . "' />  
