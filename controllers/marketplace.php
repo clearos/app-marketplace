@@ -135,10 +135,15 @@ class Marketplace extends ClearOS_Controller
         clearos_load_language('marketplace');
         $this->load->library('marketplace/Marketplace');
 
-        if ($confirm_key == $this->session->userdata('app_delete_key')) {
-            redirect('/marketplace');
-            // TODO
-            return;
+        if ($confirm_key != NULL && $confirm_key == $this->session->userdata('app_delete_key')) {
+            try {
+                $this->marketplace->delete_app($basename);
+                $this->page->set_message(lang('marketplace_app_deleted') . ' - ' . Market::APP_PREFIX . preg_replace("/_/", "-", $basename) . '.', 'info');
+                redirect('/marketplace/view/' . $basename);
+                return;
+            } catch (Exception $e) {
+                $this->page->set_message(clearos_exception_message($e), 'warning');
+            }
         }
 
         $data = array(

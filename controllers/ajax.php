@@ -107,6 +107,10 @@ class Ajax extends ClearOS_Controller
                 $metadata = $this->_get_metadata($details->basename);
                 $details->installed_version = $metadata['version'] . '-' . $metadata['release'];
                 $details->up2date = $this->_is_up2date($details->installed_version, $details->latest_version);
+                if (!isset($metadata['delete_dependency']))
+                    $details->no_uninstall = TRUE;
+                else
+                    $details->no_uninstall = FALSE;
             }
 
             // Re-encode to JSON and return

@@ -32,7 +32,7 @@ else
     $display = 'inline';
 
 $search_string = '';
-if (is_array($filter)) {
+if (isset($filter) && is_array($filter)) {
     $first = current($filter);
     // Populate LHS widget
     if ($first['active']) {
@@ -73,8 +73,10 @@ echo "
     $(function() {
         var availableTags = [
 ";
-foreach ($filter as $entry )
-    echo "'" . addslashes($entry['search']) . "',\n";
+if (isset($filter) && is_array($filter)) {
+    foreach ($filter as $entry )
+        echo "'" . addslashes($entry['search']) . "',\n";
+}
 
 
 echo "

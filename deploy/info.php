@@ -73,6 +73,4 @@ $app['core_directory_manifest'] = array(
 );
 
 $app['delete_dependency'] = array(
-    'app-base',
-    'app-dropbox'
 );

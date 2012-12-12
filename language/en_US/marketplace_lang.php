@@ -248,4 +248,6 @@ $lang['marketplace_select_none'] = 'Select None';
 $lang['marketplace_package_name'] = 'Package Name';
 $lang['marketplace_uninstall_list'] = 'Packages to be Deleted';
 $lang['marketplace_confirm_uninstall'] = 'Confirm Uninstall';
-$lang['marketplace_delete_dependencies'] = 'The app you have selected to delete has dependencies on other packages that will also be deleted from your system.';
+$lang['marketplace_unable_to_delete_app'] = 'The following error occurred while attempting to delete the app';
+$lang['marketplace_delete_dependencies'] = 'The app you have selected to delete may have dependencies on other packages that will also be deleted from your system.  These dependencies are listed in the table below.';
+$lang['marketplace_app_deleted'] = 'The following app and its dependencies has been deleted';

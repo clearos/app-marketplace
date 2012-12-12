@@ -22,7 +22,7 @@ $this->load->helper('number');
 $this->load->library('marketplace/Marketplace');
 
 echo infobox_highlight(
-    lang('marketplace_uninstall') . ' - ' . $prefix . $basename,
+    lang('marketplace_uninstall') . ' - ' . $prefix . preg_replace("/_/", "-", $basename),
     lang('marketplace_delete_dependencies') . 
     '<div style=\'text-align: center;margin-top: 10px;\'>' .
     button_set(

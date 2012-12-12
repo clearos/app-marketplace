@@ -816,6 +816,33 @@ class Marketplace extends Rest
     }
 
     /**
+     * Delete app 
+     *
+     * @param String $basename basename
+     *
+     * @return array
+     */
+
+    function delete_app($basename)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        try {
+            $dependencies = $this->get_app_deletion_dependancies($basename);
+            $apps = implode(' ', array_keys($dependencies));
+            $options = array('validate_exit_code' => FALSE);
+            $shell = new Shell();
+            $exitcode = $shell->execute(self::COMMAND_RPM, "-e $apps", TRUE, $options);
+            if ($exitcode != 0) {
+                $err = $shell->get_last_output_line();
+                throw new Engine_Exception(lang('marketplace_unable_to_delete_app') . ': ' . $err . '.', CLEAROS_WARNING);
+            }
+        } catch (Engine_Exception $e) {
+            throw new Engine_Exception(clearos_exception_message($e), CLEAROS_WARNING);
+        }
+    }
+
+    /**
      * Get app dependancies for delete
      *
      * @param String $basename basename
@@ -828,11 +855,8 @@ class Marketplace extends Rest
         clearos_profile(__METHOD__, __LINE__);
 
         try {
-            // Always include app and core
-            $list = array(
-                Marketplace::APP_PREFIX . $basename => array(),
-                Marketplace::APP_PREFIX . $basename . '-core' => array()
-            );
+            // Always include app...do not include core...it may have dependencies to other apps
+            $list = array(Marketplace::APP_PREFIX . preg_replace("/_/", "-", $basename) => array());
             $app_base = clearos_app_base($basename);
 
             $info_file = $app_base . '/deploy/info.php';
@@ -843,7 +867,7 @@ class Marketplace extends Rest
                 include $info_file;
 
                 if (isset($app['delete_dependency']))
-                    $list = array_merge($list, $app['delete_dependency']);
+                    $list = array_merge($list, array_flip($app['delete_dependency']));
             }
             $installed_apps = $this->get_installed_apps();
             $result = array_intersect_key($installed_apps, $list);
