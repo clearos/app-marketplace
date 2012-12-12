@@ -71,6 +71,3 @@ $app['core_file_manifest'] = array(
 $app['core_directory_manifest'] = array(
    '/var/clearos/marketplace' => array('mode' => '755', 'owner' => 'webconfig', 'group' => 'webconfig')
 );
-
-$app['delete_dependency'] = array(
-);
