@@ -560,6 +560,7 @@ function get_app_details(id) {
                 // A non-zero display_mask means the app is not available to install
             } else if (data.installed && data.up2date) {
                 $('#a_configure').show();
+                $('#a_uninstall').show();
             } else if (!data.repo_enabled) {
                 $('#a_repo').show();
                 // tack on repo name to href for repo
@@ -567,6 +568,7 @@ function get_app_details(id) {
             } else if (data.installed) {
                 $('#a_upgrade').show();
                 $('#a_configure').show();
+                $('#a_uninstall').show();
             } else if (data.pricing.exempt && data.pricing.unit_price != 0) {
                 $('#a_install').show();
             } else if (data.pricing.unit_price != 0) {
@@ -575,34 +577,33 @@ function get_app_details(id) {
                 $('#a_install').show();
             }
 
-            var symbol = '\u2b1b';
             $('#app_support_policy').html(
-                '<a id=\'support_policy_trigger\' href=\'javascript: void(0)\'>' +
-                '<div class=\'theme-support-' + (data.supported & 1) + '\'>' + symbol + '</div>' +
-                '<div class=\'theme-support-' + (data.supported & 2) + '\'>' + symbol + '</div>' +
-                '<div class=\'theme-support-' + (data.supported & 4) + '\'>' + symbol + '</div>' +
-                '<div class=\'theme-support-' + (data.supported & 8) + '\'>' + symbol + '</div>' +
-                '<div class=\'theme-support-' + (data.supported & 16) + '\'>' + symbol + '</div>' +
-                '</a>' +
+                '<div id=\'theme-support-policy-trigger\'>' +
+                '<div class=\'theme-support theme-support-' + (data.supported & 1) + '\'></div>' +
+                '<div class=\'theme-support theme-support-' + (data.supported & 2) + '\'></div>' +
+                '<div class=\'theme-support theme-support-' + (data.supported & 4) + '\'></div>' +
+                '<div class=\'theme-support theme-support-' + (data.supported & 8) + '\'></div>' +
+                '<div class=\'theme-support theme-support-' + (data.supported & 16) + '\'></div>' +
+                '</div>' +
                 '<div class=\'theme-rhs-tooltip\'>' +
                 '<p class=\'theme-support-legend-title\'>' + lang_marketplace_support_legend + '</p>' +
-                '<p><div class=\'theme-support-1\' style=\'padding-right: 5px;\'>' + symbol + '</div>' +
+                '<div class=\'theme-support theme-support-1\' style=\'margin-right: 5px;\'></div>' +
                 '<div class=\'theme-support-type\'>' + lang_marketplace_support_1_title + '</div>' +
                 lang_marketplace_support_1_description +
                 '</p>' +
-                '<p><div class=\'theme-support-2\' style=\'padding-right: 5px;\'>' + symbol + '</div>' +
+                '<p><div class=\'theme-support theme-support-2\' style=\'margin-right: 5px;\'></div>' +
                 '<div class=\'theme-support-type\'>' + lang_marketplace_support_2_title + '</div>' +
                 lang_marketplace_support_2_description +
                 '</p>' +
-                '<p><div class=\'theme-support-4\' style=\'padding-right: 5px;\'>' + symbol + '</div>' +
+                '<p><div class=\'theme-support theme-support-4\' style=\'margin-right: 5px;\'></div>' +
                 '<div class=\'theme-support-type\'>' + lang_marketplace_support_4_title + '</div>' +
                 lang_marketplace_support_4_description +
                 '</p>' +
-                '<p><div class=\'theme-support-8\' style=\'padding-right: 5px;\'>' + symbol + '</div>' +
+                '<p><div class=\'theme-support theme-support-8\' style=\'margin-right: 5px;\'></div>' +
                 '<div class=\'theme-support-type\'>' + lang_marketplace_support_8_title + '</div>' +
                 lang_marketplace_support_8_description +
                 '</p>' +
-                '<p><div class=\'theme-support-16\' style=\'padding-right: 5px;\'>' + symbol + '</div>' +
+                '<p><div class=\'theme-support theme-support-16\' style=\'margin-right: 5px;\'></div>' +
                 '<div class=\'theme-support-type\'>' + lang_marketplace_support_16_title + '</div>' +
                 lang_marketplace_support_16_description +
                 '</p>' +
@@ -612,8 +613,8 @@ function get_app_details(id) {
                 '</div>'
             );
 
-            $('#support_policy_trigger').tooltip({
-                offset: [-240, -315],
+            $('#theme-support-policy-trigger').tooltip({
+                offset: [-240, -310],
                 position: 'center left',
                 effect: 'slide',
                 direction: 'left',

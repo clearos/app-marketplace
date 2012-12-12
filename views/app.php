@@ -18,8 +18,8 @@
 
 $this->lang->load('base');
 $this->lang->load('marketplace');
-$this->load->view('marketplace/banner');
 
+echo "<div class='ui-widget marketplace-footer'></div>";
 echo "<div id='app_overview' style='text-align: center; padding: 60px 10px 30px 10px;'>";
 echo lang('marketplace_loading');
 echo "<div style='padding: 10px 0px 10px 0px;'>" . loading() . "</div>";
@@ -68,10 +68,10 @@ $tabinfo['overview']['content'] =
     "        <div class='app_actions' id='a_upgrade' style='display: none; padding-top: 5px;'>" .
     form_submit_custom('but_upgrade', lang('marketplace_install_upgrade'), 'high', array ('id' => 'indiv_upgrade')) .
     "        </div>" .
-    "        <div class='app_actions' id='a_repo' style='display: none; padding-top: 5px;'>" .
+    "        <div class='app_actions' id='a_repo' style='display: none; padding-top: 5px; margin-left: 2px;'>" .
     anchor_custom('/app/software_repository/index/detailed', lang('marketplace_enable_repo'), 'high', array('id' => 'indiv_repo')) .
     "        </div>" .
-    "        <div class='app_actions' id='a_configure' style='display: none; padding-top: 5px;'>" .
+    "        <div class='app_actions' id='a_configure' style='display: none; padding-top: 5px; margin-left: 2px;'>" .
     anchor_custom('/app/' . $basename, lang('base_configure'), 'high', array('id' => 'indiv_configure')) .
     "        </div>" .
     "        <div class='app_actions' id='a_buy' style='display: none; padding-top: 5px;'>" .
@@ -79,6 +79,9 @@ $tabinfo['overview']['content'] =
     "        </div>" .
     "        <div class='app_actions' id='a_install' style='display: none; padding-top: 5px;'>" .
     form_submit_custom('but_install', lang('marketplace_download_and_install'), 'high', array ('id' => 'indiv_install')) .
+    "        </div>" .
+    "        <div class='app_actions' id='a_uninstall' style='display: none; padding-top: 5px; margin-left: 2px;'>" .
+    anchor_custom('/app/marketplace/uninstall/' . $basename, lang('marketplace_uninstall'), 'high', array('id' => 'undiv_uninstall')) .
     "        </div>" .
     "      </div>" .
     "      <div style='padding: 5px 0px 15px 0px;'>" . strtoupper(lang('marketplace_about_this_app')) . "</div>" .
@@ -95,7 +98,7 @@ $tabinfo['overview']['content'] =
     "        <div style='padding: 0px 0px 10px 0px;' id='app_latest_release_date'></div>" .
     "      </div>" .
     "      <div id='field_support_policy' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_app_supported')) . ":" .
-    "        <div style='padding: 0px 0px 25px 0px;' id='app_support_policy'></div>" .
+    "        <div style='padding: 0px 0px 10px 0px;' id='app_support_policy'></div>" .
     "      </div>" .
     "      <div id='field_repo' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_software_repo')) . ":" .
     "        <div style='padding: 0px 0px 10px 0px;' id='app_repo'></div>" .

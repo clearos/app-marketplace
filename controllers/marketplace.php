@@ -120,6 +120,40 @@ class Marketplace extends ClearOS_Controller
     }
 
     /**
+     * Marketplace install controller
+     *
+     * @param String $basename    app basename
+     * @param String $confirm_key confirmation key
+     *
+     * @return view
+     */
+
+    function uninstall($basename, $confirm_key = NULL)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        clearos_load_language('marketplace');
+        $this->load->library('marketplace/Marketplace');
+
+        if ($confirm_key == $this->session->userdata('app_delete_key')) {
+            redirect('/marketplace');
+            // TODO
+            return;
+        }
+
+        $data = array(
+            'prefix' => Market::APP_PREFIX,
+            'basename' => $basename
+        );
+    
+        $data['app_delete_key'] = rand(0, 10000);
+        $this->session->set_userdata(array('app_delete_key' => $data['app_delete_key']));
+        $data['apps'] = $this->marketplace->get_app_deletion_dependancies($basename);
+
+        $this->page->view_form('marketplace/uninstall', $data, lang('marketplace_uninstall'));
+    }
+
+    /**
      * Marketplace settings controller
      *
      * @return view

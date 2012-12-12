@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Marketplace banner view.
+ * Marketplace filter view.
  *
  * @category   Apps
  * @package    Marketplace

@@ -52,7 +52,7 @@ $app['core_requires'] = array(
     'app-registration-core => 1:1.2.4',
     'app-base-core => 1:1.2.0',
     'yum-marketplace-plugin',
-    'theme-default >= 6.3.8',
+    'theme-default >= 6.4.7',
     'clearos-release-jws >= 1.1'
 );
 
@@ -67,6 +67,12 @@ $app['core_file_manifest'] = array(
         'config_params' => 'noreplace',
     )
 );
+
 $app['core_directory_manifest'] = array(
    '/var/clearos/marketplace' => array('mode' => '755', 'owner' => 'webconfig', 'group' => 'webconfig')
+);
+
+$app['delete_dependency'] = array(
+    'app-base',
+    'app-dropbox'
 );

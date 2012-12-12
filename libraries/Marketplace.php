@@ -793,7 +793,7 @@ class Marketplace extends Rest
             $shell = new Shell();
             $exitcode = $shell->execute(
                 self::COMMAND_RPM,
-                "-qa --queryformat \"%{NAME}|%{VERSION}|%{RELEASE}\\n\"| grep ^" . self::APP_PREFIX,
+                "-qa --queryformat \"%{NAME}|%{VERSION}|%{RELEASE}|%{SUMMARY}|%{SIZE}\\n\"| grep ^" . self::APP_PREFIX,
                 FALSE
             );
             if ($exitcode != 0)
@@ -801,7 +801,12 @@ class Marketplace extends Rest
             $rows = $shell->get_output();
             foreach ($rows as $row) {
                 $parts = explode("|", $row); 
-                $list[$parts[0]] = array('version' => $parts[1], 'release' => $parts[2]);
+                $list[$parts[0]] = array(
+                    'version' => $parts[1],
+                    'release' => $parts[2],
+                    'summary' => $parts[3],
+                    'size' => $parts[4]
+                );
             }
             return $list;
         } catch (Engine_Exception $e) {
@@ -810,6 +815,44 @@ class Marketplace extends Rest
 
     }
 
+    /**
+     * Get app dependancies for delete
+     *
+     * @param String $basename basename
+     *
+     * @return array
+     */
+
+    function get_app_deletion_dependancies($basename)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        try {
+            // Always include app and core
+            $list = array(
+                Marketplace::APP_PREFIX . $basename => array(),
+                Marketplace::APP_PREFIX . $basename . '-core' => array()
+            );
+            $app_base = clearos_app_base($basename);
+
+            $info_file = $app_base . '/deploy/info.php';
+
+            if (file_exists($info_file)) {
+
+                // Load metadata file
+                include $info_file;
+
+                if (isset($app['delete_dependency']))
+                    $list = array_merge($list, $app['delete_dependency']);
+            }
+            $installed_apps = $this->get_installed_apps();
+            $result = array_intersect_key($installed_apps, $list);
+            return $result;
+
+        } catch (Engine_Exception $e) {
+            throw new Engine_Exception(clearos_exception_message($e), CLEAROS_WARNING);
+        }
+    }
     ///////////////////////////////////////////////////////////////////////////////
     // P R I V A T E   M E T H O D S
     ///////////////////////////////////////////////////////////////////////////////
