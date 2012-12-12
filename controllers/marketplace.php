@@ -151,9 +151,15 @@ class Marketplace extends ClearOS_Controller
             'basename' => $basename
         );
     
-        $data['app_delete_key'] = rand(0, 10000);
-        $this->session->set_userdata(array('app_delete_key' => $data['app_delete_key']));
-        $data['apps'] = $this->marketplace->get_app_deletion_dependancies($basename);
+        try {
+            $data['apps'] = $this->marketplace->get_app_deletion_dependancies($basename);
+            $data['app_delete_key'] = rand(0, 10000);
+            $this->session->set_userdata(array('app_delete_key' => $data['app_delete_key']));
+        } catch (Exception $e) {
+            $this->page->set_message(clearos_exception_message($e), 'warning');
+            redirect('/marketplace/view/' . $basename);
+            return;
+        }
 
         $this->page->view_form('marketplace/uninstall', $data, lang('marketplace_uninstall'));
     }

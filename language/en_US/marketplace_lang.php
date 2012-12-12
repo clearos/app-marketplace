@@ -251,3 +251,4 @@ $lang['marketplace_confirm_uninstall'] = 'Confirm Uninstall';
 $lang['marketplace_unable_to_delete_app'] = 'The following error occurred while attempting to delete the app';
 $lang['marketplace_delete_dependencies'] = 'The app you have selected to delete may have dependencies on other packages that will also be deleted from your system.  These dependencies are listed in the table below.';
 $lang['marketplace_app_deleted'] = 'The following app and its dependencies has been deleted';
+$lang['marketplace_core_app_cannot_delete'] = 'This app has been designated core to the system.  You cannot uninstall it from the Marketplace.';

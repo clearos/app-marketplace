@@ -868,6 +868,8 @@ class Marketplace extends Rest
 
                 if (isset($app['delete_dependency']))
                     $list = array_merge($list, array_flip($app['delete_dependency']));
+                else
+                    throw new Engine_Exception(lang('marketplace_core_app_cannot_delete'), CLEAROS_WARNING);
             }
             $installed_apps = $this->get_installed_apps();
             $result = array_intersect_key($installed_apps, $list);
