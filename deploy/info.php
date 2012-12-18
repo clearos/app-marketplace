@@ -52,7 +52,7 @@ $app['core_requires'] = array(
     'app-registration-core => 1:1.2.4',
     'app-base-core => 1:1.2.0',
     'yum-marketplace-plugin',
-    'theme-default >= 6.4.7',
+    'theme-default >= 6.4.8',
     'clearos-release-jws >= 1.1'
 );
 
