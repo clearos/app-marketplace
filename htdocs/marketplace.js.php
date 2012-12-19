@@ -560,8 +560,9 @@ function get_app_details(id) {
                 // A non-zero display_mask means the app is not available to install
             } else if (data.installed && data.up2date) {
                 $('#a_configure').show();
-                if (!data.no_uninstall)
-                    $('#a_uninstall').show();
+                // TODO - Remove quotes to enable uninstall feature
+                //if (!data.no_uninstall)
+                //    $('#a_uninstall').show();
             } else if (!data.repo_enabled) {
                 $('#a_repo').show();
                 // tack on repo name to href for repo
@@ -569,8 +570,9 @@ function get_app_details(id) {
             } else if (data.installed) {
                 $('#a_upgrade').show();
                 $('#a_configure').show();
-                if (!data.no_uninstall)
-                    $('#a_uninstall').show();
+                // TODO - Remove quotes to enable uninstall feature
+                //if (!data.no_uninstall)
+                //    $('#a_uninstall').show();
             } else if (data.pricing.exempt && data.pricing.unit_price != 0) {
                 $('#a_install').show();
             } else if (data.pricing.unit_price != 0) {
