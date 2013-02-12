@@ -85,19 +85,13 @@ function update_install_form(data) {
     }
     if (data.code == 0) {
         if ($('#total').val() > 0) {
-            // Monthly may be restricted
-            if (data.monthly_billing_cycle != undefined) {
-                $('#r_monthly_bill_cycle').show();
-                $('#monthly_bill_cycle').html($.datepicker.formatDate('MM d, yy', new Date(data.monthly_billing_cycle)));
-                $('#r_monthly_bill_cycle').show();
-            }
-            $('#r_annual_bill_cycle').show();
-            if (data.annual_evaluation) {
-                $('#annual_bill_cycle').html('" . lang('marketplace_not_applicable') . " - " . lang('marketplace_trial_in_progress') . "');
+            $('#r_bill_cycle').show();
+            if (data.evaluation) {
+                $('#bill_cycle').html('" . lang('marketplace_not_applicable') . " - " . lang('marketplace_trial_in_progress') . "');
                 $('#r_notes').show();
                 $('#notes').html('<div>" . lang('marketplace_note_evaluation_and_payment') . "</div>');
             } else {
-                $('#annual_bill_cycle').html($.datepicker.formatDate('MM d, yy', new Date(data.annual_billing_cycle)));
+                $('#bill_cycle').html($.datepicker.formatDate('MM d, yy', new Date(data.billing_cycle)));
             }
             
             if ($('#has_prorated').val() > 0) {
@@ -127,7 +121,7 @@ function update_install_form(data) {
                 }
                 // TODO Should use Jquery number formatter plugin
                 $('#po_available').html(data.po_currency + ' ' + data.po_available.toFixed(2)
-                    + ' " . lang('marketplace_limit') . "' + ($('#total').val() > data.po_available ? ' - " .
+                    + ' " . lang('marketplace_limit') . "' + ($('#total').val() > data.po_available.toFixed(2).toLocaleString() ? ' - " .
                     lang('marketplace_insufficient_funds') . "' : ''));
             } else {
                 $('#option_po').hide();
@@ -142,7 +136,7 @@ function update_install_form(data) {
                         $('#debit').attr('checked', true);
                 }
                 // TODO Should use Jquery number formatter plugin
-                $('#debit_available').html(data.debit_currency + ' ' + data.debit_available.toFixed(2)
+                $('#debit_available').html(data.debit_currency + ' ' + data.debit_available.toFixed(2).toLocaleString()
                     + ($('#total').val() > data.debit_available ? ' - " .
                     lang('marketplace_insufficient_funds') . "' : ''));
             } else {
@@ -151,11 +145,11 @@ function update_install_form(data) {
             
             // Show/hide PO input
             toggle_payment_display();
-            if ((!has_valid_payment_method || !data.verify_contact) && !(data.annual_evaluation || data.monthly_evaluation)) {
+            if ((!has_valid_payment_method || !data.verify_contact) && !data.evaluation) {
                 $('#payment_method').html('" . lang('marketplace_not_applicable') . "');
                 clearos_sdn_account_setup(data.sdn_url_payment, data.sdn_username, data.sdn_device_id);
             } else {
-                if (data.annual_evaluation || data.monthly_evaluation) {
+                if (data.evaluation) {
                     $('#payment_method').html('" . lang('marketplace_not_applicable') . "');
                     $('#r_eval_install').show();
                 } else {

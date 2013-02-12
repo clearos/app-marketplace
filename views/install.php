@@ -38,33 +38,34 @@ echo "<tr id='r_account' class='theme-fieldview'>" .
     "  <td class='theme-field-left'>" . lang('marketplace_account') . "</td>" .
     "  <td class='theme-field-right'><span id='display_sdn_username'>" . loading() . "</span></td>" .
     "</tr>" .
-    "<tr id='r_monthly_bill_cycle' class='theme-fieldview' style='display: none;'>" .
-    "  <td class='theme-field-left'>" . lang('marketplace_monthly_billing_cycle') . "</td>" .
-    "  <td class='theme-field-right'><span id='monthly_bill_cycle'></span></td>" .
-    "</tr>" .
-    "<tr id='r_annual_bill_cycle' class='theme-fieldview' style='display: none;'>" .
-    "  <td class='theme-field-left'>" . lang('marketplace_annual_billing_cycle') . "</td>" .
-    "  <td class='theme-field-right'><span id='annual_bill_cycle'></span></td>" .
+    "<tr id='r_bill_cycle' class='theme-fieldview' style='display: none;'>" .
+    "  <td class='theme-field-left'>" . lang('marketplace_billing_cycle') . "</td>" .
+    "  <td class='theme-field-right'><span id='bill_cycle'></span></td>" .
     "</tr>" .
     "<tr id='r_payment_method' class='theme-fieldview' style='display: none;'>" .
     "  <td valign='top' class='theme-field-left'>" . lang('marketplace_payment_method') . "</td>" .
-    "  <td class='theme-field-right'><span id='payment_method'>" .
+    "  <td class='theme-field-right'><div id='payment_method'>" .
     "    <div id='payment_processing' style='display: none;'></div>" .
     "    <div id='payment_options'>" .
-    "      <div id='option_preauth'>" .
-    "        <input type='radio' class='payment_option' name='payment_method' value='preauth' id='preauth' onclick='toggle_payment_display()'>" .
-    "        <label for='preauth' style='padding-left: 5px;'>" . lang('marketplace_credit_card') . " (<span id='card_number'></span>)</label>" .
+    "      <div id='option_preauth' style='height: 22px;'>" .
+    "        <input style='margin: 0px; float: left;' type='radio' class='payment_option' name='payment_method' value='preauth' id='preauth' onclick='toggle_payment_display()'>" .
+    "        <div style='float:left; padding-top: 1px;'>" .
+    "          <label for='preauth' style='padding-left: 5px;'>" . lang('marketplace_credit_card') . " (<span id='card_number'></span>)</label>" .
+    "        </div>" .
     "      </div>" .
-    "      <div id='option_po'>" .
-    "        <input type='radio' class='payment_option' name='payment_method' value='po' id='po' onclick='toggle_payment_display()'>" .
-    "        <label for='po' style='padding-left: 5px;'>" . lang('marketplace_purchase_order') . " (<span id='po_available'></span>)</label> " .
-    "        <input type='text' id='po_number' value='' style='width:120px;' name='po_number' />" .
+    "      <div id='option_po' style='clear: left; height: 22px;'>" .
+    "        <input style='float: left; margin: 0px;' type='radio' class='payment_option' name='payment_method' value='po' id='po' onclick='toggle_payment_display()'>" .
+    "        <div style='float:left; padding-top: 1px;'><label for='po' style='padding-left: 5px;'>" . lang('marketplace_purchase_order') . " (<span id='po_available'></span>)</label></div> " .
+    "        <input type='text' id='po_number' value='' style='width:120px; margin: -1px 0px 0px 5px;' name='po_number' />" .
     "      </div>" .
-    "      <div id='option_debit'><input class='payment_option' type='radio' name='payment_method' value='debit' id='debit' onclick='toggle_payment_display()'>" .
-    "        <label for='debit' style='padding-left: 5px;'>" . lang('marketplace_debit') . " (<span id='debit_available'></span>)</label>" .
+    "      <div id='option_debit' style='clear:left; height: 22px;'>" .
+    "        <input style='margin: 0px; float: left;' class='payment_option' type='radio' name='payment_method' value='debit' id='debit' onclick='toggle_payment_display()'>" .
+    "        <div style='float:left; padding-top: 1px;'>" .
+    "          <label for='debit' style='padding-left: 5px;'>" . lang('marketplace_debit') . " (<span id='debit_available'></span>)</label>" .
+    "        </div>" .
     "      </div>" .
     "    </div>" .
-    "  </span></td>" .
+    "  </div></td>" .
     "</tr>" .
     "<tr id='r_notes' class='theme-fieldview' style='display: none;'>" .
     "  <td class='theme-field-left'>" . lang('marketplace_notes') . "</td>" .
@@ -117,9 +118,9 @@ foreach ($items as $item) {
     $row['action'] = '/app/marketplace/edit/';
     $row['anchors'] = $detail_buttons;
 
-    $discount = $item->get_discount() . '%';
+    $discount = number_format($item->get_discount(), 1) . '%';
     $prorated = $item->get_prorated();
-    $extended = $item->get_currency() . ' ' . money_format('%!i', $item->get_unit_price() * (1 - $item->get_discount()/100));
+    $extended = $item->get_currency() . ' ' . money_format('%!i', $item->get_quantity() * $item->get_unit_price() * (1 - $item->get_discount()/100));
     $unit_price = $item->get_currency() . ' ' . money_format('%!i', $item->get_unit_price());
     $unit = $item->get_display_unit();
     if ($item->get_exempt() && $item->get_unit_price() > 0 || $item->get_unit_price() == 0) {
@@ -141,7 +142,7 @@ foreach ($items as $item) {
         
     if ($prorated)
         $has_prorated = TRUE;
-    $unit = ($item->get_exempt() && $item->get_unit_price() > 0 ? '' : ($item->get_unit() < 100 ? '' : ' ' . $item->get_display_unit()));
+    $unit = ($item->get_exempt() && $item->get_unit_price() > 0 ? '' : ($item->get_unit() < 100 ? '' : ' ' . preg_replace('/^\/\s*/', '', $item->get_display_unit())));
     $row['details'] = array (
         $item->get_description() . ($item->get_note() ? "<div>" . lang('marketplace_note') . ":  " . $item->get_note() . "</div>": ""), 
         $unit_price,

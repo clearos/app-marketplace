@@ -547,6 +547,8 @@ class Cart_Item extends Engine
 
         if ($this->item[$this->id]['unit'] == self::UNIT_EACH)
             return lang('marketplace_each');
+        else if ($this->item[$this->id]['unit'] == self::UNIT_MONTHLY)
+            return lang('marketplace_monthly');
         else if ($this->item[$this->id]['unit'] == self::UNIT_1_YEAR)
             return lang('marketplace_1_year');
         else if ($this->item[$this->id]['unit'] == self::UNIT_2_YEAR)
