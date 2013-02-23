@@ -876,10 +876,10 @@ function get_app_details(id) {
             $(function() {
                 // TODO - We need some PHP function to grab image path
                 $('#app_screenshots a').lightBox({
-                        imageLoading: '/themes/clearos6x/images/loading.gif',
-                        imageBtnPrev: '/themes/clearos6x/images/icon-back.png',
-                        imageBtnNext: '/themes/clearos6x/images/icon-continue.png',
-                        imageBtnClose: '/themes/clearos6x/images/transparent.gif'
+                        imageLoading: '/themes/default/images/loading.gif',
+                        imageBtnPrev: '" . clearos_app_htdocs('marketplace') . "/prev.png',
+                        imageBtnNext: '" . clearos_app_htdocs('marketplace') . "/next.png',
+                        imageBtnClose: '" . clearos_app_htdocs('marketplace') . "/close.png'
                     }
                 );
             });
