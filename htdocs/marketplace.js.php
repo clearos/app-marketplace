@@ -685,7 +685,7 @@ function get_app_details(id) {
                 $('#app_screenshots').append('<div>" . lang('marketplace_no_screenshots') . "</div>');
             for (index = 0 ; index < screenshots.length; index++) {
                 $('#app_screenshots').append('<div style=\'position: relative; width: 33%;'
-                    + 'float: left;\'><a href=\'/cache/screenshot-' + (index + 1) + '.png\' title=\''
+                    + 'float: left;\'><a href=\'/cache/screenshot-' + screenshots[index].id + '.png\' title=\''
                     + screenshots[index].caption + '\'><img id=\'screenshot-' + index + '\' '
                     + 'src=\'" . clearos_app_htdocs('marketplace') . "/placeholder.png\' '
                     + 'style=\'height:120; width: 120; padding-bottom: 10px;\' alt=\''
