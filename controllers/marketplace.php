@@ -47,8 +47,17 @@ class Marketplace extends ClearOS_Controller
         
         clearos_profile(__METHOD__, __LINE__);
 
-        clearos_load_language('marketplace');
+        $this->lang->load('marketplace');
         $this->load->library('marketplace/Marketplace');
+
+        // If wizard is running, go back to selection
+        if ($this->session->userdata('wizard')) {
+            if ($this->session->userdata('wizard_marketplace_mode'))
+                redirect('/marketplace/wizard/selection/' . $this->session->userdata('wizard_marketplace_mode'));
+            else
+                redirect('/marketplace/wizard');
+            return;
+        }
 
         // If yum is running, show progress
         $this->load->library('base/Yum');
@@ -58,9 +67,18 @@ class Marketplace extends ClearOS_Controller
         }
  
         $data['number_of_apps_to_display'] = $this->marketplace->get_number_of_apps_to_display();
+        $data['display_format'] = $this->marketplace->get_display_format();
 
         // Search and filter history
         $data['filter'] = $this->marketplace->get_search_history();
+
+        // If search string starts with ##_, reload page after resetting search string
+        $first = current($data['filter']);
+        if ($first['active'] && preg_match('/\d\d_.*/', $first['search'])) {
+            $this->marketplace->reset_search_criteria();
+            redirect('/marketplace/');
+            return;
+        }
 
         $this->page->view_form('marketplace', $data, lang('marketplace_marketplace'), array('type' => MY_Page::TYPE_SPOTLIGHT));
     }
@@ -110,6 +128,9 @@ class Marketplace extends ClearOS_Controller
         } catch (Exception $e) {
             $data['itemnotfound'] = clearos_exception_message($e);
         }
+
+        // Reset our Marketplace search so the last category is not displayed by default
+        $this->marketplace->reset_search_criteria();
 
         // Search and filter history
         $data['filter'] = $this->marketplace->get_search_history();
@@ -194,6 +215,7 @@ class Marketplace extends ClearOS_Controller
         //---------------------
          
         $this->form_validation->set_policy('number_of_apps_to_display', 'marketplace/Marketplace', 'validate_number_of_apps_to_display', TRUE);
+        $this->form_validation->set_policy('display_format', 'marketplace/Marketplace', 'validate_display_format', TRUE);
         $this->form_validation->set_policy('pseudonym', 'marketplace/Marketplace', 'validate_pseudonym', TRUE);
         $this->form_validation->set_policy('hide_support_policy', 'marketplace/Marketplace', 'validate_hide_support_policy', FALSE);
         $this->form_validation->set_policy('hide_recommended_apps', 'marketplace/Marketplace', 'validate_hide_recommended_apps', FALSE);
@@ -204,6 +226,7 @@ class Marketplace extends ClearOS_Controller
         if (($this->input->post('submit') && $form_ok)) {
             try {
                 $this->marketplace->set_number_of_apps_to_display($this->input->post('number_of_apps_to_display'));
+                $this->marketplace->set_display_format($this->input->post('display_format'));
                 $this->marketplace->set_pseudonym($this->input->post('pseudonym'));
                 $this->marketplace->set_hide_support_policy($this->input->post('hide_support_policy'));
                 $this->marketplace->set_hide_recommended_apps($this->input->post('hide_recommended_apps'));
@@ -219,6 +242,7 @@ class Marketplace extends ClearOS_Controller
 
         try {
             $data['pseudonym'] = $this->marketplace->get_pseudonym();
+            $data['display_format'] = $this->marketplace->get_display_format();
             $data['number_of_apps_to_display'] = $this->marketplace->get_number_of_apps_to_display();
             $data['cache_size'] = $this->marketplace->get_cache_size();
             $data['hide_support_policy'] = $this->marketplace->get_hide_support_policy();

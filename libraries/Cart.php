@@ -186,7 +186,8 @@ class Cart extends Engine
             foreach ($rules['incompatible'][$item->get_id()] as $rule) {
                 if (in_array($rule, array_keys($installed_apps)))
                     throw new Engine_Exception(
-                        sprintf(lang('marketplace_apps_rule_incompatible_with_installed'),
+                        sprintf(
+                            lang('marketplace_apps_rule_incompatible_with_installed'),
                             '<b>' . $item->get_description() . '</b>',
                             '<b>' . $rule . '</b>'
                         ),
@@ -198,7 +199,8 @@ class Cart extends Engine
                 if (in_array($item->get_id(), $rule)) {
                     if (in_array($key, array_keys($installed_apps)))
                         throw new Engine_Exception(
-                            sprintf(lang('marketplace_apps_rule_incompatible_with_installed'),
+                            sprintf(
+                                lang('marketplace_apps_rule_incompatible_with_installed'),
                                 '<b>' . $item->get_description() . '</b>',
                                 '<b>' . $key . '</b>'
                             ),
@@ -212,7 +214,8 @@ class Cart extends Engine
                 foreach ($rules['incompatible'][$item->get_id()] as $rule) {
                     if ($cart_item->get_id() == $rule)
                         throw new Engine_Exception(
-                            sprintf(lang('marketplace_apps_rule_incompatible'),
+                            sprintf(
+                                lang('marketplace_apps_rule_incompatible'),
                                 '<b>' . $item->get_description() . '</b>',
                                 '<b>' . $cart_item->get_description() . '</b>'
                             ),
@@ -379,15 +382,13 @@ class Cart extends Engine
         try {
             $file = new File(CLEAROS_CACHE_DIR . "/cart." . $this->CI->session->userdata['sdn_rest_id']);
 
-            if ($file->exists())
-                $file->delete();
+            if (!$file->exists())
+                $file->create('webconfig', 'webconfig', 600);
 
-            $file->create('webconfig', 'webconfig', 600);
-            $lines = '';
+            $lines = array();
             foreach ($this->contents as $lineitem)
-                $lines .= serialize($lineitem) . "\n";
-
-            $file->add_lines($lines);
+                $lines[] = serialize($lineitem);
+            $file->dump_contents_from_array($lines);
 
             // Force reload
             $this->is_loaded = FALSE;

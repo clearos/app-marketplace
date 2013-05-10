@@ -31,6 +31,46 @@ if (preg_match('/\/wizard\//', $_SERVER["PHP_SELF"]))
 else
     $display = 'inline';
 
+$buttons = array(
+    anchor_custom('/app/marketplace/install', lang('marketplace_install'), 'high'),
+    anchor_cancel('/app/marketplace/select/cancel')
+);
+
+if ($mode == 'qsf-tool') {
+
+    echo "
+    <div style='display: $display;'>
+      <div id='theme-left-menu-top'></div>
+      <div id='marketplace-left-menu'>
+        <h3 class='theme-menu-item-active' style='font-size: 11pt; font-weight: normal; margin-top: 0px;'>" . lang('base_help') . "</h3>
+        <h3 style='color: #666666; font-size: 13px; font-weight: bold; margin-top: 15px;'>" . lang('marketplace_qsf') . "</h3>
+        <p style='font-size: 13px;'>" . lang('marketplace_mode_qsf_help') . "</p>
+        <h3 style='color: #666666; font-size: 13px; font-weight: bold; margin-top: 15px;'>" . lang('marketplace_best_practices') . "</h3>
+        <p style='font-size: 13px;'>" . lang('marketplace_mode_qsf_best_practices_help') . "</p>
+        <div style='text-align: center; margin: 10px 0px;'>" .
+        field_button_set($buttons) . "
+        </div>
+      </div>
+    </div>
+    ";
+    return;
+} else if ($mode == 'feature-wizard') {
+    echo "
+    <div style='display: $display;'>
+        <div id='theme-left-menu-top'></div>
+        <div id='marketplace-left-menu'>
+            <h3 class='theme-menu-item-active' style='font-size: 11pt; font-weight: normal; margin-top: 0px;'>" . lang('base_help') . "</h3>
+            <h3 style='color: #666666; font-size: 13px; font-weight: bold; margin-top: 15px;' id='inline-help-title-0'></h3>
+            <p style='font-size: 13px;' id='inline-help-content-0'></p>
+        <div style='text-align: center; margin: 10px 0px;'>" .
+        field_button_set($buttons) . "
+        </div>
+        </div>
+    </div>
+    ";
+    return;
+}
+
 $search_string = '';
 if (isset($filter) && is_array($filter)) {
     $first = current($filter);
@@ -43,13 +83,6 @@ if (isset($filter) && is_array($filter)) {
         $intro_select[$first['intro']] = " SELECTED";
     }
 }
-echo "
-<div style='display: $display;'>
-    <div id='theme-left-menu-top'></div>
-    <div id='theme-left-menu'>
-        <h3 class='theme-left-menu-category'><a href='#'>" . lang('marketplace_marketplace_options') . "</a></h3>
-        <div>
-";
 
 echo "
 <style>
@@ -74,10 +107,12 @@ echo "
         var availableTags = [
 ";
 if (isset($filter) && is_array($filter)) {
-    foreach ($filter as $entry )
+    foreach ($filter as $entry ) {
+        if (preg_match('/\d\d_.*/', $entry['search']))
+            continue;
         echo "'" . addslashes($entry['search']) . "',\n";
+    }
 }
-
 
 echo "
         ];
@@ -85,9 +120,15 @@ echo "
             source: availableTags
         });
     });
-</script>
+</script>";
 
-" . form_open('/marketplace/search') . "
+echo "
+<div style='display: $display;'>
+    <div id='theme-left-menu-top'></div>
+    <div id='theme-left-menu'>
+        <h3 class='theme-left-menu-category'><a href='#'>" . lang('marketplace_marketplace_options') . "</a></h3>
+        <div>" .
+    form_open('/marketplace/search') . "
     <h3>" . lang('marketplace_search') . "</h3>
     <div style='margin: 6px 24px 10px 0px; border: solid 1px #D1D3D4;'>
       <input type='text' name='search' id='search' value='$search_string' class='marketplace-search-no-focus' onfocus='clear_entry();' style='height: 20px; border: none; float: left; width: 140px; font-size: 8pt; padding-left:3px;' /><div class='marketplace-search-bar'></div>
@@ -123,11 +164,15 @@ echo "
     </div>
     <input type='hidden' name='" . $this->security->csrf_token_name . "' value='" . $this->security->csrf_hash . "' />  
 ";
-echo form_close();
-
-echo form_open('/marketplace/search');
-echo "<div style='text-align: center; width: 160px;' class='ui-corner-tl'>";
-echo form_submit_custom('reset_filter', lang('marketplace_reset_filters'), 'high');
+echo "<div style='text-align: center; width: 160px; margin-top: 5px;'>";
+echo anchor_custom('/app/marketplace/search/reset_filter', lang('marketplace_reset_filters'), 'high');
+echo "</div>";
+echo "<h3 style='clear: both;'>" . lang('marketplace_tools') . "</h3>";
+echo "<div style='text-align: center; width: 160px;'>";
+echo anchor_custom('/app/marketplace/select', lang('marketplace_feature_wizard'), 'high');
+echo "<div style='margin-top: 5px;'>";
+echo anchor_custom('/app/marketplace/qsf', lang('marketplace_quick_select_file'), 'high');
+echo "</div>";
 echo "</div>";
 echo form_close();
 echo "

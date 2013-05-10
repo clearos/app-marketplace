@@ -149,6 +149,7 @@ class Ajax extends ClearOS_Controller
 
             $max = $this->input->post('max');
             $offset = $this->input->post('offset');
+            $search_reset = $this->input->post('search_reset');
 
             // On searches or filtering, we grab all apps, so override max, offset will be ignored 
             $filter = $this->marketplace->get_search_criteria();
@@ -255,15 +256,15 @@ class Ajax extends ClearOS_Controller
             include_once clearos_app_base('marketplace') . '/libraries/Cart_Item.php';
             $apps = json_decode($this->input->post('apps')); 
             // Reverse the array so dependent apps (eg. Kaspersky 50 user) gets removed first
-            if ($this->input->post('state') == 'none')
+            if ($this->input->post('toggle') == 'none')
                 $apps = array_reverse($apps);
             foreach ($apps as $index => $app) {
-                if ($this->input->post('state') == 'all') {
-                    $cart_obj = new Cart_Item(Marketplace::APP_PREFIX . preg_replace("/_/", "-", $app));
+                if ($app->state == 1) {
+                    $cart_obj = new Cart_Item(Marketplace::APP_PREFIX . preg_replace("/_/", "-", $app->id));
                     $cart_obj->unserialize($this->session->userdata('sdn_rest_id'));
                     $this->cart->add_item($cart_obj);
                 } else {
-                    $this->cart->remove_item(Marketplace::APP_PREFIX . preg_replace("/_/", "-", $app));
+                    $this->cart->remove_item(Marketplace::APP_PREFIX . preg_replace("/_/", "-", $app->id));
                 }
                 unset($apps[$index]);
             }
@@ -571,6 +572,9 @@ class Ajax extends ClearOS_Controller
             // Clear cache to force fetching new status
             $this->marketplace->delete_cache();
 
+            // Clear app cache install list
+            $this->marketplace->delete_cached_app_install_list();
+
             // Return all OK - FYI - Invoice # (if applicable) is available here as $response->invoice
             echo json_encode(Array('code' => 0));
         } catch (Exception $e) {
@@ -620,6 +624,62 @@ class Ajax extends ClearOS_Controller
                     'errmsg' => lang('marketplace_no_data')
                 )
             );
+        } catch (Exception $e) {
+            echo json_encode(Array('code' => clearos_exception_code($e), 'errmsg' => clearos_exception_message($e)));
+        }
+    }
+
+
+    /**
+     * Marketplace search controller
+     *
+     * @return view
+     */
+
+    function set_search()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        header('Cache-Control: no-cache, must-revalidate');
+        header('Content-type: application/json');
+
+        // Load dependencies
+        //------------------
+
+        clearos_load_language('marketplace');
+        $this->lang->load('marketplace');
+        $this->load->library('marketplace/Marketplace');
+
+        // Load view
+        //----------
+        $query = array(
+            'search' => '',
+            'category' => 'all',
+            'price' => 'all',
+            'intro' => 'all',
+            'status' => 'all'
+        );
+
+        if ($this->input->post('search'))
+            $query['search'] = $this->input->post('search');
+        if ($this->input->post('category'))
+            $query['category'] = $this->input->post('category');
+        if ($this->input->post('price'))
+            $query['price'] = $this->input->post('price');
+        if ($this->input->post('intro'))
+            $query['intro'] = $this->input->post('intro');
+        if ($this->input->post('status'))
+            $query['status'] = $this->input->post('status');
+
+        try {
+            $this->marketplace->set_search_criteria (
+                $query['search'],
+                $query['category'],
+                $query['price'],
+                $query['intro'],
+                $query['status']
+            );
+            echo json_encode(array('code' => 0));
         } catch (Exception $e) {
             echo json_encode(Array('code' => clearos_exception_code($e), 'errmsg' => clearos_exception_message($e)));
         }

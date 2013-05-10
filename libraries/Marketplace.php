@@ -47,6 +47,8 @@ use \clearos\apps\accounts\Accounts_Configuration as Accounts_Configuration;
 use \clearos\apps\mode\Mode_Engine as Mode_Engine;
 use \clearos\apps\mode\Mode_Factory as Mode_Factory;
 use \clearos\apps\clearcenter\Rest as Rest;
+use \clearos\apps\Marketplace\Cart as Cart;
+use \clearos\apps\Marketplace\Cart_Item as Cart_Item;
 
 clearos_load_library('base/Configuration_File');
 clearos_load_library('base/File');
@@ -57,6 +59,8 @@ clearos_load_library('accounts/Accounts_Configuration');
 clearos_load_library('mode/Mode_Engine');
 clearos_load_library('mode/Mode_Factory');
 clearos_load_library('clearcenter/Rest');
+clearos_load_library('marketplace/Cart');
+clearos_load_library('marketplace/Cart_Item');
 
 // Exceptions
 //-----------
@@ -91,7 +95,10 @@ class Marketplace extends Rest
     ///////////////////////////////////////////////////////////////////////////////
 
     const FILE_CONFIG = '/etc/clearos/marketplace.conf';
-    const FILE_SEARCH_HISTORY= 'search_history';
+    const FILE_SEARCH_HISTORY = 'search_history';
+    const FILE_INSTALLED_APPS = 'installed_apps';
+    const FILE_CUSTOM_REPOS = '/var/clearos/marketplace/customs_repos';
+    const FILE_QSF = 'qsf.txt';
     const COMMAND_RPM = '/bin/rpm';
     const FOLDER_MARKETPLACE = '/var/clearos/marketplace';
     const MAX_RECORDS = 10;
@@ -160,11 +167,11 @@ class Marketplace extends Rest
     /**
      * Set the search/filter criteria.
      *
-     * @param string $search search
+     * @param string $search   search
      * @param string $category category
-     * @param string $price price
-     * @param string $intro intro
-     * @param string $status status
+     * @param string $price    price
+     * @param string $intro    intro
+     * @param string $status   status
      *
      * @return void
      * @throws Engine_Exception
@@ -191,9 +198,12 @@ class Marketplace extends Rest
                 'time' => time()
             );
 
-            $file = new File(self::FOLDER_MARKETPLACE . '/' . self::FILE_SEARCH_HISTORY . '.' . $this->CI->session->userdata['username']);
+            $file = new File(
+                self::FOLDER_MARKETPLACE . '/' . self::FILE_SEARCH_HISTORY . '.' .
+                $this->CI->session->userdata['username']
+            );
             if (!$file->exists())
-                $file->create('webconfig','webconfig', '0644');
+                $file->create('webconfig', 'webconfig', '0644');
             $contents = $file->get_contents_as_array();
 
             $index = 0;
@@ -219,7 +229,8 @@ class Marketplace extends Rest
             $file->dump_contents_from_array($contents);
 
             try {
-                if ($search != '')
+                // Don't send request for searches on tags starting with a number (eg. 10_google_apps)
+                if ($search != '' && !preg_match('/^\d\d.*$/', $search))
                     $this->request('marketplace', 'search', $extras);
             } catch (Exception $ignore) {
                 // No need to bail
@@ -243,7 +254,7 @@ class Marketplace extends Rest
         try {
             $file = new File(self::FOLDER_MARKETPLACE . '/' . self::FILE_SEARCH_HISTORY . '.' . $this->CI->session->userdata['username']);
             if (!$file->exists())
-                $file->create('webconfig','webconfig', '0644');
+                $file->create('webconfig', 'webconfig', '0644');
 
             $file->dump_contents_from_array(json_encode($this->filter_default));
         } catch (Exception $e) {
@@ -333,6 +344,24 @@ class Marketplace extends Rest
         } catch (Exception $e) {
             throw new Engine_Exception(clearos_exception_message($e), CLEAROS_ERROR);
         }
+    }
+
+    /**
+     * Set the display format.
+     *
+     * @param string $display_format display format
+     *
+     * @return void
+     * @throws Validation_Exception
+     */
+
+    function set_display_format($display_format)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        Validation_Exception::is_valid($this->validate_display_format($display_format));
+
+        $this->_set_parameter('display_format', $display_format);
     }
 
     /**
@@ -459,6 +488,29 @@ class Marketplace extends Rest
             $this->_load_config();
 
         return $this->config['number_of_apps_to_display'];
+    }
+
+    /**
+     * Get the default display format.
+     *
+     * @return String
+     */
+
+    function get_display_format()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        if (!$this->is_loaded)
+            $this->_load_config();
+
+        $display_format = $this->config['display_format'];
+        if ($display_format == NULL || !$display_format) {
+            if ($this->CI->session->userdata('sdn_username'))
+                $display_format = $this->CI->session->userdata('sdn_username');
+            else
+                $display_format = lang('marketplace_anonymous');
+        }
+        return $display_format;
     }
 
     /**
@@ -626,8 +678,6 @@ class Marketplace extends Rest
 
             $result = $this->request('marketplace', 'app_store_purchase', $extras);
 
-            $this->_save_to_cache($cachekey, $result);
-        
             return $result;
         } catch (Exception $e) {
             throw new Webservice_Exception(clearos_exception_message($e), CLEAROS_ERROR);
@@ -725,9 +775,8 @@ class Marketplace extends Rest
 
             $cachekey = __CLASS__ . '-' . __FUNCTION__ . '-' . $id; 
 
-            if (!$realtime && $this->_check_cache($cachekey)) {
+            if (!$realtime && $this->_check_cache($cachekey))
                 return $this->cache;
-            }
 
             $extras = array("id" => $id);
 
@@ -736,6 +785,84 @@ class Marketplace extends Rest
             return $result;
         } catch (Exception $e) {
             throw new Webservice_Exception(clearos_exception_message($e), CLEAROS_ERROR);
+        }
+    }
+
+    /**
+     * Set custom repos (from QSF file).
+     *
+     * @param String $repo repo name
+     *
+     * @return void
+     * @throws Engine_Exception
+     */
+
+    public function set_custom_repos($repo)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        try {
+            $file = new File(self::FILE_CUSTOM_REPOS . '.' . $this->CI->session->userdata['sdn_rest_id']);
+            if (!$file->exists())
+                $file->create('webconfig', 'webconfig', '640');
+
+            $lines = $file->get_contents_as_array();
+            if (!in_array($repo, $lines))
+                $file->add_lines(trim($repo) . "\n");
+        } catch (Exception $e) {
+            throw new Engine_Exception(clearos_exception_message($e), CLEAROS_ERROR);
+        }
+    }
+
+    /**
+     * Delete custom repos (from QSF file).
+     *
+     * @param $string $repo repo name
+     *
+     * @return void
+     * @throws Engine_Exception
+     */
+
+    public function delete_custom_repos($repo = NULL)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        try {
+            $file = new File(self::FILE_CUSTOM_REPOS . '.' . $this->CI->session->userdata['sdn_rest_id']);
+            if (!$file->exists()) {
+                return;
+            } else if ($file->exists() && $repo == NULL) {
+                $file->delete();
+                return;
+            }
+
+            $file->delete_lines("/^$repo$/");
+
+        } catch (Exception $e) {
+            throw new Engine_Exception(clearos_exception_message($e), CLEAROS_ERROR);
+        }
+    }
+
+    /**
+     * Get custom repos (from QSF file).
+     *
+     * @return array list of custom repos 
+     *
+     * @throws Engine_Exception
+     */
+
+    public function get_custom_repos()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        try {
+            $file = new File(self::FILE_CUSTOM_REPOS . '.' . $this->CI->session->userdata['sdn_rest_id']);
+            if (!$file->exists())
+                return array();
+
+            return $file->get_contents_as_array();
+        } catch (Exception $e) {
+            throw new Engine_Exception(clearos_exception_message($e), CLEAROS_ERROR);
         }
     }
 
@@ -756,7 +883,7 @@ class Marketplace extends Rest
 
         try {
 
-            $cache_time = 604800; // 1 week in seconds
+            $cache_time = 2592000; // 30 days
             $filename = CLEAROS_CACHE_DIR . "/" . $type . "-" . $id . ".png";
             $lastmod = @filemtime($filename);
             if ($lastmod && (time() - $lastmod < $cache_time)) {
@@ -779,16 +906,27 @@ class Marketplace extends Rest
     /**
      * Get a list of installed Marketplace apps.
      *
+     * @param boolean $realtime realtime force flag
+     *
      * @return array a list of installed apps
      *
      * @throws Engine_Exception
      */
 
-    public function get_installed_apps()
+    public function get_installed_apps($realtime = FALSE)
     {
         clearos_profile(__METHOD__, __LINE__);
 
         try {
+            // 5 minute cache time
+            $cache_time = 300;
+            $filename = CLEAROS_CACHE_DIR . "/" . self::FILE_INSTALLED_APPS;
+            $lastmod = @filemtime($filename);
+            if ($lastmod && (time() - $lastmod < $cache_time)) {
+                // Use cached file.
+                return unserialize(file_get_contents($filename));
+            }
+
             $list = array();
             $shell = new Shell();
             $exitcode = $shell->execute(
@@ -808,6 +946,7 @@ class Marketplace extends Rest
                     'size' => $parts[4]
                 );
             }
+            file_put_contents($filename, serialize($list));
             return $list;
         } catch (Engine_Exception $e) {
             throw new Engine_Exception(clearos_exception_message($e), CLEAROS_WARNING);
@@ -837,6 +976,26 @@ class Marketplace extends Rest
                 $err = $shell->get_last_output_line();
                 throw new Engine_Exception(lang('marketplace_unable_to_delete_app') . ': ' . $err . '.', CLEAROS_WARNING);
             }
+            $this->delete_cached_app_install_list();
+        } catch (Engine_Exception $e) {
+            throw new Engine_Exception(clearos_exception_message($e), CLEAROS_WARNING);
+        }
+    }
+
+    /**
+     * Delete cached app install list
+     *
+     * @return void
+     */
+
+    function delete_cached_app_install_list()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        try {
+            $file = new File(CLEAROS_CACHE_DIR . "/" . self::FILE_INSTALLED_APPS, TRUE);
+            if ($file->exists())
+                $file->delete();
         } catch (Engine_Exception $e) {
             throw new Engine_Exception(clearos_exception_message($e), CLEAROS_WARNING);
         }
@@ -879,6 +1038,179 @@ class Marketplace extends Rest
             throw new Engine_Exception(clearos_exception_message($e), CLEAROS_WARNING);
         }
     }
+
+    /**
+     * Put the quick setup file in the cache directory
+     *
+     * @param string $filename string QSF filename
+     *
+     * @return void
+     * @throws Engine_Exception, File_Not_Found_Exception
+     */
+
+    function set_qsf($filename)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        try {
+            $file = new File(CLEAROS_TEMP_DIR . '/' . $filename, TRUE);
+            if (!$file->exists())
+                throw new File_Not_Found_Exception(clearos_exception_message($e));
+
+            // Move uploaded file to cache
+            $file->move_to(self::FOLDER_MARKETPLACE . '/' . self::FILE_QSF);
+            $file->chown('root', 'root'); 
+            $file->chmod(600);
+            $lines = $file->get_contents_as_array();
+            $cart = new Cart();
+            $no_paid_apps = FALSE;
+            if (in_array('flag_no_paid'))
+                $no_paid_apps = TRUE;
+            foreach ($lines as $line) {
+                if (preg_match('/^\s*#.*/', $line)) {
+                    continue;
+                } else if (preg_match('/^' . self::APP_PREFIX . '.*/', $line)) {
+                    $cart_obj = new Cart_Item($line);
+                    $cart_obj->unserialize($this->CI->session->userdata['sdn_rest_id']);
+                    // No paid apps flag on paid (non exempt) app
+                    if ($no_paid_apps && $cart_obj->get_unit_price() > 0 && !$cart_obj->get_exempt())
+                        continue;
+                    $cart->add_item($cart_obj);
+                } else if (preg_match('/^enable_repo=\s*(.*)\s*/', $line, $match)) {
+                    $this->set_custom_repos($match[1]);
+                } else {
+                    $cart_obj = new Cart_Item($line);
+                    $cart->add_item($cart_obj);
+                }
+            }
+        } catch (File_Not_Found_Exception $e) {
+            throw new File_Not_Found_Exception(clearos_exception_message($e));
+        } catch (Exception $e) {
+            throw new Engine_Exception(clearos_exception_message($e));
+        }
+    }
+
+    /**
+     * Is QSF file uploaded.
+     *
+     * @return boolean TRUE/FALSE
+     * @throws Engine_Exception, File_Not_Found_Exception
+     */
+
+    function is_csv_file_uploaded()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        try {
+            $file = new File(self::FOLDER_MARKETPLACE . '/' . self::FILE_QSF, TRUE);
+            if (!$file->exists())
+                return FALSE;
+            return TRUE;
+        } catch (Exception $e) {
+            return FALSE;
+        }
+    }
+
+    /**
+     * Deletes the QSF file.
+     *
+     * @return void
+     * @throws Engine_Exception, File_Not_Found_Exception
+     */
+
+    function delete_qsf()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        try {
+            $file = new File(self::FOLDER_MARKETPLACE . '/' . self::FILE_QSF, TRUE);
+            if (!$file->exists())
+                return;
+            $lines = $file->get_contents_as_array();
+            $cart = new Cart();
+            foreach ($lines as $line) {
+                if (preg_match('/^qsf_flag.*/', $line)) {
+                    continue;
+                } else if (preg_match('/^enable_repo=\s*(.*)\s*/', $line, $match)) {
+                    $this->delete_custom_repos($match[1]);
+                    continue;
+                }
+
+                $cart->remove_item($line);
+            }
+            $file->delete();
+        } catch (File_Not_Found_Exception $e) {
+            throw new File_Not_Found_Exception(clearos_exception_message($e));
+        } catch (Exception $e) {
+            throw new Engine_Exception(clearos_exception_message($e));
+        }
+    }
+
+    /**
+     * Get the size of the QSF file.
+     *
+     * @return integer size 
+     * @throws Engine_Exception, File_Not_Found_Exception
+     */
+
+    function get_qsf_size()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        try {
+            $file = new File(self::FOLDER_MARKETPLACE . '/' . self::FILE_QSF, TRUE);
+            if (!$file->exists())
+                throw new File_Not_Found_Exception(lang('marketplace_qsf_file_not_found'));
+            return $file->get_size();
+        } catch (File_Not_Found_Exception $e) {
+            throw new File_Not_Found_Exception(clearos_exception_message($e));
+        } catch (Exception $e) {
+            throw new Engine_Exception(clearos_exception_message($e));
+        }
+    }
+
+    /**
+     * Get information from the QSF file.
+     *
+     * @return array data
+     * @throws Engine_Exception, File_Not_Found_Exception
+     */
+
+    function get_qsf_info()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        try {
+            $file = new File(self::FOLDER_MARKETPLACE . '/' . self::FILE_QSF, TRUE);
+            if (!$file->exists())
+                throw new File_Not_Found_Exception(lang('marketplace_qsf_file_not_found'));
+            $lines = $file->get_contents_as_array();
+            $data = array(
+                'apps' => 0,
+                'packages' => 0,
+                'flag_no_paid' => FALSE,
+                'repos' => array() 
+            );
+            foreach ($lines as $line) {
+                if (preg_match('/^\s*#.*/', $line))
+                    continue;
+                else if (preg_match('/^' . self::APP_PREFIX . '.*/', $line))
+                    $data['apps']++;
+                else if ($line == 'qsf_flag_no_paid')
+                    $data['flag_no_paid'] = TRUE;
+                else if (preg_match('/^enable_repo=\s*(.*)\s*/', $line, $match))
+                    $data['repos'][] = $match[1];
+                else 
+                    $data['packages']++;
+            }
+            return $data;
+        } catch (File_Not_Found_Exception $e) {
+            throw new File_Not_Found_Exception(clearos_exception_message($e));
+        } catch (Exception $e) {
+            throw new Engine_Exception(clearos_exception_message($e));
+        }
+    }
+
     ///////////////////////////////////////////////////////////////////////////////
     // P R I V A T E   M E T H O D S
     ///////////////////////////////////////////////////////////////////////////////
@@ -939,7 +1271,9 @@ class Marketplace extends Rest
     /**
      * Get repo list.
      *
-     * @return string
+     * @param string $type repo list
+     *
+     * @return array
      * @throws Engine_Exception
      */
 
@@ -1097,6 +1431,22 @@ class Marketplace extends Rest
     }
 
     /**
+     * Validation routine for display format.
+     *
+     * @param string $display_format display format
+     *
+     * @return mixed void if display_format is valid, errmsg otherwise
+     */
+
+    public function validate_display_format($display_format)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        if (! preg_match("/^(list|tile)$/", $display_format))
+            return lang('marketplace_display_format_is_invalid');
+    }
+
+    /**
      * Validation routine for review pseudonym.
      *
      * @param string $pseudonym pseudonym
@@ -1186,11 +1536,11 @@ class Marketplace extends Rest
             return lang('marketplace_filter_price_is_invalid');
     }
     /**
-     * Validation routine for introprice query.
+     * Validation routine for filter intro query.
      *
-     * @param string $introprice introprice
+     * @param string $intro filter intro
      *
-     * @return mixed void if introprice is valid, errmsg otherwise
+     * @return mixed void if intro is valid, errmsg otherwise
      */
 
     public function validate_filter_intro($intro)

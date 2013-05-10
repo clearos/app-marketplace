@@ -31,16 +31,16 @@ if (!isset($search))
     $search = lang('marketplace_search_terms');
 
 echo form_open('marketplace/settings', array('method' => 'GET', 'name' => 'form_app_list', 'id' => 'form_app_list'));
-echo "<table width='100%' border='0' id='app_list'></table>";
+echo "<div id='marketplace-app-container'></div>";
 echo form_close();
 echo "<div id='pagination-bottom' style='font-size: .7em; padding: 0px 10px 30px 0px;'></div>";
 echo "<script type='text/javascript'>\n";
 echo "  $(document).ready(function() {\n";
 echo "    get_apps(\n";
 echo "      false,\n";
-echo "      '" . (isset($search) && $search != lang('marketplace_search_terms') ? $search : '') . "',\n";
 echo "      " . isset($page) ? (int)$page : 0;
 echo "    );\n";
 echo "  });\n";
 echo "</script>\n";
 echo "<input id='number_of_apps_to_display' type='hidden' value='$number_of_apps_to_display'>";
+echo "<input id='display_format' type='hidden' value='$display_format'>";

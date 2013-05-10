@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 $app['basename'] = 'marketplace';
-$app['version'] = '1.4.30';
+$app['version'] = '1.4.31';
 $app['release'] = '1';
 $app['vendor'] = 'ClearCenter';
 $app['packager'] = 'ClearCenter';
@@ -22,18 +22,31 @@ $app['category'] = lang('base_category_spotlight');
 $app['subcategory'] = lang('base_subcategory_overview');
 
 // Wizard extras
-$app['controllers']['server']['wizard_name'] = lang('marketplace_server_apps');
-$app['controllers']['server']['wizard_description'] = lang('marketplace_server_apps_description');
-$app['controllers']['gateway']['wizard_name'] = lang('marketplace_gateway_apps');
-$app['controllers']['gateway']['wizard_description'] = lang('marketplace_gateway_apps_description');
-$app['controllers']['network']['wizard_name'] = lang('marketplace_network_apps');
-$app['controllers']['network']['wizard_description'] = lang('marketplace_network_apps_description');
-$app['controllers']['system']['wizard_name'] = lang('marketplace_system_apps');
-$app['controllers']['system']['wizard_description'] = lang('marketplace_system_apps_description');
-$app['controllers']['report']['wizard_name'] = lang('marketplace_report_apps');
-$app['controllers']['report']['wizard_description'] = lang('marketplace_report_apps_description');
+$app['controllers']['mode1']['wizard_name'] = lang('marketplace_app_selection');
+$app['controllers']['mode1']['wizard_description'] = lang('base_loading...');
+$app['controllers']['mode1']['inline_help'] = array(
+    lang('marketplace_more_info') => ''
+);
+$app['controllers']['mode2']['wizard_name'] = lang('marketplace_category');
+$app['controllers']['mode2']['wizard_description'] = lang('base_loading...');
+$app['controllers']['mode2']['inline_help'] = array(
+    lang('marketplace_categories') => lang('marketplace_mode_category_help'),
+    lang('marketplace_best_practices') => lang('marketplace_mode_category_best_practices_help'),
+);
+$app['controllers']['mode3']['inline_help'] = array(
+    lang('marketplace_qsf') => lang('marketplace_mode_qsf_help'),
+    lang('marketplace_best_practices') => lang('marketplace_mode_qsf_best_practices_help'),
+);
 $app['controllers']['install']['wizard_name'] = lang('marketplace_app_review');
 $app['controllers']['install']['wizard_description'] = lang('marketplace_app_review_description');
+
+// Yuck - TODO - Probably shouldn't be using help_box function to do this
+$app['controllers']['select']['help_action'] = array(
+    'url' => '/app/marketplace/all',
+    'text' => lang('marketplace_select_all'),
+    'priority' => 'high',
+    'js' => array('id' => 'toggle_select')
+);
 
 /////////////////////////////////////////////////////////////////////////////
 // Packaging
@@ -50,9 +63,10 @@ $app['requires'] = array(
 $app['core_requires'] = array(
     'app-clearcenter-core => 1:1.2.4',
     'app-registration-core => 1:1.2.4',
-    'app-base-core => 1:1.2.0',
+    'app-base-core => 1:1.4.38',
     'yum-marketplace-plugin',
-    'theme-default >= 6.4.8',
+    'theme-default >= 6.4.26',
+    'clearos-framework >= 6.4.27',
     'clearos-release-jws >= 1.1'
 );
 

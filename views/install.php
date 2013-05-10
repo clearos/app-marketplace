@@ -29,7 +29,7 @@ echo "<div id='info'></div>";
 
 // Hack...too difficult to use a table widget here.  Should we have another widget?
 echo "<div class='theme-form-container'>";
-echo "<table id='infotable' class='theme-form-wrapper' style='width:100%;' cellpadding='0' cellspacing='0'>";
+echo "<table id='infotable' class='theme-hidden theme-form-wrapper' style='width:100%;' cellpadding='0' cellspacing='0'>";
 
 echo "<tr class='theme-form-header'>" .
     "  <td colspan='2'><p class='theme-form-header-heading'>" . lang('marketplace_account_info') . "</p></td>" .
@@ -41,6 +41,10 @@ echo "<tr id='r_account' class='theme-fieldview'>" .
     "<tr id='r_bill_cycle' class='theme-fieldview' style='display: none;'>" .
     "  <td class='theme-field-left'>" . lang('marketplace_billing_cycle') . "</td>" .
     "  <td class='theme-field-right'><span id='bill_cycle'></span></td>" .
+    "</tr>" .
+    "<tr id='r_total' class='theme-hidden theme-fieldview billing-field'>" .
+    "  <td valign='top' class='theme-field-left'>" . lang('marketplace_total') . "</td>" .
+    "  <td class='theme-field-right'><span id='display-total'/></div></td>" .
     "</tr>" .
     "<tr id='r_payment_method' class='theme-fieldview' style='display: none;'>" .
     "  <td valign='top' class='theme-field-left'>" . lang('marketplace_payment_method') . "</td>" .
@@ -73,11 +77,11 @@ echo "<tr id='r_account' class='theme-fieldview'>" .
     "</tr>" .
     "<tr id='r_eval_install' class='theme-fieldview' style='display: none;'>" .
     "  <td class='theme-field-left'>&nbsp;</td>" .
-    "  <td class='theme-field-right'><span id='eval_install_cell'>" . form_submit_custom('eval_checkout', lang('marketplace_eval_and_install'), 'high', array ('id' => 'eval_checkout')) . "</span></td>" . 
+    "  <td class='theme-field-right'><span id='eval_install_cell'>" . form_submit_custom('eval_checkout', lang('marketplace_eval_and_install'), 'high', array('id' => 'eval_checkout')) . "</span></td>" . 
     "</tr>" .
     "<tr id='r_fee_install' class='theme-fieldview' style='display: none;'>" .
     "  <td class='theme-field-left'>&nbsp;</td>" .
-    "  <td class='theme-field-right'><span id='fee_install_cell'>" . form_submit_custom('buy_checkout', lang('marketplace_buy_and_install'), 'high', array ('id' => 'buy_checkout')) . "</span></td>" . 
+    "  <td class='theme-field-right'><span id='fee_install_cell'>" . form_submit_custom('buy_checkout', lang('marketplace_buy_and_install'), 'high', array('id' => 'buy_checkout')) . "</span></td>" . 
     "</tr>"
 ;
 echo "</table>";
@@ -108,12 +112,31 @@ if (!empty($items)) {
 
 $total = 0;
 $has_prorated = FALSE;
+$rows = array(
+    'apps' => array(),
+    'packages' => array()
+);
 foreach ($items as $item) {
     $detail_buttons = button_set(
         array(
             anchor_delete('/app/marketplace/install/delete/' . $item->get_id())
         )
     );
+
+    // Skip RPM's like 'vim-enhanced' - only show Marketplace apps.
+    if (!$item->get_description()) {
+        $rows['packages'][] = array(
+            'title' => $item->get_id(),
+            'action' => NULL,
+            'anchors' => $detail_buttons,
+            'details' => array(
+                '{' . $item->get_id() . '}',  // By putting {} here, we force non-app packages to the bottom of the table
+                '---', '---', '---', '---', FALSE
+            )
+        );
+        continue;
+    }
+
     $row['title'] = $item->get_description();
     $row['action'] = '/app/marketplace/edit/';
     $row['anchors'] = $detail_buttons;
@@ -143,7 +166,7 @@ foreach ($items as $item) {
     if ($prorated)
         $has_prorated = TRUE;
     $unit = ($item->get_exempt() && $item->get_unit_price() > 0 ? '' : ($item->get_unit() < 100 ? '' : ' ' . preg_replace('/^\/\s*/', '', $item->get_display_unit())));
-    $row['details'] = array (
+    $row['details'] = array(
         $item->get_description() . ($item->get_note() ? "<div>" . lang('marketplace_note') . ":  " . $item->get_note() . "</div>": ""), 
         $unit_price,
         $unit,
@@ -154,7 +177,7 @@ foreach ($items as $item) {
         "<a class='eula-link highlight-link' href='/app/marketplace/install' id='eula-" . $item->get_eula() . "'>" . lang('marketplace_eula') . "</a>" .
         "</div>" : lang('marketplace_none'))
     );
-    $rows[] = $row;
+    $rows['apps'][] = $row;
 
     if (!$item->get_exempt())
         $total += $item->get_quantity() * $item->get_unit_price() * (1 - $item->get_discount()/100);
@@ -168,19 +191,20 @@ if (count($rows) === 0) {
     if ($this->session->userdata('wizard'))
         $anchors = array(anchor_custom('/app/marketplace/wizard/stop', lang('marketplace_install_apps_later')));
     else
-        $anchors = array(form_submit_custom('free_checkout', lang('marketplace_download_and_install'), 'high', array ('id' => 'free_checkout')));
+        $anchors = array(form_submit_custom('free_checkout', lang('marketplace_download_and_install'), 'high', array('id' => 'free_checkout')));
 } else if ($total == 0) {
-    $anchors = array(form_submit_custom('free_checkout', lang('marketplace_download_and_install'), 'high', array ('id' => 'free_checkout')));
+    $anchors = array(form_submit_custom('free_checkout', lang('marketplace_download_and_install'), 'high', array('id' => 'free_checkout')));
 } else {
     $anchors = NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// Sumary table
+// App Sumary table
 ///////////////////////////////////////////////////////////////////////////////
 
 $options['default_rows'] = 100;
 $options['id'] = 'install_apps_table';
+$rows = array_merge($rows['apps'], $rows['packages']);
 
 echo summary_table(
     lang('marketplace_app_install_list'),

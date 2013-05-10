@@ -148,8 +148,8 @@ $tabinfo['reviews']['content'] = "<h2 style='position: relative; float: left'>" 
     "      <tr class='rating'><td>" . lang('marketplace_submitted_by') . "</td>" .
     "        <td><input type='text' id='pseudonym' name='pseudonym' value='$pseudonym' /></td>" .
     "      </tr>" .
-    "      <tr class='rating'><td>&#160;</td><td>" . form_submit_custom('submit_review', lang('marketplace_submit_review'), 'high', array ('id' => 'submit_review')) . "&#160;&#160;" . form_submit_custom('cancel_review', lang('base_cancel'), 'high', array ('id' => 'cancel_review')) . "</td></tr>" .
     "    </table>" .
+    "    <div class='rating'><td>&#160;</td><td>" . field_button_set(array(form_submit_custom('submit_review', lang('marketplace_submit_review'), 'high', array ('id' => 'submit_review')), form_submit_custom('cancel_review', lang('base_cancel'), 'high', array ('id' => 'cancel_review')))) . "</div>" .
     "  </div>" .
     "</div>" .
     "<div id='app_ratings'></div>"

@@ -58,11 +58,6 @@ class Search extends ClearOS_Controller
             redirect('/marketplace');
             return;
         }
-        if ($this->input->post('reset_filter')) {
-            $this->marketplace->reset_search_criteria();
-            redirect('/marketplace');
-            return;
-        }
         
         // Set validation rules
         //---------------------
@@ -94,9 +89,26 @@ class Search extends ClearOS_Controller
 
         // Search and filter history
         $data['filter'] = $this->marketplace->get_search_history();
+        $data['display_format'] = $this->marketplace->get_display_format();
         $data['page'] = (int)$page;
         $data['number_of_apps_to_display'] = $this->marketplace->get_number_of_apps_to_display();
 
         $this->page->view_form('marketplace/marketplace', $data, lang('marketplace_marketplace'), array('type' => MY_Page::TYPE_SPOTLIGHT));
+    }
+
+    /**
+     * Marketplace reset filter controller
+     *
+     * @return view
+     */
+
+    function reset_filter()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        $this->load->library('marketplace/Marketplace');
+
+        $this->marketplace->reset_search_criteria();
+        redirect('/marketplace');
     }
 }

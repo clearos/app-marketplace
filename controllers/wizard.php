@@ -50,39 +50,6 @@ class Wizard extends ClearOS_Controller
         //------------------
 
         $this->lang->load('marketplace');
-        $this->load->library('marketplace/Marketplace');
-
-        // Load view
-        //----------
-
-        $data = array();
-
-        // Note: setting 'new' to 'all' below is handy for testing
-        $this->marketplace->set_search_criteria (
-            '',
-            $category,
-            'all',
-            'all',
-            'new'
-        );
-        $data['number_of_apps_to_display'] = '50';
-        $data['hide_banner'] = TRUE;
-
-        $this->page->view_form('marketplace/marketplace_wizard', $data, lang('marketplace_marketplace'), array('type' => MY_Page::TYPE_SPOTLIGHT));
-    }
-
-    /**
-     * Wizard introduction.
-     *
-     * @return view
-     */
-
-    function intro()
-    {
-        // Load dependencies
-        //------------------
-
-        $this->lang->load('marketplace');
         $this->load->library('base/OS');
 
         // Load view data
@@ -97,10 +64,105 @@ class Wizard extends ClearOS_Controller
             return;
         }
 
+        $mode = $this->session->userdata('wizard_marketplace_mode');
+        if (isset($mode) && $mode !== FALSE)
+            $data['mode'] = $mode;
+        else
+            $data['mode'] = 'mode1';
+
+        $data['hide_banner'] = TRUE;
+
         // Load view
         //----------
 
         $this->page->view_form('marketplace/wizard_intro', $data, lang('marketplace_marketplace'), array('type' => MY_Page::TYPE_SPOTLIGHT));
+    }
+
+    /**
+     * Marketplace wizard selection controller
+     *
+     * @return view
+     */
+
+    function selection()
+    {
+        // Load dependencies
+        //------------------
+
+        $this->lang->load('marketplace');
+        $this->load->library('marketplace/Marketplace');
+        $this->load->library('marketplace/Cart');
+        $this->load->helper('number');
+
+        $mode = $this->session->userdata('wizard_marketplace_mode');
+        $category = 'all';
+        if ($mode === FALSE) {
+            $mode = 'mode1';
+            $category = 'network';
+        } else if ($mode == 'mode2') {
+            $category = 'network';
+        } else if ($mode == 'mode4') {
+            // Exit Wizard
+            $this->stop();
+            return;
+        }
+
+        // Load view
+        //----------
+
+        $data = array();
+
+        // Note: setting 'new' to 'all' below is handy for testing
+        $this->marketplace->set_search_criteria (
+            '',
+            $category,
+            'all',
+            'all',
+            'new'
+        );
+        $data['number_of_apps_to_display'] = '0';
+        $data['hide_banner'] = TRUE;
+        $data['display_format'] = 'tile';
+        $data['wizard'] = TRUE;
+
+        // Handle form submit
+        //-------------------
+
+        if ($this->input->post('reset')) {
+            try {
+                $this->marketplace->delete_qsf();
+                $this->cart->clear();
+                redirect('/marketplace/wizard/selection/' . $mode);
+            } catch (Exception $e) {
+                $this->page->view_exception($e);
+                return;
+            }
+        }
+        $config['upload_path'] = CLEAROS_TEMP_DIR;
+        $config['allowed_types'] = 'txt';
+        $config['overwrite'] = TRUE;
+        $config['file_name'] = Marketplace::FILE_QSF;
+
+        $this->load->library('upload', $config);
+
+        if ( ! $this->upload->do_upload('qsf')) {
+            $this->page->set_message($this->upload->display_errors());
+        } else {
+            $upload = $this->upload->data();
+            $this->marketplace->set_qsf($upload['file_name']);
+            $data['filename'] = $upload['file_name'];
+            $data['size'] = byte_format($this->marketplace->get_qsf_size(), 1);
+            $data['qsf'] = $this->marketplace->get_qsf_info();
+            $data['qsf_ready'] = TRUE;
+            $this->session->set_userdata(array('wizard_redirect' => 'marketplace/wizard/install'));
+        }
+
+        if ($mode == 'mode3')
+            $this->page->view_form('marketplace/quick_select', $data, lang('marketplace_marketplace'), array('type' => MY_Page::TYPE_SPOTLIGHT));
+        else if ($mode == 'mode1')
+            $this->page->view_form('marketplace/novice', $data, lang('marketplace_marketplace'));
+        else
+            $this->page->view_form('marketplace/category', $data, lang('marketplace_marketplace'));
     }
 
     /**
@@ -123,4 +185,22 @@ class Wizard extends ClearOS_Controller
         return;
 
     }
+
+    /**
+     * Set wizard mode.
+     *
+     * @return void
+     */
+
+    function set_mode()
+    {
+        // Load dependencies
+        //------------------
+
+        $this->session->set_userdata(array('wizard_redirect' => 'marketplace/wizard/selection/' . $this->input->post('mode')));
+        $this->session->set_userdata(array('wizard_marketplace_mode' => $this->input->post('mode')));
+
+        return;
+    }
+
 }

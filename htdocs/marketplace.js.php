@@ -39,6 +39,32 @@ var reg_info_ok = false;
 var installation_complete = '" . lang('marketplace_installation_complete') . "';
 var my_systems = new Array();
 var my_subscriptions = new Array();
+var novice_index = 0;
+var novice_optional_apps = [];
+var in_wizard = false;
+//TODO
+var novice_set = [
+    {
+        search:'99_directory', exclusive: true, title:'Select your Directory',
+        description:'A directory service stores, organizes and provides access to information about your users, groups, networked devices and more.', helptitle: 'Directory Services', helpcontent: '<p>The options listed under Directory Services are mutually exclusive - you can select one or the other...not both.</p><p>If you do not have existing Microsoft server infrastructure running Windows Active Directory[TM], you will almost certainly want to select the OpenLDAP-based directory server.</p>'
+    },
+    {
+        search:'99_mail', exclusive: true, title:'Groupware / E-Mail Services',
+        description:'Planning on running group collaboration and/or Email services or need to integrate with Google Apps?  ClearOS offers 4 variants for hosting your messaging services locally or in the cloud.', helptitle: 'Groupware/E-Mail', helpcontent: '<p>The ClearOS Marketplace currently supports four solutions for providing email and groupware services.</p><p>If you are already a GoogleApps subscriber or wish to migrate email services to GoogleApps, the Google Apps synchronization tool is an optional but useful app for syncronizing and provisioning accounts stored locally in OpenLDAP directory with Google Apps.</p><p>Cyrus provides a robust and lightweight IMAP(S)/POP(S) service for hosting a mail server without a web-based GUI (eg. use of mail client like Outlook[TM], Thunderbird etc.).</p><p>Zarafa Community is a full groupware solution intended for home users, while Zarafa Small Business is positioned as the best-selling open-source drop-in Exchange replacement.</p>'
+    },
+    {
+        search:'99_security', exclusive: false, title:'Perimeter Security',
+        description:'Is your ClearOS server acting as a gateway to the Internet for connected devices on your Local Area Network (LAN)?  If so, implementing effective perimeter security measures is highly recommended.', helptitle: 'Intrusion Protection', helpcontent: 'Intrusion protection consists of both an active (blocking) and passive (logging) components.  Attack vector identification and prevention is only as good as the signatures used to filter traffic.'
+    },
+    {
+        search:'99_disaster', exclusive: false, title:'Disaster Prevention and Recovery',
+        description:'In any environment, downtime - or worse, permanent loss of data - is simply not an option.  ClearOS has a wide range of apps to prevent data-loss events from occurring or to recover from one should it happen.  Whether your server instance is cloud-based or on-premise, planning and enforcing policies to protect your data is crucial.', helptitle: 'Disaster Recovery', helpcontent: '<p>Storing data in a centralized location and backing up off-site constitutes best-practises for ensuring you never lose data.  While RAID and monitoring are excellent preventative measures, it is important to realize they do not constitute a backup policy.</p><p>True backup requires multiple snapshots along with retention and recycling algorithms to prevent data loss under any condition - either natural or human error.</p>'
+    },
+    {
+        search:'99_home', exclusive: false, title:'Home Networking',
+        description:'ClearOS makes a perfect home networking gateway or server.  The apps below have been selected based on their suitability for the home environment.', helptitle: 'Home Environment - An Important Market', helpcontent: '<p>You\'d be surprised how many referrals we get from users who have installed ClearOS in their home and then advise friends or colleagues about running ClearOS in their place of business.</p><p>If ClearOS has found a place in your home networking environment, please help spread awareness and keep the development and community going strong by spreading the word.</p>'
+    }
+];
 UNIT[0] = '';
 UNIT[9] = '';
 UNIT[100] = '" . lang('marketplace_monthly') . "';
@@ -86,6 +112,8 @@ function update_install_form(data) {
     if (data.code == 0) {
         if ($('#total').val() > 0) {
             $('#r_bill_cycle').show();
+            $('#r_total').show();
+            $('#display-total').html(data.debit_currency + ' ' + (parseFloat($('#total').val())).toFixed(2).toLocaleString());
             if (data.evaluation) {
                 $('#bill_cycle').html('" . lang('marketplace_not_applicable') . " - " . lang('marketplace_trial_in_progress') . "');
                 $('#r_notes').show();
@@ -209,9 +237,9 @@ function allow_noauth_mods() {
         data: 'ci_csrf_token=' + $.cookie('ci_csrf_token'),
         success: function(data) {
             if (data.code == 0 && data.allow) {
-                $('#infotable').hide();
                 return;
             } else {
+                $('#infotable').show();
                 auth_options.reload_after_auth = true;
                 clearos_is_authenticated();
             }
@@ -222,30 +250,49 @@ function allow_noauth_mods() {
     });
 }
 
-function bulk_cart_update(state, bulk_apps) {
+function bulk_cart_update(apps, toggle) {
     $.ajax({
         type: 'POST',
         dataType: 'json',
         url: '/app/marketplace/ajax/bulk_cart_update',
-        data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&state=' + state + '&apps=' + bulk_apps,
+        data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&apps=' + apps + '&toggle=' + toggle,
         success: function(data) {
             if (data.code != 0) {
-                if (state == 'all')
+                if (toggle == 'all')
                     $('#toggle_select').html('<span class=\'ui-button-text\'>" . lang('marketplace_select_all') . "</span>');
-                else
+                else if (toggle == 'none')
                     $('#toggle_select').html('<span class=\'ui-button-text\'>" . lang('marketplace_select_none') . "</span>');
-                // Which apps to reset
-                $.each(data.apps, function (key, value) {
-                    $('#' + value).attr('checked', (state == 'all' ? false : true));
+                // Which apps to reset - this is coming back from our JSON data
+                $.each(data.apps, function (id, app) {
+                    $('#' + app.id).attr('checked', (app.state == 1 ? false : true));
                 });
                 clearos_dialog_box('invalid_bulk_cart', '" . lang('base_warning') . "', data.errmsg);
             } else {
-                if (state == 'all') {
+                $('.marketplace-category').removeClass('marketplace-hover');
+                if (toggle == 'all') {
                     $('#toggle_select').html('<span class=\'ui-button-text\'>" . lang('marketplace_select_none') . "</span>');
                     $('#toggle_select').attr('href', '/app/marketplace/none');
-                } else {
+                    // We use the JSON string to update page
+                    $.each(JSON.parse(apps), function (id, app) {
+                        $('#' + app.id).addClass('marketplace-selected');
+                    });
+                } else if (toggle == 'none') {
                     $('#toggle_select').html('<span class=\'ui-button-text\'>" . lang('marketplace_select_all') . "</span>');
                     $('#toggle_select').attr('href', '/app/marketplace/all');
+                    $('.marketplace-app').removeClass('marketplace-selected');
+                    // We use the JSON string to update page
+                    $.each(JSON.parse(apps), function (id, app) {
+                        $('#' + id).removeClass('marketplace-selected');
+                    });
+                } else {
+                    if ($('#select-' + this.id).is(':checked')) {
+                        category_class = '';
+                    } else {
+                        $('#select-' + this.id).attr('checked', true);
+                        $(this).removeClass('marketplace-hover');
+                        $(this).addClass('marketplace-selected');
+                        category_class = 'marketplace-selected';
+                    }
                 }
             }
         },
@@ -261,25 +308,30 @@ function update_cart(id, individual, redirect) {
         type: 'POST',
         dataType: 'json',
         url: '/app/marketplace/ajax/update_cart',
-        data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&id=' + id + '&add=' + (individual || $('#' + id + ':checked').val() !== undefined ? '1' : '0'),
+        data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&id=' + id + '&add=' + (individual || $('#select-' + id + ':checked').val() !== undefined ? '1' : '0'),
         success: function(data) {
             if (data.code == 0 && redirect)
                 window.location = '/app/marketplace/install';
             if (data.code != 0) {
-                if ($('#' + id).is(':checked'))
-                    $('#' + id).removeAttr('checked');
-                else
-                    $('#' + id).attr('checked', true);
+                if ($('#select-' + id).is(':checked')) {
+                    $('#select-' + id).removeAttr('checked');
+                    $('#' + id).removeClass('marketplace-hover');
+                    $('#' + id).removeClass('marketplace-selected');
+                } else {
+                    $('#' + id).css('background-color', '#C0CFE6');
+                    $('#select-' + id).attr('checked', true);
+                }
                 clearos_dialog_box('invalid_cart', '" . lang('base_warning') . "', data.errmsg);
             }
         },
         error: function(xhr, text, err) {
-            clearos_dialog_box('error', '" . lang('base_warning') . "', xhr.responseText.toString());
+            if (xhr['abort'] == undefined)
+                clearos_dialog_box('error', '" . lang('base_warning') . "', xhr.responseText.toString());
         }
     });
 }
 
-function get_apps(realtime, search, offset) {
+function get_apps(realtime, offset) {
     $.ajax({
         type: 'POST',
         dataType: 'json',
@@ -296,100 +348,18 @@ function get_apps(realtime, search, offset) {
                     clearos_dialog_box('error', '" . lang('base_warning') . "', data.errmsg, options);
                     return;
                 } else {
+                    $('#marketplace-loading').hide();
                     $('#app_list_overview').html(data.errmsg);
                     return;
                 }
             }
-            // Remove whirly
+            // Hide whirly
             $('#app_list_overview').remove();
+            $('#marketplace-loading').hide();
             $('#search_and_install').show();
             $('#filter').show();
-            var rownum = 0;
-            var appcounter = 0;
+            display_apps(data);
 
-            var newrow = '';
-            var applist = [];
-            // Catch wizard
-            if ($(location).attr('href').match('.*marketplace\/wizard\/.*$') != null) {
-                populate_wizard(data);
-                return;
-            }
-            jQuery.each(data.list, function(index, app) { 
-                if (appcounter == 0)
-                    newrow = '<tr id=\'row-' + (rownum) + '\'>';
-                appcounter++;
-                newrow += '<td width=\'50%\' id=\'r_' + app.basename + '\' valign=\'top\'>';
-                newrow += '  <div style=\'float:left; width:25%; text-align: center; padding-bottom: 25px;\'>';
-                // App logo
-                newrow += '    <a href=\'/app/marketplace/view/' + app.basename + '\'><img src=\'" . clearos_app_htdocs('marketplace') . "/market_default.png\' '
-                    + 'id=\'app-logo-' + app.basename + '\' style=\'padding-bottom: 8px;\' ' + (app.repo_enabled && app.display_mask == 0 ? '' : 'class=\'marketplace-unavailable\'') + '></a>';
-                // App rating
-                newrow += '<div>' + get_rating(app.rating, app.rating_count, false, true) + '</div>';
-                // If software is installed and latest version, don't show selector checkbox
-                if (app.display_mask != 0)
-                    newrow += '<div style=\'padding-top: 5px;\'>" . lang('marketplace_not_available') . "</div>';
-                else if (app.up2date)
-                    newrow += '<div style=\'padding-top: 5px;\'>' + app.latest_version + '</div>';
-                else if (!app.repo_enabled)
-                    newrow += '<div></div>';
-                else
-                    newrow += '<input type=\'checkbox\' id=\'' + app.basename
-                        + '\' name=\'name\' onclick=\'update_cart(this.id, false, false);\' '
-                        + (app.incart ? 'CHECKED' : '') + '/>';
-                newrow += '  </div>';
-                newrow += '  <div style=\'float:right; width:75%; padding-bottom: 25px;\'>';
-                newrow += '    <h2 style=\'padding:0px 0px 3px 0px; margin: 0px 0px 0px 0px;\'><a class=\'marketplace\' href=\'/app/marketplace/view/' + app.basename + '\'>' + app.name + '</a></h2>';
-                newrow += '    <div style=\'font-size: 8pt;\'>';
-                newrow += '      <div>' + app.description.substr(0, 85) + '...</div>';
-                newrow += '      <div>' + app.vendor.toUpperCase() + '</div>';
-                if (app.up2date) {
-                    // Don't show pricing information if its installed
-                } else if (app.pricing.unit_price > 0 && app.pricing.exempt) {
-                    newrow += '    <div>';
-                    newrow += '      <span style=\'text-decoration: line-through;\'>';
-                    newrow += '' + app.pricing.currency + app.pricing.unit_price + ' ' + UNIT[app.pricing.unit];
-                    newrow += '      </span>&#160;&#160;" . lang('marketplace_credit_available') . "';
-                    newrow += '    </div>';
-                } else if (app.pricing.unit_price > 0) {
-                    newrow += '    <div>' + app.pricing.currency + app.pricing.unit_price
-                        + ' ' + UNIT[app.pricing.unit] + '</div>';
-                } else {
-                    newrow += '    <div>" . lang('marketplace_free') . "</div>';
-                }
-                newrow += '      <div style=\'padding:5px 0px 0px 0px;\'>';
-                newrow += get_configure(app);
-                newrow += '      </div>';
-                newrow += '    </div>';
-                newrow += '  </div>';
-                newrow += '  </a>';
-                newrow += '</td>';
-                applist.push(app.basename);
-                if (appcounter == 2 || index == data.list.length - 1) {
-                    // Complete cells
-                    if (appcounter == 1)
-                        newrow += '<td>&#160;</td><td>&#160;</td>';
-                    else if (appcounter == 2)
-                        newrow += '<td>&#160;</td>';
-
-                    // Reset counter
-                    appcounter = 0;
-
-                    // Add row
-                    newrow += '</tr>';
-                    if ($('tbody', $('#app_list')).length > 0)
-                        $('tbody', $('#app_list')).append(newrow);
-                    else
-                        $('#app_list').append(newrow);
-                    rownum++;
-                }
-            });
-            for (var index = 0; index < applist.length; index++)
-                get_image('app-logo', applist[index], 'app-logo-' + applist[index]);
-            if (rownum == 0) {
-                newrow = '<tr><td align=\'center\'>" . lang('marketplace_search_no_results') . "</td></tr>';
-                $('#app_list').append(newrow);
-            }
-            $('#install_apps').show();
             var previous = offset - 1;
             if (previous < 0)
                 previous = 0;
@@ -401,16 +371,10 @@ function get_apps(realtime, search, offset) {
             var pages = 0;
             if (apps_to_display_per_page > 0)
                 pages = Math.round(data.total / apps_to_display_per_page + .49999) - 1;
-            // Reduce count in line below to have individual buttons (<< < 2 3 4 > >> etc.)
-            //if (data.total / apps_to_display_per_page > 1000) {
-            //    for (index = previous -1; index <= next + 1; index++) {
-            //        paginate += '<a class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + index + '</a>';
-            //    }
-            //}
             paginate += '<a style=\'margin-right: 2px;\' class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + next + '\'>\></a>';
             paginate += '<a class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + pages + '\'>\>\></a>';
             if (pages > 0) {
-                $('#pagination-top').html(paginate + '<div style=\'padding: 5px 0px 0px 0px; font-size: 7pt;\'>" . lang('marketplace_displaying') . " ' + (apps_to_display_per_page * offset + 1) + ' - ' + (apps_to_display_per_page * offset + applist.length) + ' " . lang('base_of') . " ' + data.total + '</div>');
+                $('#pagination-top').html(paginate + '<div style=\'padding: 5px 0px 0px 0px; font-size: 7pt;\'>" . lang('marketplace_displaying') . " ' + (apps_to_display_per_page * offset + 1) + ' - ' + (apps_to_display_per_page * offset + data.total) + ' " . lang('base_of') . " ' + data.total + '</div>');
                 $('#pagination-bottom').html(paginate);
             }
             
@@ -423,66 +387,226 @@ function get_apps(realtime, search, offset) {
     });
 }
 
-function populate_wizard(data) {
+$(document).on('mouseover', '.marketplace-app', function(event) {
+    if (!$(this).hasClass('marketplace-selected') && $('#select-' + this.id).val() != undefined) {
+        $('.marketplace-app').css('cursor', 'pointer');
+        $(this).addClass('marketplace-hover');
+    } else {
+        $('.marketplace-app').css('cursor', 'default');
+    }
+}).on('mouseout', '.marketplace-app', function(event) {
+    $(this).removeClass('marketplace-hover');
+}).on('click', '.marketplace-app', function(event) {
+    if ($('#select-' + this.id).val() == undefined) {
+        var id = this.id + '-na';
+        var original = $('#' + this.id + '-na').css('color');
+        $('#' + this.id + '-na').css('color', 'red');
+        $('#' + this.id + '-na').hide();
+        $('#' + this.id + '-na').fadeIn(2000, function() {
+            $('#' + id).css('color', original);
+        });
+        return;
+    } else if ($('#select-' + this.id).is(':checked')) {
+        $('#select-' + this.id).removeAttr('checked');
+        $(this).removeClass('marketplace-selected');
+        $(this).addClass('marketplace-hover');
+    } else {
+        $('#select-' + this.id).attr('checked', true);
+        $(this).removeClass('marketplace-hover');
+        $(this).addClass('marketplace-selected');
+    }
+    clicked_app = this.id
+    if ($(location).attr('href').match('.*marketplace.*\/mode1|.*marketplace\/select') != null && novice_set[novice_index].exclusive && $('#' + this.id,'#optional-apps').length != 1) {
+        // Need to unset all other apps before selecting this one
+        var apps = Array();
+        $.each($('#form_app_list input[type=\'checkbox\']'), function (index, value) {
+            if (clicked_app == value.id.replace('select-', '') && $('#' + value.id).is(':checked')) {
+                apps[index] = {state: '1', id: this.id.replace('select-', '')};
+            } else {
+                $('#' + value.id).removeAttr('checked');
+                $('#' + value.id.replace('select-', '')).removeClass('marketplace-selected');
+                apps[index] = {state: '0', id: this.id.replace('select-', '')};
+            }
+        });
+        bulk_cart_update(JSON.stringify(apps), 'exclusive');
+        if ($('#select-' + this.id).is(':checked'))
+            add_optional_apps(clicked_app);
+        else
+            $('#optional-apps').remove();
+
+    } else {
+        update_cart(this.id, false, false);
+    }
+});
+
+function add_optional_apps(app_focus) {
+    // Add Novice Optional apps
+    var content = '';
+    $.each(novice_optional_apps, function(index, myapp) { 
+        if (myapp.app_parent == app_focus)
+            if ($('#display_format').val() == 'tile')
+                content += get_app_as_tile(myapp.app_child, in_wizard);
+            else
+                content += get_app_as_column(myapp.app_child, in_wizard);
+    });
+    $('#optional-apps').remove();
+    if (content.length > 0)
+        $('#marketplace-app-container').append('<div id=\'optional-apps\' style=\'margin-top: 15px; padding-top: 10px; border-top: 1px dotted grey;\'><h1>" . lang('marketplace_optional_apps') . "</h1>' + content + '</div>');
+    $.each(novice_optional_apps, function(index, myapp) {
+        get_image('app-logo', myapp.app_child.basename, 'app-logo-' + myapp.app_child.basename);
+        // Tooltip is broken wrt to using .on() function
+        $('#' + myapp.app_child.basename).tooltip({
+            offset: [-102, -425],
+            predelay: 2000,
+            position: 'top center',
+            opacity: 0.95
+            });
+    });
+}
+
+function display_apps(data) {
     var applist = [];
     var categorylist = [];
+    var content = '';
+    var category_class = '';
+    var toggle_state = 'none';
+    var exclusive_app_selected = null;
+    novice_optional_apps = [];
+
+    if ($(location).attr('href').match('.*marketplace\/wizard\/.*') != null)
+        in_wizard = true;
     jQuery.each(data.list, function(index, app) { 
-        if (app.installed)
-            return true;
-        if (app.display_mask != 0)
-            return true;
+        // Bitmask of 0 or 1 means allow to install or Pro only (which we display)
+        if (app.display_mask > 1)
+            return true;;
 
-        category = app.sub_category.replace(/\s/g, '').toLowerCase();
-        if ($.inArray(category, categorylist) < 0) {
-            $('#marketplace').append(
-                '<tr id=\'row-' + category + '\'>' +
-                '<td colspan=\'3\'><h3><span class=\'theme-wizard-marketplace\'>&nbsp;</span><a id=\'' + category + '\' href=\'#\'>' + app.sub_category + '</a></h3></td>' +
-                '</tr>'
-            );
-            categorylist.push(category);
-        }
+        if (!app.incart)
+            toggle_state = 'all';
         applist.push(app.basename);
-        newrow = '  <div style=\'padding-bottom: 25px;\'>';
-        // App logo
-        newrow += '    <img src=\'" . clearos_app_htdocs('marketplace') . "/market_default.png\' '
-            + 'id=\'app-logo-' + app.basename + '\' style=\'padding-bottom: 8px;\'>';
-        // App rating
-        newrow += '<div>' + get_rating(app.rating, app.rating_count, false, true) + '</div>';
-        newrow += '<input type=\'checkbox\' id=\'' + app.basename
-                + '\' name=\'name\' onclick=\'update_cart(this.id, false, false);\' '
-                + (app.incart ? 'CHECKED' : '') + '/>';
-        newrow += '  </div>';
-
-        vendor = '<tr><td>Vendor:</td><td>' + app.vendor + '</td></tr>';
-        if (app.pricing.unit_price > 0 && app.pricing.exempt) {
-            vendor += '    <tr><td>" . lang('marketplace_price') . ":</td><td>';
-            vendor += '      <span style=\'text-decoration: line-through;\'>';
-            vendor += '' + app.pricing.currency + app.pricing.unit_price + ' ' + UNIT[app.pricing.unit];
-            vendor += '      </span>&#160;&#160;" . lang('marketplace_credit_available') . "';
-            vendor += '    </td></tr>';
-        } else if (app.pricing.unit_price > 0) {
-            vendor += '<tr><td>" . lang('marketplace_price') . ":</td><td>' + app.pricing.currency + app.pricing.unit_price
-                + ' ' + UNIT[app.pricing.unit] + '</td></tr>';
-        } else {
-            vendor += '<tr><td>" . lang('marketplace_price') . ":</td><td>" . lang('marketplace_free') . "</td></tr>';
+        var tags = app.tags.split(' ');
+        var is_option = false;
+        // Only look at tags in mode 1 (novice) of wizard or MP select
+        if ($(location).attr('href').match('.*marketplace.*\/mode1|.*marketplace\/select') != null) {
+            $.each(tags, function(tagindex, tag) {
+                if ($.isNumeric(tag.substring(0, 2)) && parseInt(tag.substring(0, 2)) == 0) {
+                    is_option = true;
+                    novice_optional_apps.push({app_parent: tag.substring(3, tag.length).toLowerCase(), app_child:app});
+                }
+            });
         }
-
-        $('#row-' + category).after(
-            '<tr class=\'' + category + '\'>' +
-            '<td width=\'15%\' valign=\'top\' align=\'center\'>' + newrow + '</td>' +
-            '<td width=\'50%\' valign=\'top\'><h3>' + app.name + '</h3><p>' + app.description.replace(/\\n/g, '</p><p>') + '</p></td>' +
-            '<td width=\'25%\' valign=\'top\'><table border=\'0\'>' + vendor + '</table></td>' +
-            '</tr>'
-        );
+        if (!is_option) {
+            if ($('#display_format').val() == 'tile')
+                content += get_app_as_tile(app, in_wizard);
+            else
+                content += get_app_as_column(app, in_wizard);
+            if (novice_set[novice_index].exclusive && app.incart)
+                exclusive_app_selected = app.basename;
+        }
     });
+
+    if (toggle_state == 'all') {
+        $('#toggle_select').html('<span class=\'ui-button-text\'>" . lang('marketplace_select_all') . "</span>');
+        $('#toggle_select').attr('href', '/app/marketplace/all');
+    } else {
+        $('#toggle_select').html('<span class=\'ui-button-text\'>" . lang('marketplace_select_none') . "</span>');
+        $('#toggle_select').attr('href', '/app/marketplace/none');
+    }
+
+    $('#marketplace-app-container').append(content);
     for (var index = 0; index < applist.length; index++)
         get_image('app-logo', applist[index], 'app-logo-' + applist[index]);
-    for (var index = 0; index < categorylist.length; index++) {
-        $('a#' + categorylist[index]).click(function (e) {
-            e.preventDefault();
-            $('#marketplace tr.' + this.id).toggle(500);
+
+    if ($(location).attr('href').match('.*marketplace.*\/mode1|.*marketplace\/select') != null && exclusive_app_selected)
+        add_optional_apps(exclusive_app_selected);
+
+    if ($('#display_format').val() == 'tile') {
+        $('.marketplace-app').tooltip({
+            offset: [-102, -425],
+            predelay: 1500,
+            delay: 250,
+            position: 'top center',
+            opacity: 0.95
         });
     }
+}
+
+function get_app_as_column(app, wizard) {
+    var content = '';
+    content += '<div class=\'marketplace-app marketplace-list' + (app.incart ? ' marketplace-selected' : '') + '\' id=\'' + app.basename + '\'>';
+    content += '  <div style=\'float:left; width:80px; text-align: center; padding: 0px 2px 5px 2px;\'>';
+    // App logo
+    content += '    <img src=\'" . clearos_app_htdocs('marketplace') . "/market_default.png\' '
+        + 'id=\'app-logo-' + app.basename + '\' style=\'padding-bottom: 8px;\' ' + (app.repo_enabled && app.display_mask == 0 ? '' : 'class=\'marketplace-unavailable\'') + '>';
+    // App rating
+    content += '<div style=\'padding: 5px 0px;\'>' + get_rating(app.rating, app.rating_count, false, false) + '</div>';
+    // If software is installed and latest version, don't show selector checkbox
+    if (app.display_mask != 0)
+        content += '<div id=\'' + app.basename + '-na\' style=\'padding-top: 5px;\'>" . lang('marketplace_not_available') . "</div>';
+    else if (app.up2date)
+        content += '<div style=\'padding-top: 5px;\'><div>" . lang('base_version') . "</div> ' + app.latest_version + '</div>';
+    else if (!app.repo_enabled)
+        content += '<div></div>';
+    else
+        content += '<input class=\'theme-hidden marketplace-select\' type=\'checkbox\' id=\'select-' + app.basename + '\' name=\'' + app.basename + '\' ' + (app.incart ? 'CHECKED ' : '') + '/>';
+    if (app.up2date || app.display_mask != 0) {
+        // Don't show pricing information if its installed
+    } else if (app.pricing.unit_price > 0 && app.pricing.exempt) {
+        content += '<div>';
+        content += '  <div style=\'text-decoration: line-through;\'>';
+        content += '' + app.pricing.currency + app.pricing.unit_price + ' ' + UNIT[app.pricing.unit];
+        content += '  </div>" . lang('marketplace_credit_available') . "';
+        content += '</div>';
+    } else if (app.pricing.unit_price > 0) {
+        content += '<div>' + app.pricing.currency + app.pricing.unit_price
+            + ' ' + UNIT[app.pricing.unit] + '</div>';
+    } else {
+        content += ' <div>" . lang('marketplace_free') . "</div>';
+    }
+    content += '  </div>';
+    content += '  <div style=\'margin-left: 80px; width: 75%; padding: 0px 2px 5px 2px;\'>';
+    content += '    <h2 style=\'padding:0px 0px 5px 0px; margin: 0px 0px 0px 0px;\'>';
+    if (wizard)
+        content += app.name;
+    else
+        content += '<a class=\'marketplace\' href=\'/app/marketplace/view/' + app.basename + '\'>' + app.name + '</a>';
+    content += '</h2>';
+    content += '    <div style=\'font-size: 8pt;\'>';
+    content += '      <div style=\'padding: 3px 0px;\'>' + app.description.substr(0, 100).replace(/\\n/g, '</p><p>') + '...</div>';
+    content += '      <div style=\'padding: 3px 0px;\'>' + app.vendor.toUpperCase() + '</div>';
+    content += '      <div style=\'padding:5px 0px 0px 0px;\'>';
+    content += get_configure(app);
+    content += '      </div>';
+    content += '    </div>';
+    content += '  </div>';
+    content += '  </a>';
+    content += '</div>';
+
+    return content;
+}
+
+function get_app_as_tile(app, wizard) {
+    var content = '';
+    content += '<div class=\'marketplace-app' + (app.incart ? ' marketplace-selected' : '') + '\' id=\'' + app.basename + '\'>';
+    content += '<img src=\'" . clearos_app_htdocs('marketplace') . "/market_default.png\' '
+        + 'id=\'app-logo-' + app.basename + '\' style=\'padding: 2px 2px 5px 2px; float: left;\'>';
+    if (app.pricing.unit_price > 0 && app.pricing.exempt) {
+        content += '<div style=\'text-decoration: line-through; height: 20px; padding-top: 18px\'>' + app.pricing.currency + app.pricing.unit_price + ' ' + UNIT[app.pricing.unit] + '</div>';
+    } else if (app.pricing.unit_price > 0) {
+        content += '<div style=\'padding-top: 18px;\'>' + app.pricing.currency + app.pricing.unit_price + ' ' + UNIT[app.pricing.unit] + '</div>';
+    } else {
+        content += '<div style=\'padding-top: 18px;\'>" . strtoupper(lang('marketplace_free')) . "</div>';
+    }
+    if ((app.display_mask & 1) == 1)
+        content += '<div id=\'' + app.basename + '-na\'>" . lang('marketplace_pro_exclusive') . "</div>';
+    content += '<div style=\'clear: both;\'>' + (app.name.length < 50 ? app.name : app.name.substr(0, 25) + '...' + app.name.substr(app.name.length-10, app.name.length)) + '</div>';
+    if (app.display_mask == 0 && !app.up2date && app.repo_enabled)
+        content += '<input class=\'theme-hidden marketplace-select\' type=\'checkbox\' id=\'select-' + app.basename + '\' name=\'' + app.basename + '\' ' + (app.incart ? 'CHECKED ' : '') + '/>';
+    content += '</div>';
+    content += '<div class=\'marketplace-description-tooltip\'>';
+    content += '<div style=\'padding: 5px; float: right;\'><img src=\'/cache/app-logo-' + app.basename.replace('/_/g', '-') + '.png\' alt=\'\'></div>';
+    content += '<h2>' + app.name + '</h2>';
+    content += '<p>' + app.description.replace(/\\n/g, '</p><p>') + '</p><p style=\'text-align: right;\'><a href=\'/app/marketplace/view/' + app.basename + '\'>Learn more...</a></p></div>';
+    return content;
 }
 
 function get_rating(rating, num_of_ratings, show_avg, show_total) {
@@ -615,7 +739,9 @@ function get_app_details(id) {
                 effect: 'slide',
                 direction: 'left',
                 slideOffset: 110, 
-                opacity: 0.95
+                opacity: 0.95,
+                delay: 500,
+                predelay: 200
             });
 
             $('#indiv_configure').attr('href', '/' + data.url_config);
@@ -779,6 +905,7 @@ function get_app_details(id) {
             $('a.peer_review').click(function (e) {
                 e.preventDefault();
                 var parts = $(this).attr('href').split('-');
+                clearos_is_authenticated();
                 peer_review(id, parseInt(parts[1]), parseInt(parts[2]));
             });
 
@@ -895,6 +1022,9 @@ function checkout(type) {
     if ($('#po:checked').val() !== undefined && $('#po_number').val() == '') {
         clearos_dialog_box('invalid_po_err', '" . lang('base_warning') . "', '" . lang('marketplace_invalid_po') . "');
         return;
+    } else if ($('input[name=payment_method]:checked').val() == undefined) {
+        clearos_dialog_box('invalid_method_err', '" . lang('base_warning') . "', '" . lang('marketplace_select_payment_method') . "');
+        return;
     } else {
         // Display 'processing' indication
         $('.payment_option').attr('disabled', true);
@@ -1005,7 +1135,9 @@ function peer_review(id, approve, dbid) {
         url: '/app/marketplace/ajax/peer_review',
         data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&basename=' + $('#basename').val() + '&id=' + id + '&approve=' + approve + '&dbid=' + dbid,
         success: function(data) {
-            if (data.code != 0) {
+            if (data.code == 1) {
+                clearos_is_authenticated();
+            } else if (data.code != 0) {
                 clearos_dialog_box('peer_review_error', '" . lang('base_warning') . "', data.errmsg);
             } else {
                 if (approve > 0) {
@@ -1035,12 +1167,159 @@ function peer_review(id, approve, dbid) {
     });
 }
 
-$(document).ready(function() {
+function get_novice_set(index) {
 
+    $.ajax({
+        type: 'POST',
+        dataType: 'json',
+        url: '/app/marketplace/ajax/set_search',
+        data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&search=' + novice_set[index].search,
+        success: function(data) {
+            get_apps(false, 0);
+            $('#marketplace-novice-step').html((novice_index + 1) + ' / ' + novice_set.length);
+            $('#marketplace-novice-title').html(novice_set[index].title);
+            $('#marketplace-novice-description').html(novice_set[index].description);
+            $('#inline-help-title-0').html(novice_set[index].helptitle);
+            $('#inline-help-content-0').html(novice_set[index].helpcontent);
+            if (novice_set[index].exclusive)
+                $('#toggle_select').hide();
+            else
+                $('#toggle_select').show();
+        },
+        error: function(xhr, text, err) {
+            // Don't display any errors if ajax request was aborted due to page redirect/reload
+            if (xhr['abort'] == undefined)
+                clearos_dialog_box('error', '" . lang('base_warning') . "', xhr.responseText.toString());
+        }
+    });
+}
+
+$(document).ready(function() {
+    if ($(location).attr('href').match('.*marketplace\/wizard\/selection\/mode4') != null)
+        window.location = '/app/marketplace/wizard';
+
+    $('#theme-left-menu a').css('min-width', '105px');
+    $('#tabs-overview a').css('min-width', '85px');
     // Wizard previous/next button handling
     $('#wizard_nav_next').click(function() {
-        window.location = '/app/base/wizard/next_step';
+        if ($(location).attr('href').match('.*marketplace\/wizard$') != null) {
+            // Hack...ajax is required to override session value on 'next hop'
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                url: '/app/marketplace/wizard/set_mode',
+                data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&mode=' + $('#wizard_marketplace_mode').val(),
+                success: function(data) {
+                    window.location = '/app/base/wizard/next_step';
+                },
+                error: function(xhr, text, err) {
+                    window.location = '/app/base/wizard/next_step';
+                }
+            });
+        } else {
+            window.location = '/app/base/wizard/next_step';
+        }
     });
+    if ($(location).attr('href').match('.*marketplace\/wizard$') != null) {
+        $('.mode').mouseover(function() {
+            if (this.id != $('#wizard_marketplace_mode').val())
+                $(this).addClass('marketplace-category-hover');
+        }).mouseout(function() {
+            if (this.id != $('#wizard_marketplace_mode').val())
+                $(this).removeClass('marketplace-category-hover');
+        }).click(function() {
+            $('.mode').removeClass('marketplace-category-selected');
+            $('.mode').removeClass('marketplace-category-hover');
+            var mySelector = this;
+            $('#wizard_marketplace_mode').val(mySelector.id);
+            $('#' + mySelector.id).addClass('marketplace-category-selected');
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                url: '/app/marketplace/wizard/set_mode',
+                data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&mode=' + $('#wizard_marketplace_mode').val()
+            });
+        });
+        $('#' + $('#wizard_marketplace_mode').val()).addClass('marketplace-category-selected');
+    }
+    if ($(location).attr('href').match('.*marketplace\/wizard\/selection\/mode2$') != null) {
+        $('div.theme-help-box-content').html($('#app-selector-header').html());
+        $('#app-selector-header').remove();
+        $('.marketplace-category').on({
+            mouseover: function() {
+                if ($(this).hasClass('marketplace-category-selected')) {
+                    category_class = 'marketplace-category-selected';
+                } else {
+                    $(this).addClass('marketplace-hover');
+                    category_class = '';
+                }
+            },
+            mouseout: function() {
+                $(this).removeClass('marketplace-hover');
+                if (category_class !== '')
+                    $(this).addClass(category_class);
+            },
+            click: function() {
+                $('.marketplace-category').removeClass('marketplace-category-selected');
+                $('.marketplace-category').removeClass('marketplace-hover');
+                if ($('#select-' + this.id).is(':checked')) {
+                    $('#select-' + this.id).removeAttr('checked');
+                    $(this).removeClass('marketplace-category-selected');
+                    category_class = '';
+                } else {
+                    $('#select-' + this.id).attr('checked', true);
+                    $(this).removeClass('marketplace-hover');
+                    $(this).addClass('marketplace-category-selected');
+                    category_class = 'marketplace-category-selected';
+                }
+                $('#marketplace-loading').show();
+                $('#marketplace-app-container').html('');
+                $.ajax({
+                    type: 'POST',
+                    dataType: 'json',
+                    url: '/app/marketplace/ajax/set_search',
+                    data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&category=' + this.id.replace('category-', ''),
+                    success: function(data) {
+                        get_apps(false, 0);
+                    },
+                    error: function(xhr, text, err) {
+                        // Don't display any errors if ajax request was aborted due to page redirect/reload
+                        if (xhr['abort'] == undefined)
+                            clearos_dialog_box('error', '" . lang('base_warning') . "', xhr.responseText.toString());
+                    }
+                });
+            }
+        });
+    }
+    if ($(location).attr('href').match('.*marketplace\/select$|./*marketplace\/wizard\/selection\/mode1$') != null) {
+        $('div.theme-help-box-content').html($('#app-selector-header').html());
+        $('#app-selector-header').remove();
+        $('#novice-next').on({
+            click: function() {
+                if (novice_index < novice_set.length - 1)
+                    novice_index++;
+                else
+                    novice_index = 0;
+                $('#marketplace-loading').show();
+                $('#marketplace-app-container').html('');
+                $('#marketplace-novice-step').html((novice_index + 1) + ' / ' + novice_set.length);
+                get_novice_set(novice_index);
+            }
+        });
+        $('#novice-prev').on({
+            click: function() {
+                if (novice_index > 0)
+                    novice_index--;
+                else
+                    novice_index = novice_set.length - 1;
+                $('#marketplace-novice-step').html((novice_index + 1) + ' / ' + novice_set.length);
+                $('#marketplace-loading').show();
+                $('#marketplace-app-container').html('');
+                get_novice_set(novice_index);
+            }
+        });
+
+    }
 
     if ($('#search').val() != '' && $('#search').val() != '" . lang('marketplace_search_terms') . "') {
         // Change search icon to cancel and add hidden input
@@ -1067,6 +1346,7 @@ $(document).ready(function() {
         if ($('#total').val() == 0) {
             allow_noauth_mods();
         } else {
+            $('#infotable').show();
             auth_options.reload_after_auth = true;
             clearos_is_authenticated();
             if ($('#total').val() > 0)
@@ -1083,21 +1363,19 @@ $(document).ready(function() {
     $('#toggle_select').click(function(e) {
         e.preventDefault();
         $('#toggle_select').html('<span class=\'theme-loading-small\'></span>');
-        $('.theme-loading-small').css('margin', '0px 7px -2px 9px');
-        var state = 'all';
+        $('.theme-loading-small').css('margin', '1px 2px 1px 4px');
+        var toggle = 'all';
         if (!$('#toggle_select').attr('href').match('.*all$'))
-            state = 'none';
-        var apps = new Array();
-        var index = 0;
-        $.each($('#form_app_list input[type=\'checkbox\']'), function () {
-            if (state == 'all')
-                $('#' + this.id).attr('checked', 'checked');
-            else
-                $('#' + this.id).removeAttr('checked');
-            apps[index] = this.id;
-            index++;
+            toggle = 'none';
+        var apps = Array();
+        $.each($('#form_app_list input[type=\'checkbox\']'), function (index, value) {
+            if (toggle == 'all') {
+                apps[index] = {state: '1', id: this.id.replace('select-', '')};
+            } else {
+                apps[index] = {state: '0', id: this.id.replace('select-', '')};
+            }
         });
-        bulk_cart_update(state, JSON.stringify(apps));
+        bulk_cart_update(JSON.stringify(apps), toggle);
     });
 
     $('#comment').keyup(function() {
