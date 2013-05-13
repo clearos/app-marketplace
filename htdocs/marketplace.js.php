@@ -605,7 +605,11 @@ function get_app_as_tile(app, wizard) {
     content += '<div class=\'marketplace-description-tooltip\'>';
     content += '<div style=\'padding: 5px; float: right;\'><img src=\'/cache/app-logo-' + app.basename.replace('/_/g', '-') + '.png\' alt=\'\'></div>';
     content += '<h2>' + app.name + '</h2>';
-    content += '<p>' + app.description.replace(/\\n/g, '</p><p>') + '</p><p style=\'text-align: right;\'><a href=\'/app/marketplace/view/' + app.basename + '\'>Learn more...</a></p></div>';
+    content += '<p>' + app.description.replace(/\\n/g, '</p><p>') + '</p>';
+    if (wizard)
+        content += '<p style=\'text-align: right;\'><a href=\'http://www.clearcenter.com/marketplace\' target=\'_blank\'>' + lang_marketplace_learn_more + '</a></p></div>';
+    else
+        content += '<p style=\'text-align: right;\'><a href=\'/app/marketplace/view/' + app.basename + '\'>' + lang_marketplace_learn_more + '</a></p></div>';
     return content;
 }
 
