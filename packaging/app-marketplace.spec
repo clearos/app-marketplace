@@ -1,7 +1,7 @@
 
 Name: app-marketplace
 Epoch: 1
-Version: 1.4.30
+Version: 1.4.31
 Release: 1%{dist}
 Summary: Marketplace
 License: Proprietary
@@ -19,15 +19,16 @@ Requires: app-dashboard
 ClearOS Marketplace is where you can add new apps and services to your system.  Apps available in the Marketplace have gone through a stringent quality control process by ClearCenter to ensure the quality and security of each submission.
 
 %package core
-Summary: Marketplace - Core
+Summary: Marketplace - APIs and install
 License: LGPLv3
 Group: ClearOS/Libraries
 Requires: app-base-core
 Requires: app-clearcenter-core => 1:1.2.4
 Requires: app-registration-core => 1:1.2.4
-Requires: app-base-core => 1:1.2.0
+Requires: app-base-core => 1:1.4.38
 Requires: yum-marketplace-plugin
-Requires: theme-default >= 6.4.8
+Requires: theme-default >= 6.4.26
+Requires: clearos-framework >= 6.4.27
 Requires: clearos-release-jws >= 1.1
 
 %description core
