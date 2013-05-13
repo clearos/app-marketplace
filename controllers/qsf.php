@@ -86,18 +86,25 @@ class Qsf extends ClearOS_Controller
         $this->load->library('upload', $config);
 
         if ($this->input->post('upload')) {
-            if ( ! $this->upload->do_upload('qsf')) {
+            if (!$this->upload->do_upload('qsf')) {
                 $this->page->set_message($this->upload->display_errors(), 'warning');
                 redirect('/marketplace/qsf');
                 return;
             } else {
-                $upload = $this->upload->data();
-                $this->marketplace->set_qsf($upload['file_name']);
-                $data['filename'] = $upload['file_name'];
-                $data['size'] = byte_format($this->marketplace->get_qsf_size(), 1);
-                $data['qsf'] = $this->marketplace->get_qsf_info();
-                $data['qsf_ready'] = TRUE;
-                $data['wizard'] = FALSE;
+                try {
+                    $upload = $this->upload->data();
+                    $this->marketplace->set_qsf($upload['file_name']);
+                    $data['filename'] = $upload['file_name'];
+                    $data['size'] = byte_format($this->marketplace->get_qsf_size(), 1);
+                    $data['qsf'] = $this->marketplace->get_qsf_info();
+                    $data['qsf_ready'] = TRUE;
+                    $data['wizard'] = FALSE;
+                } catch (Exception $e) {
+                    $this->page->set_message(clearos_exception_message($e), 'warning');
+                    $this->marketplace->delete_qsf();
+                    redirect('/marketplace/qsf');
+                    return;
+                }
             }
         }
 

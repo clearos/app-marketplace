@@ -1066,8 +1066,10 @@ class Marketplace extends Rest
             $no_paid_apps = FALSE;
             if (in_array('flag_no_paid'))
                 $no_paid_apps = TRUE;
-            foreach ($lines as $line) {
-                if (preg_match('/^\s*#.*/', $line)) {
+            foreach ($lines as $line_number => $line) {
+                if ($line_number == 0 && !preg_match('/# Quick Select File - Version \d+\.\d$/', $line)) {
+                    throw new Validation_Exception(lang('marketplace_invalid_quick_select_file'));
+                } else if (preg_match('/^\s*#.*/', $line)) {
                     continue;
                 } else if (preg_match('/^' . self::APP_PREFIX . '.*/', $line)) {
                     $cart_obj = new Cart_Item($line);

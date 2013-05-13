@@ -187,6 +187,7 @@ $lang['marketplace_app_selection'] = 'App Selection';
 $lang['marketplace_display_recommended_apps'] = 'Display Recommended Apps';
 $lang['marketplace_connection_failure'] = 'Connection failure.';
 $lang['marketplace_quick_select'] = 'Marketplace Quick Select';
+$lang['marketplace_invalid_quick_select_file'] = 'Invalid Quick Select File';
 $lang['marketplace_number_of_apps'] = 'Number of Marketplace Apps';
 $lang['marketplace_number_of_packages'] = 'Number of Additional Packages';
 $lang['marketplace_filter_category_is_invalid'] = 'Invalid category';
