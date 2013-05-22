@@ -3,9 +3,9 @@
 /**
  * Cart class.
  *
- * @category   Apps
- * @package    Marketplace
- * @subpackage Libraries
+ * @category   apps
+ * @package    marketplace
+ * @subpackage libraries
  * @author     ClearCenter <developer@clearcenter.com>
  * @copyright  2011 ClearCenter
  * @license    http://www.clearcenter.com/app_license ClearCenter license
@@ -64,9 +64,9 @@ clearos_load_library('base/Validation_Exception');
 /**
  * Cart class.
  *
- * @category   Apps
- * @package    Marketplace
- * @subpackage Libraries
+ * @category   apps
+ * @package    marketplace
+ * @subpackage libraries
  * @author     ClearCenter <developer@clearcenter.com>
  * @copyright  2011 ClearCenter
  * @license    http://www.clearcenter.com/app_license ClearCenter license

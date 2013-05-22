@@ -3,9 +3,9 @@
 /**
  * Marketplace Search controller.
  *
- * @category   Apps
- * @package    Marketplace
- * @subpackage Controllers
+ * @category   apps
+ * @package    marketplace
+ * @subpackage controllers
  * @author     ClearCenter <developer@clearcenter.com>
  * @copyright  2011 ClearCenter
  * @license    http://www.clearcenter.com/app_license ClearCenter license
@@ -25,9 +25,9 @@ use \clearos\apps\marketplace\Marketplace as Marketplace;
 /**
  * Marketplace Search controller.
  *
- * @category   Apps
- * @package    Marketplace
- * @subpackage Controllers
+ * @category   apps
+ * @package    marketplace
+ * @subpackage controllers
  * @author     ClearCenter <developer@clearcenter.com>
  * @copyright  2011 ClearCenter
  * @license    http://www.clearcenter.com/app_license ClearCenter license

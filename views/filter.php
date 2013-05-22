@@ -3,9 +3,9 @@
 /**
  * Marketplace filter view.
  *
- * @category   Apps
- * @package    Marketplace
- * @subpackage Views
+ * @category   apps
+ * @package    marketplace
+ * @subpackage views
  * @author     ClearCenter <developer@clearcenter.com>
  * @copyright  2011 ClearCenter
  * @license    http://www.clearcenter.com/Company/terms.html ClearSDN license
