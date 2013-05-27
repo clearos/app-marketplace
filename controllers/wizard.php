@@ -158,7 +158,6 @@ class Wizard extends ClearOS_Controller
                     $data['size'] = byte_format($this->marketplace->get_qsf_size(), 1);
                     $data['qsf'] = $this->marketplace->get_qsf_info();
                     $data['qsf_ready'] = TRUE;
-                    $data['wizard'] = FALSE;
                 } catch (Exception $e) {
                     $this->page->set_message(clearos_exception_message($e), 'warning');
                     $this->marketplace->delete_qsf();

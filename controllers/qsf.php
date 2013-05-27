@@ -23,7 +23,7 @@ use \clearos\apps\marketplace\Marketplace as Marketplace;
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * Marketplace wizard controller.
+ * Marketplace QSF controller.
  *
  * @category   apps
  * @package    marketplace
@@ -37,7 +37,7 @@ use \clearos\apps\marketplace\Marketplace as Marketplace;
 class Qsf extends ClearOS_Controller
 {
     /**
-     * Marketplace wizard default controller
+     * Marketplace qsf default controller
      *
      * @param String $category category
      *
