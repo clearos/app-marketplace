@@ -549,7 +549,7 @@ class Marketplace extends Rest
         if (!$this->is_loaded)
             $this->_load_config();
 
-        $hide = $this->config['hide_support_policy'];
+        $hide = isset($this->config['hide_support_policy']) ? $this->config['hide_support_policy'] : NULL;
 
         if ($hide == NULL || !$hide)
             return FALSE;
@@ -570,7 +570,7 @@ class Marketplace extends Rest
         if (!$this->is_loaded)
             $this->_load_config();
 
-        $hide = $this->config['hide_recommended_apps'];
+        $hide = isset($this->config['hide_recommended_apps']) ? $this->config['hide_recommended_apps'] : NULL;
 
         if ($hide == NULL || !$hide)
             return FALSE;
