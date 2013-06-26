@@ -256,8 +256,14 @@ class Ajax extends ClearOS_Controller
             include_once clearos_app_base('marketplace') . '/libraries/Cart_Item.php';
             $apps = json_decode($this->input->post('apps')); 
             // Reverse the array so dependent apps (eg. Kaspersky 50 user) gets removed first
-            if ($this->input->post('toggle') == 'none')
+            if ($this->input->post('toggle') == 'none') {
                 $apps = array_reverse($apps);
+            } else {
+                $state = array();
+                foreach ($apps as $index => $app)
+                    $state[$index] = $app->state;
+                array_multisort($state, SORT_ASC, $apps);
+            }
             foreach ($apps as $index => $app) {
                 if ($app->state == 1) {
                     $cart_obj = new Cart_Item(Marketplace::APP_PREFIX . preg_replace("/_/", "-", $app->id));

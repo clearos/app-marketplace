@@ -42,19 +42,23 @@ var my_subscriptions = new Array();
 var novice_index = 0;
 var novice_optional_apps = [];
 var in_wizard = false;
-//TODO
+//TODO Translate
 var novice_set = [
     {
         search:'99_directory', exclusive: true, title:'Select your Directory',
         description:'A directory service stores, organizes and provides access to information about your users, groups, networked devices and more.', helptitle: 'Directory Services', helpcontent: '<p>The options listed under Directory Services are mutually exclusive - you can select one or the other...not both.</p><p>If you do not have existing Microsoft server infrastructure running Windows Active Directory[TM], you will almost certainly want to select the OpenLDAP-based directory server.</p>'
     },
     {
-        search:'99_mail', exclusive: true, title:'Groupware / E-Mail Services',
-        description:'Planning on running group collaboration and/or Email services or need to integrate with Google Apps?  ClearOS offers 4 variants for hosting your messaging services locally or in the cloud.', helptitle: 'Groupware/E-Mail', helpcontent: '<p>The ClearOS Marketplace currently supports four solutions for providing email and groupware services.</p><p>If you are already a GoogleApps subscriber or wish to migrate email services to GoogleApps, the Google Apps synchronization tool is an optional but useful app for syncronizing and provisioning accounts stored locally in OpenLDAP directory with Google Apps.</p><p>Cyrus provides a robust and lightweight IMAP(S)/POP(S) service for hosting a mail server without a web-based GUI (eg. use of mail client like Outlook[TM], Thunderbird etc.).</p><p>Zarafa Community is a full groupware solution intended for home users, while Zarafa Small Business is positioned as the best-selling open-source drop-in Exchange replacement.</p>'
-    },
-    {
         search:'99_security', exclusive: false, title:'Perimeter Security',
         description:'Is your ClearOS server acting as a gateway to the Internet for connected devices on your Local Area Network (LAN)?  If so, implementing effective perimeter security measures is highly recommended.', helptitle: 'Intrusion Protection', helpcontent: 'Intrusion protection consists of both an active (blocking) and passive (logging) components.  Attack vector identification and prevention is only as good as the signatures used to filter traffic.'
+    },
+    {
+        search:'99_filter', exclusive: false, title:'Web Content Filter',
+        description:'The ClearOS web proxy and content filter gives administrators clear visibility into web traffic on the network and allows organizations and business to restrict content to achieve compliance (eg. CIPA), block phishing and sites hosting malware and increase produtivity.', helptitle: 'Proxy/Filter for Web', helpcontent: '<p>Many of the core apps that combine to provide a web proxy filter solution complete with filtering, group policy support and malware detection are completely free to use.</p><p>Subscribing to the paid Content Filter Blacklist gives administrators over 100 categories, millions of domain classifications and a continually updating database to track new sites that come online everyday.</p><p>The filter engine has plugins for supporting apps from both ClearCenter (antimalware updates) and a leading commercial AV solution (Kaspersky Labs).</p>'
+    },
+    {
+        search:'99_mail', exclusive: true, title:'Groupware / E-Mail Services',
+        description:'Planning on running group collaboration and/or Email services or need to integrate with Google Apps?  ClearOS offers 4 variants for hosting your messaging services locally or in the cloud.', helptitle: 'Groupware/E-Mail', helpcontent: '<p>The ClearOS Marketplace currently supports four solutions for providing email and groupware services.</p><p>If you are already a GoogleApps subscriber or wish to migrate email services to GoogleApps, the Google Apps synchronization tool is an optional but useful app for syncronizing and provisioning accounts stored locally in OpenLDAP directory with Google Apps.</p><p>Cyrus provides a robust and lightweight IMAP(S)/POP(S) service for hosting a mail server without a web-based GUI (eg. use of mail client like Outlook[TM], Thunderbird etc.).</p><p>Zarafa Community is a full groupware solution intended for home users, while Zarafa Small Business is positioned as the best-selling open-source drop-in Exchange replacement.</p>'
     },
     {
         search:'99_disaster', exclusive: false, title:'Disaster Prevention and Recovery',
@@ -264,7 +268,14 @@ function bulk_cart_update(apps, toggle) {
                     $('#toggle_select').html('<span class=\'ui-button-text\'>" . lang('marketplace_select_none') . "</span>');
                 // Which apps to reset - this is coming back from our JSON data
                 $.each(data.apps, function (id, app) {
-                    $('#' + app.id).attr('checked', (app.state == 1 ? false : true));
+                    $('#' + app.id).removeClass('marketplace-selected');
+					if (app.state == 1) {
+                        $('#' + app.id).attr('checked', false);
+                        $('#' + app.id).removeClass('marketplace-hover');
+                    } else {
+                        $('#' + app.id).attr('checked', true);
+                        $('#' + app.id).addClass('marketplace-selected');
+                    }
                 });
                 clearos_dialog_box('invalid_bulk_cart', '" . lang('base_warning') . "', data.errmsg);
             } else {
@@ -313,13 +324,13 @@ function update_cart(id, individual, redirect) {
             if (data.code == 0 && redirect)
                 window.location = '/app/marketplace/install';
             if (data.code != 0) {
+                $('#' + id).removeClass('marketplace-selected');
                 if ($('#select-' + id).is(':checked')) {
-                    $('#select-' + id).removeAttr('checked');
+                    $('#' + id).attr('checked', false);
                     $('#' + id).removeClass('marketplace-hover');
-                    $('#' + id).removeClass('marketplace-selected');
                 } else {
-                    $('#' + id).css('background-color', '#C0CFE6');
-                    $('#select-' + id).attr('checked', true);
+                    $('#' + id).attr('checked', true);
+                    $('#' + id).addClass('marketplace-selected');
                 }
                 clearos_dialog_box('invalid_cart', '" . lang('base_warning') . "', data.errmsg);
             }
@@ -374,7 +385,7 @@ function get_apps(realtime, offset) {
             paginate += '<a style=\'margin-right: 2px;\' class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + next + '\'>\></a>';
             paginate += '<a class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + pages + '\'>\>\></a>';
             if (pages > 0) {
-                $('#pagination-top').html(paginate + '<div style=\'padding: 5px 0px 0px 0px; font-size: 7pt;\'>" . lang('marketplace_displaying') . " ' + (apps_to_display_per_page * offset + 1) + ' - ' + (apps_to_display_per_page * offset + data.total) + ' " . lang('base_of') . " ' + data.total + '</div>');
+                $('#pagination-top').html(paginate + '<div style=\'padding: 5px 0px 0px 0px; font-size: 7pt;\'>" . lang('marketplace_displaying') . " ' + (apps_to_display_per_page * offset + 1) + ' - ' + (apps_to_display_per_page * offset + data.list.length) + ' " . lang('base_of') . " ' + data.total + '</div>');
                 $('#pagination-bottom').html(paginate);
             }
             

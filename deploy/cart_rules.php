@@ -9,6 +9,7 @@ $rules = array(
         'app-active-directory' => array(
             'app-google-apps',
             'app-openldap-directory',
+            'app-openldap-directory-core',
             'app-zarafa-community',
             'app-zarafa-small-business',
             'app-zarafa-professional',
