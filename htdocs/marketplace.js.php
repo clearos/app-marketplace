@@ -41,7 +41,7 @@ var my_systems = new Array();
 var my_subscriptions = new Array();
 var novice_index = 0;
 var novice_optional_apps = [];
-var in_wizard = false;
+var in_wizard_or_novice = false;
 //TODO Translate
 var novice_set = [
     {
@@ -456,9 +456,9 @@ function add_optional_apps(app_focus) {
     $.each(novice_optional_apps, function(index, myapp) { 
         if (myapp.app_parent == app_focus)
             if ($('#display_format').val() == 'tile')
-                content += get_app_as_tile(myapp.app_child, in_wizard);
+                content += get_app_as_tile(myapp.app_child);
             else
-                content += get_app_as_column(myapp.app_child, in_wizard);
+                content += get_app_as_column(myapp.app_child);
     });
     $('#optional-apps').remove();
     if (content.length > 0)
@@ -484,8 +484,10 @@ function display_apps(data) {
     var exclusive_app_selected = null;
     novice_optional_apps = [];
 
-    if ($(location).attr('href').match('.*marketplace\/wizard\/.*') != null)
-        in_wizard = true;
+    if ($(location).attr('href').match('.*marketplace.*\/mode1|.*marketplace\/select') != null)
+        in_wizard_or_novice = true;
+    else
+        in_wizard_or_novice = false;
     jQuery.each(data.list, function(index, app) { 
         // Bitmask of 0 or 1 means allow to install or Pro only (which we display)
         if (app.display_mask > 1)
@@ -507,9 +509,9 @@ function display_apps(data) {
         }
         if (!is_option) {
             if ($('#display_format').val() == 'tile')
-                content += get_app_as_tile(app, in_wizard);
+                content += get_app_as_tile(app);
             else
-                content += get_app_as_column(app, in_wizard);
+                content += get_app_as_column(app);
             if (novice_set[novice_index].exclusive && app.incart)
                 exclusive_app_selected = app.basename;
         }
@@ -541,7 +543,7 @@ function display_apps(data) {
     }
 }
 
-function get_app_as_column(app, wizard) {
+function get_app_as_column(app) {
     var content = '';
     content += '<div class=\'marketplace-app marketplace-list' + (app.incart ? ' marketplace-selected' : '') + '\' id=\'' + app.basename + '\'>';
     content += '  <div style=\'float:left; width:80px; text-align: center; padding: 0px 2px 5px 2px;\'>';
@@ -576,7 +578,7 @@ function get_app_as_column(app, wizard) {
     content += '  </div>';
     content += '  <div style=\'margin-left: 80px; width: 75%; padding: 0px 2px 5px 2px;\'>';
     content += '    <h2 style=\'padding:0px 0px 5px 0px; margin: 0px 0px 0px 0px;\'>';
-    if (wizard)
+    if (in_wizard_or_novice)
         content += app.name;
     else
         content += '<a class=\'marketplace\' href=\'/app/marketplace/view/' + app.basename + '\'>' + app.name + '</a>';
@@ -595,7 +597,7 @@ function get_app_as_column(app, wizard) {
     return content;
 }
 
-function get_app_as_tile(app, wizard) {
+function get_app_as_tile(app) {
     var content = '';
     content += '<div class=\'marketplace-app' + (app.incart ? ' marketplace-selected' : '') + '\' id=\'' + app.basename + '\'>';
     content += '<img src=\'" . clearos_app_htdocs('marketplace') . "/market_default.png\' '
@@ -617,7 +619,7 @@ function get_app_as_tile(app, wizard) {
     content += '<div style=\'padding: 5px; float: right;\'><img src=\'/cache/app-logo-' + app.basename.replace('/_/g', '-') + '.png\' alt=\'\'></div>';
     content += '<h2>' + app.name + '</h2>';
     content += '<p>' + app.description.replace(/\\n/g, '</p><p>') + '</p>';
-    if (wizard)
+    if (in_wizard_or_novice)
         content += '<p style=\'text-align: right;\'><a href=\'http://www.clearcenter.com/marketplace\' target=\'_blank\'>' + lang_marketplace_learn_more + '</a></p></div>';
     else
         content += '<p style=\'text-align: right;\'><a href=\'/app/marketplace/view/' + app.basename + '\'>' + lang_marketplace_learn_more + '</a></p></div>';
