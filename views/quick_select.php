@@ -78,3 +78,4 @@ echo "<div id='marketplace-loading' style='padding: 10px 0px 0px 0px;'>" . loadi
 echo "<div id='app_list_overview'></div>";
 echo "</div>";
 echo "<input id='display_format' type='hidden' value='$display_format'>";
+echo "<input type='hidden' value='$mode' id='wizard_marketplace_mode' name='wizard_marketplace_mode' />\n";

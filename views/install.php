@@ -203,7 +203,9 @@ if (count($rows) === 0) {
 ///////////////////////////////////////////////////////////////////////////////
 
 $options['default_rows'] = 100;
-$options['id'] = 'install_apps_table';
+$options['id'] = 'install_apps';
+$options['no_action'] = TRUE;
+$options['empty_table_message'] = 'No apps selected.';
 $rows = array_merge($rows['apps'], $rows['packages']);
 
 echo summary_table(

@@ -45,8 +45,12 @@ var in_wizard_or_novice = false;
 //TODO Translate
 var novice_set = [
     {
-        search:'99_directory', exclusive: true, title:'Select your Directory',
+        search:'99_directory', exclusive: true, title:'Directory Services',
         description:'A directory service stores, organizes and provides access to information about your users, groups, networked devices and more.', helptitle: 'Directory Services', helpcontent: '<p>The options listed under Directory Services are mutually exclusive - you can select one or the other...not both.</p><p>If you do not have existing Microsoft server infrastructure running Windows Active Directory[TM], you will almost certainly want to select the OpenLDAP-based directory server.</p>'
+    },
+    {
+        search:'99_networking', exclusive: false, title:'Firewall and Networking',
+        description:'ClearOS can be used as a router or in standalone mode on your LAN to deliver firewall and/or networking infrastructure.  A firewall is the first (and very effective) line of defense in preventing outsiders unauthorized access to your server and any devices that may be connected to the network.', helptitle: 'Firewall and Networking', helpcontent: '<p>Firewall capabilities (port forwarding, DMZ etc.) are split into individual apps to keep thing simple and intuitive in the User Interface.</p><p>Virtual Private Networking (VPN) allows remote users to securely connect to your network in order to access resources as if they were on-site.'
     },
     {
         search:'99_security', exclusive: false, title:'Perimeter Security',
@@ -57,7 +61,7 @@ var novice_set = [
         description:'The ClearOS web proxy and content filter gives administrators clear visibility into web traffic on the network and allows organizations and business to restrict content to achieve compliance (eg. CIPA), block phishing and sites hosting malware and increase produtivity.', helptitle: 'Proxy/Filter for Web', helpcontent: '<p>Many of the core apps that combine to provide a web proxy filter solution complete with filtering, group policy support and malware detection are completely free to use.</p><p>Subscribing to the paid Content Filter Blacklist gives administrators over 100 categories, millions of domain classifications and a continually updating database to track new sites that come online everyday.</p><p>The filter engine has plugins for supporting apps from both ClearCenter (antimalware updates) and a leading commercial AV solution (Kaspersky Labs).</p>'
     },
     {
-        search:'99_mail', exclusive: true, title:'Groupware / E-Mail Services',
+        search:'99_mail', exclusive: true, title:'Groupware / E-Mail',
         description:'Planning on running group collaboration and/or Email services or need to integrate with Google Apps?  ClearOS offers 4 variants for hosting your messaging services locally or in the cloud.', helptitle: 'Groupware/E-Mail', helpcontent: '<p>The ClearOS Marketplace currently supports four solutions for providing email and groupware services.</p><p>If you are already a GoogleApps subscriber or wish to migrate email services to GoogleApps, the Google Apps synchronization tool is an optional but useful app for syncronizing and provisioning accounts stored locally in OpenLDAP directory with Google Apps.</p><p>Cyrus provides a robust and lightweight IMAP(S)/POP(S) service for hosting a mail server without a web-based GUI (eg. use of mail client like Outlook[TM], Thunderbird etc.).</p><p>Zarafa Community is a full groupware solution intended for home users, while Zarafa Small Business is positioned as the best-selling open-source drop-in Exchange replacement.</p>'
     },
     {
@@ -427,7 +431,7 @@ $(document).on('mouseover', '.marketplace-app', function(event) {
         $(this).addClass('marketplace-selected');
     }
     clicked_app = this.id
-    if ($(location).attr('href').match('.*marketplace.*\/mode1|.*marketplace\/select') != null && novice_set[novice_index].exclusive && $('#' + this.id,'#optional-apps').length != 1) {
+    if ($('#wizard_marketplace_mode').val() == 'mode1' && novice_set[novice_index].exclusive && $('#' + this.id,'#optional-apps').length != 1) {
         // Need to unset all other apps before selecting this one
         var apps = Array();
         $.each($('#form_app_list input[type=\'checkbox\']'), function (index, value) {
@@ -484,7 +488,7 @@ function display_apps(data) {
     var exclusive_app_selected = null;
     novice_optional_apps = [];
 
-    if ($(location).attr('href').match('.*marketplace.*\/mode1|.*marketplace\/select') != null)
+    if ($('#wizard_marketplace_mode').val() == 'mode1')
         in_wizard_or_novice = true;
     else
         in_wizard_or_novice = false;
@@ -499,7 +503,7 @@ function display_apps(data) {
         var tags = app.tags.split(' ');
         var is_option = false;
         // Only look at tags in mode 1 (novice) of wizard or MP select
-        if ($(location).attr('href').match('.*marketplace.*\/mode1|.*marketplace\/select') != null) {
+        if ($('#wizard_marketplace_mode').val() == 'mode1') {
             $.each(tags, function(tagindex, tag) {
                 if ($.isNumeric(tag.substring(0, 2)) && parseInt(tag.substring(0, 2)) == 0) {
                     is_option = true;
@@ -529,7 +533,7 @@ function display_apps(data) {
     for (var index = 0; index < applist.length; index++)
         get_image('app-logo', applist[index], 'app-logo-' + applist[index]);
 
-    if ($(location).attr('href').match('.*marketplace.*\/mode1|.*marketplace\/select') != null && exclusive_app_selected)
+    if ($('#wizard_marketplace_mode').val() == 'mode1' && exclusive_app_selected)
         add_optional_apps(exclusive_app_selected);
 
     if ($('#display_format').val() == 'tile') {
@@ -620,7 +624,7 @@ function get_app_as_tile(app) {
     content += '<h2>' + app.name + '</h2>';
     content += '<p>' + app.description.replace(/\\n/g, '</p><p>') + '</p>';
     if (in_wizard_or_novice)
-        content += '<p style=\'text-align: right;\'><a href=\'http://www.clearcenter.com/marketplace\' target=\'_blank\'>' + lang_marketplace_learn_more + '</a></p></div>';
+        content += '<p style=\'text-align: right;\'><a href=\'http://www.clearcenter.com/marketplace/type/?basename=' + app.basename + '\' target=\'_blank\'>' + lang_marketplace_learn_more + '</a></p></div>';
     else
         content += '<p style=\'text-align: right;\'><a href=\'/app/marketplace/view/' + app.basename + '\'>' + lang_marketplace_learn_more + '</a></p></div>';
     return content;
@@ -1039,7 +1043,7 @@ function checkout(type) {
     if ($('#po:checked').val() !== undefined && $('#po_number').val() == '') {
         clearos_dialog_box('invalid_po_err', '" . lang('base_warning') . "', '" . lang('marketplace_invalid_po') . "');
         return;
-    } else if ($('input[name=payment_method]:checked').val() == undefined) {
+    } else if (type == 'paid' && $('input[name=payment_method]:checked').val() == undefined) {
         clearos_dialog_box('invalid_method_err', '" . lang('base_warning') . "', '" . lang('marketplace_select_payment_method') . "');
         return;
     } else {
@@ -1194,7 +1198,8 @@ function get_novice_set(index) {
         success: function(data) {
             get_apps(false, 0);
             $('#marketplace-novice-step').html((novice_index + 1) + ' / ' + novice_set.length);
-            $('#marketplace-novice-title').html(novice_set[index].title);
+            //$('#marketplace-novice-title').html(novice_set[index].title);
+            $('.theme-help-box-breadcrumb').html(novice_set[index].title);
             $('#marketplace-novice-description').html(novice_set[index].description);
             $('#inline-help-title-0').html(novice_set[index].helptitle);
             $('#inline-help-content-0').html(novice_set[index].helpcontent);
@@ -1212,7 +1217,7 @@ function get_novice_set(index) {
 }
 
 $(document).ready(function() {
-    if ($(location).attr('href').match('.*marketplace\/wizard\/selection\/mode4') != null)
+    if ($(location).attr('href').match('.*marketplace\/wizard\/selection\/.*$') != null)
         window.location = '/app/marketplace/wizard';
 
     $('#theme-left-menu a').css('min-width', '105px');
@@ -1259,9 +1264,29 @@ $(document).ready(function() {
         });
         $('#' + $('#wizard_marketplace_mode').val()).addClass('marketplace-category-selected');
     }
-    if ($(location).attr('href').match('.*marketplace\/wizard\/selection\/mode2$') != null) {
+    if ($('#wizard_marketplace_mode').val() == 'mode1') {
         $('div.theme-help-box-content').html($('#app-selector-header').html());
         $('#app-selector-header').remove();
+        $('.novice-select').on({
+            click: function() {
+                $('#marketplace-loading').show();
+                $('#marketplace-app-container').html('');
+                get_novice_set(this.id.replace('novice-', ''));
+            }
+        });
+    }
+    if ($('#wizard_marketplace_mode').val() == 'mode2') {
+        // Ugly...but we move the div contents up to the help box
+        $('div.theme-help-box-content').html($('#app-selector-header').html());
+        // Then delete div completely
+        $('#app-selector-header').remove();
+
+        // Add help content
+        $('#inline-help-title-0').html('" . lang('marketplace_categories') . "');
+        $('#inline-help-content-0').html(
+            '<p>" . lang('marketplace_mode_category_help') . "</p>' +
+            '<p>" . lang('marketplace_mode_category_best_practices_help') . "</p>'
+        );
         $('.marketplace-category').on({
             mouseover: function() {
                 if ($(this).hasClass('marketplace-category-selected')) {
@@ -1308,34 +1333,13 @@ $(document).ready(function() {
             }
         });
     }
-    if ($(location).attr('href').match('.*marketplace\/select$|./*marketplace\/wizard\/selection\/mode1$') != null) {
-        $('div.theme-help-box-content').html($('#app-selector-header').html());
-        $('#app-selector-header').remove();
-        $('#novice-next').on({
-            click: function() {
-                if (novice_index < novice_set.length - 1)
-                    novice_index++;
-                else
-                    novice_index = 0;
-                $('#marketplace-loading').show();
-                $('#marketplace-app-container').html('');
-                $('#marketplace-novice-step').html((novice_index + 1) + ' / ' + novice_set.length);
-                get_novice_set(novice_index);
-            }
-        });
-        $('#novice-prev').on({
-            click: function() {
-                if (novice_index > 0)
-                    novice_index--;
-                else
-                    novice_index = novice_set.length - 1;
-                $('#marketplace-novice-step').html((novice_index + 1) + ' / ' + novice_set.length);
-                $('#marketplace-loading').show();
-                $('#marketplace-app-container').html('');
-                get_novice_set(novice_index);
-            }
-        });
-
+    if ($('#wizard_marketplace_mode').val() == 'mode3') {
+        $('#theme-help-box-container').remove();
+        $('#inline-help-title-0').html('" . lang('marketplace_quick_select_file') . "');
+        $('#inline-help-content-0').html(
+            '<p>" . lang('marketplace_mode_qsf_help') . "</p>' +
+            '<p>" . lang('marketplace_mode_qsf_best_practices_help') . "</p>'
+        );
     }
 
     if ($('#search').val() != '' && $('#search').val() != '" . lang('marketplace_search_terms') . "') {
@@ -1344,10 +1348,14 @@ $(document).ready(function() {
         $('.marketplace-search-bar').append('<input type=\'hidden\' name=\'search_cancel\' value=\'cancel\'>');
     }
 
-    if ($(location).attr('href').match('.*marketplace\/install$') != null)
+    if ($(location).attr('href').match('.*marketplace\/install') != null && $('#total').val() > 0) {
         $('#theme_wizard_nav_next').hide();
+    } else if ($(location).attr('href').match('.*marketplace\/install') != null && $('#total').val() == 0) {
+        $('#free_checkout').hide();
+        table_install_apps.fnClearTable();
+    }
 
-    if ($(location).attr('href').match('.*marketplace\/progress$') != null) {
+    if ($(location).attr('href').match('.*marketplace\/progress') != null) {
         $('#theme_wizard_nav').hide();
         $('#theme_wizard_complete').show();
     }
@@ -1357,9 +1365,9 @@ $(document).ready(function() {
 
     $('.filter_event').css('width', 160);
 
-    if ($(location).attr('href').match('.*progress$|.*progress\/busy$') != null) {
+    if ($(location).attr('href').match('.*progress$|.*progress\/busy') != null) {
         get_progress();
-    } else if ($(location).attr('href').match('.*install$') != null || $(location).attr('href').match('.*install\/delete\/.*$') != null) {
+    } else if ($(location).attr('href').match('.*install') != null || $(location).attr('href').match('.*install\/delete\/.*') != null) {
         if ($('#total').val() == 0) {
             allow_noauth_mods();
         } else {
@@ -1371,7 +1379,7 @@ $(document).ready(function() {
             else
                 $('#account_information').remove();
         }
-        $('#install_apps_table tbody tr').each(function(){
+        $('#install_apps tbody tr').each(function(){
             $(this).find('td:eq(1)').attr('nowrap', 'nowrap');
             $(this).find('td:eq(4)').attr('nowrap', 'nowrap');
         });

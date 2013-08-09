@@ -52,6 +52,10 @@ class Wizard extends ClearOS_Controller
         $this->lang->load('marketplace');
         $this->load->library('base/OS');
 
+        // Don't want to show this page if we are not in wizard mode
+        if (!$this->session->userdata('wizard'))
+            redirect('/marketplace');
+            
         // Load view data
         //---------------
 
@@ -94,13 +98,17 @@ class Wizard extends ClearOS_Controller
         $this->load->library('marketplace/Cart');
         $this->load->helper('number');
 
+        // Don't want to show this page if we are not in wizard mode
+        if (!$this->session->userdata('wizard'))
+            redirect('/marketplace');
+
         $mode = $this->session->userdata('wizard_marketplace_mode');
         $category = 'all';
         if ($mode === FALSE) {
             $mode = 'mode1';
-            $category = 'network';
+            $category = 'server';
         } else if ($mode == 'mode2') {
-            $category = 'network';
+            $category = 'server';
         } else if ($mode == 'mode4') {
             // Exit Wizard
             $this->stop();
@@ -124,6 +132,7 @@ class Wizard extends ClearOS_Controller
         $data['hide_banner'] = TRUE;
         $data['display_format'] = 'tile';
         $data['wizard'] = TRUE;
+        $data['mode'] = $mode;
 
         // Handle form submit
         //-------------------
@@ -132,7 +141,7 @@ class Wizard extends ClearOS_Controller
             try {
                 $this->marketplace->delete_qsf();
                 $this->cart->clear();
-                redirect('/marketplace/wizard/selection/' . $mode);
+                redirect('/marketplace/wizard/selection');
             } catch (Exception $e) {
                 $this->page->view_exception($e);
                 return;
@@ -148,7 +157,7 @@ class Wizard extends ClearOS_Controller
         if ($this->input->post('upload')) {
             if (!$this->upload->do_upload('qsf')) {
                 $this->page->set_message($this->upload->display_errors());
-                redirect('/marketplace/wizard/selection/mode3');
+                redirect('/marketplace/wizard/selection');
                 return;
             } else {
                 try {
@@ -161,7 +170,7 @@ class Wizard extends ClearOS_Controller
                 } catch (Exception $e) {
                     $this->page->set_message(clearos_exception_message($e), 'warning');
                     $this->marketplace->delete_qsf();
-                    redirect('/marketplace/wizard/selection/mode3');
+                    redirect('/marketplace/wizard/selection');
                     return;
                 }
             }
@@ -209,7 +218,7 @@ class Wizard extends ClearOS_Controller
         // Load dependencies
         //------------------
 
-        $this->session->set_userdata(array('wizard_redirect' => 'marketplace/wizard/selection/' . $this->input->post('mode')));
+        $this->session->set_userdata(array('wizard_redirect' => 'marketplace/wizard/selection'));
         $this->session->set_userdata(array('wizard_marketplace_mode' => $this->input->post('mode')));
 
         return;

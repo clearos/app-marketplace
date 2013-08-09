@@ -22,6 +22,12 @@ $app['category'] = lang('base_category_spotlight');
 $app['subcategory'] = lang('base_subcategory_overview');
 
 // Wizard extras
+$app['controllers']['selection']['wizard_name'] = lang('marketplace_app_selection');
+$app['controllers']['selection']['wizard_description'] = lang('base_loading...');
+$app['controllers']['selection']['inline_help'] = array(
+    lang('marketplace_more_info') => ''
+);
+/*
 $app['controllers']['mode1']['wizard_name'] = lang('marketplace_app_selection');
 $app['controllers']['mode1']['wizard_description'] = lang('base_loading...');
 $app['controllers']['mode1']['inline_help'] = array(
@@ -37,6 +43,7 @@ $app['controllers']['mode3']['inline_help'] = array(
     lang('marketplace_qsf') => lang('marketplace_mode_qsf_help'),
     lang('marketplace_best_practices') => lang('marketplace_mode_qsf_best_practices_help'),
 );
+*/
 $app['controllers']['install']['wizard_name'] = lang('marketplace_app_review');
 $app['controllers']['install']['wizard_description'] = lang('marketplace_app_review_description');
 

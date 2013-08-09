@@ -44,14 +44,15 @@ echo "</script>\n";
 echo "<div id='app-selector-header'>
         <div id='category-container'>
           <div id='radio' class='ui-buttonset'>
-            <input type='radio' id='category-network' name='radio' class='marketplace-category' checked='checked' /><label for='category-network'>" . lang('base_network') . "</label>
+            <input type='radio' id='category-server' name='radio' class='marketplace-category' checked='checked' /><label for='category-server'>" . lang('base_server') . "</label>
+            <input type='radio' id='category-network' name='radio' class='marketplace-category' /><label for='category-network'>" . lang('base_network') . "</label>
             <input type='radio' id='category-gateway' name='radio' class='marketplace-category' /><label for='category-gateway'>" . lang('base_gateway') . "</label>
-            <input type='radio' id='category-server' name='radio' class='marketplace-category' /><label for='category-server'>" . lang('base_server') . "</label>
             <input type='radio' id='category-system' name='radio' class='marketplace-category' /><label for='category-system'>" . lang('base_system') . "</label>
             <input type='radio' id='category-reports' name='radio' class='marketplace-category' /><label for='category-reports'>" . lang('base_reports') . "</label>
           </div>
         </div>
       </div>
 ";
-echo "<input id='number_of_apps_to_display' type='hidden' value='$number_of_apps_to_display'>";
-echo "<input id='display_format' type='hidden' value='$display_format'>";
+echo "<input id='number_of_apps_to_display' type='hidden' value='$number_of_apps_to_display'>\n";
+echo "<input id='display_format' type='hidden' value='$display_format'>\n";
+echo "<input type='hidden' value='$mode' id='wizard_marketplace_mode' name='wizard_marketplace_mode' />\n";

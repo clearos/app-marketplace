@@ -53,7 +53,7 @@ class Marketplace extends ClearOS_Controller
         // If wizard is running, go back to selection
         if ($this->session->userdata('wizard')) {
             if ($this->session->userdata('wizard_marketplace_mode'))
-                redirect('/marketplace/wizard/selection/' . $this->session->userdata('wizard_marketplace_mode'));
+                redirect('/marketplace/wizard/selection');
             else
                 redirect('/marketplace/wizard');
             return;
