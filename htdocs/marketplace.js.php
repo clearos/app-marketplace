@@ -499,7 +499,7 @@ function display_apps(data) {
         if (app.display_mask > 1)
             return true;
         // Hide apps that are already installed
-        if (app.installed)
+        if (in_wizard_or_novice && app.installed)
             return true;
 
         if (!app.incart)
@@ -517,8 +517,6 @@ function display_apps(data) {
             });
         }
         if (!is_option) {
-            if ($('#wizard_marketplace_mode').val() != 'mode1' && app.installed)
-                return true;
             if ($('#display_format').val() == 'tile')
                 content += get_app_as_tile(app);
             else
@@ -611,6 +609,8 @@ function get_app_as_column(app) {
 function get_app_as_tile(app) {
     var content = '';
     content += '<div class=\'marketplace-app' + (app.incart ? ' marketplace-selected' : '') + '\' id=\'' + app.basename + '\'>';
+    if (app.installed)
+        content += '<span class=\'marketplace-installed\'>INSTALLED</span>';
     content += '<img src=\'" . clearos_app_htdocs('marketplace') . "/market_default.png\' '
         + 'id=\'app-logo-' + app.basename + '\' style=\'padding: 2px 2px 5px 2px; float: left;\'>';
     if (app.pricing.unit_price > 0 && app.pricing.exempt) {
