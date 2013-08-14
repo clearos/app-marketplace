@@ -41,7 +41,6 @@ var my_systems = new Array();
 var my_subscriptions = new Array();
 var novice_index = 0;
 var novice_optional_apps = [];
-var installed_apps = [];
 var in_wizard_or_novice = false;
 //TODO Translate
 var novice_set = [
@@ -348,6 +347,8 @@ function update_cart(id, individual, redirect) {
 }
 
 function get_apps(realtime, offset) {
+    if ($('#display_format').val() == 'table')
+        table_install_list.fnClearTable();
     $.ajax({
         type: 'POST',
         dataType: 'json',
@@ -403,16 +404,16 @@ function get_apps(realtime, offset) {
     });
 }
 
-$(document).on('mouseover', '.marketplace-app', function(event) {
+$(document).on('mouseover', '.marketplace-app-event', function(event) {
     if (!$(this).hasClass('marketplace-selected') && $('#select-' + this.id).val() != undefined) {
-        $('.marketplace-app').css('cursor', 'pointer');
+        $('.marketplace-app-event').css('cursor', 'pointer');
         $(this).addClass('marketplace-hover');
     } else {
-        $('.marketplace-app').css('cursor', 'default');
+        $('.marketplace-app-event').css('cursor', 'default');
     }
-}).on('mouseout', '.marketplace-app', function(event) {
+}).on('mouseout', '.marketplace-app-event', function(event) {
     $(this).removeClass('marketplace-hover');
-}).on('click', '.marketplace-app', function(event) {
+}).on('click', '.marketplace-app-event', function(event) {
     if ($('#select-' + this.id).val() == undefined) {
         var id = this.id + '-na';
         var original = $('#' + this.id + '-na').css('color');
@@ -488,7 +489,6 @@ function display_apps(data) {
     var toggle_state = 'none';
     var exclusive_app_selected = null;
     novice_optional_apps = [];
-    installed_apps = [];
 
     if ($('#wizard_marketplace_mode').val() == 'mode1')
         in_wizard_or_novice = true;
@@ -498,10 +498,24 @@ function display_apps(data) {
         // Bitmask of 0 or 1 means allow to install or Pro only (which we display)
         if (app.display_mask > 1)
             return true;
-        // Hide apps that are already installed
-        if (in_wizard_or_novice && app.installed)
-            return true;
 
+        if ($('#display_format').val() == 'table') {
+            var new_row = table_install_list.fnAddData([
+                app.category_en_US,
+                app.name + (app.installed ? '' : '<input type=\'checkbox\' class=\'theme-hidden\' id=\'select-' + app.basename + '\' name=\'' + app.basename + '\' ' + (app.incart ? 'CHECKED ' : '') + '\'>'),
+                app.description_en_US,
+                app.latest_version,
+                (app.installed ? '" . lang('base_yes') . "' : '" . lang('base_no') . "')
+            ]);
+            var nTr = table_install_list.fnSettings().aoData[new_row[0]].nTr;
+            nTr.id = app.basename;
+            var my_classes = 'marketplace-app-event';
+            if (app.incart)
+                my_classes += ' marketplace-selected';
+            
+            nTr.className = my_classes;
+            return true;
+        }
         if (!app.incart)
             toggle_state = 'all';
         applist.push(app.basename);
@@ -554,7 +568,9 @@ function display_apps(data) {
 
 function get_app_as_column(app) {
     var content = '';
-    content += '<div class=\'marketplace-app marketplace-list' + (app.incart ? ' marketplace-selected' : '') + '\' id=\'' + app.basename + '\'>';
+    content += '<div class=\'marketplace-app-event marketplace-app marketplace-list' + (app.incart ? ' marketplace-selected' : '') + '\' id=\'' + app.basename + '\'>';
+    if (app.installed)
+        content += '<span class=\'marketplace-installed-list\'>INSTALLED</span>';
     content += '  <div style=\'float:left; width:80px; text-align: center; padding: 0px 2px 5px 2px;\'>';
     // App logo
     content += '    <img src=\'" . clearos_app_htdocs('marketplace') . "/market_default.png\' '
@@ -608,7 +624,7 @@ function get_app_as_column(app) {
 
 function get_app_as_tile(app) {
     var content = '';
-    content += '<div class=\'marketplace-app' + (app.incart ? ' marketplace-selected' : '') + '\' id=\'' + app.basename + '\'>';
+    content += '<div class=\'marketplace-app-event marketplace-app' + (app.incart ? ' marketplace-selected' : '') + '\' id=\'' + app.basename + '\'>';
     if (app.installed)
         content += '<span class=\'marketplace-installed\'>INSTALLED</span>';
     content += '<img src=\'" . clearos_app_htdocs('marketplace') . "/market_default.png\' '
@@ -1227,6 +1243,7 @@ $(document).ready(function() {
         window.location = '/app/marketplace/wizard';
 
     $('#theme-left-menu a').css('min-width', '105px');
+    $('#display_options a').css('min-width', '');
     $('#tabs-overview a').css('min-width', '85px');
     // Wizard previous/next button handling
     $('#wizard_nav_next').click(function() {
@@ -1278,7 +1295,6 @@ $(document).ready(function() {
                 $('#marketplace-loading').show();
                 $('#marketplace-app-container').html('');
                 novice_index = this.id.replace('novice-', '');
-                //get_novice_set(this.id.replace('novice-', ''));
                 get_novice_set();
             }
         });
@@ -1473,18 +1489,21 @@ function get_configure(app) {
     var button_html = '<div class=\'theme-button-set\'>';
     if (app.installed && app.display_mask == 0) {
         if (!app.up2date)
-            button_html += get_button_anchor('/app/marketplace/view/' + app.basename, '" . lang('marketplace_upgrade') . "');
+            button_html += get_button_anchor('/app/marketplace/view/' + app.basename, '" . lang('marketplace_upgrade') . "', null);
         else
-            button_html += get_button_anchor('/' + app.url_config, '" . lang('marketplace_configure') . "');
+            button_html += get_button_anchor('/' + app.url_config, '" . lang('marketplace_configure') . "', null);
     } else {
-        button_html += get_button_anchor('/app/marketplace/view/' + app.basename, '" . lang('marketplace_details') . "');
+        if (in_wizard_or_novice)
+            button_html += get_button_anchor('http://www.clearcenter.com/marketplace/type/?basename=' + app.basename, '" . lang('marketplace_learn_more') . "', 'blank');
+        else
+            button_html += get_button_anchor('/app/marketplace/view/' + app.basename, '" . lang('marketplace_details') . "', null);
     }
     button_html += '</div>';
     return button_html;
 }
 
-function get_button_anchor(url, text) {
-    return '<a href=\'' + url + '\' class=\'theme-anchor theme-anchor-add theme-anchor-important\'>' +
+function get_button_anchor(url, text, target) {
+    return '<a href=\'' + url + '\' class=\'theme-anchor theme-anchor-add theme-anchor-important\' ' + (target == 'blank' ? 'target=\'_blank\'' : '') + '\'>' +
         text + '</a>';
 }
 

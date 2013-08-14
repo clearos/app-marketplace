@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Marketplace view.
  *
@@ -21,14 +22,11 @@ $this->lang->load('marketplace');
 $this->load->view('marketplace/banner');
 
 echo "<div id='app_list_overview' style='text-align: center; padding: 60px 10px 30px 10px;'>";
-if (!isset($search))
-    echo "<div style='padding: 10px 0px 0px 0px;'>" . loading('normal', lang('marketplace_loading')) . "</div>";
-else
+if ($search)
     echo "<div style='padding: 10px 0px 0px 0px;'>" . loading('normal', lang('marketplace_searching_marketplace'), array('icon-below' => TRUE)) . "</div>";
+else
+    echo "<div style='padding: 10px 0px 0px 0px;'>" . loading('normal', lang('marketplace_loading')) . "</div>";
 echo "</div>";
-
-if (!isset($search))
-    $search = lang('marketplace_search_terms');
 
 echo form_open('marketplace/settings', array('method' => 'GET', 'name' => 'form_app_list', 'id' => 'form_app_list'));
 echo "<div id='marketplace-app-container'></div>";

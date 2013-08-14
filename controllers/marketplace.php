@@ -80,7 +80,12 @@ class Marketplace extends ClearOS_Controller
             return;
         }
 
-        $this->page->view_form('marketplace', $data, lang('marketplace_marketplace'), array('type' => MY_Page::TYPE_SPOTLIGHT));
+        $data['search'] = $first['active'];
+
+        if ($data['display_format'] == 'table')
+            $this->page->view_form('table_list', $data, lang('marketplace_marketplace'), array('type' => MY_Page::TYPE_SPOTLIGHT));
+        else
+            $this->page->view_form('marketplace', $data, lang('marketplace_marketplace'), array('type' => MY_Page::TYPE_SPOTLIGHT));
     }
 
     /**

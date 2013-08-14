@@ -177,7 +177,7 @@ class Marketplace extends Rest
      * @throws Engine_Exception
      */
 
-    function set_search_criteria($search, $category, $price, $intro, $status)
+    function set_search_criteria($search, $category, $price, $intro, $status, $active = TRUE)
     {
         clearos_profile(__METHOD__, __LINE__);
 
@@ -194,7 +194,7 @@ class Marketplace extends Rest
                 'price' => $price,
                 'intro' => $intro,
                 'status' => $status,
-                'active' => TRUE,
+                'active' => $active,
                 'time' => time()
             );
 
@@ -278,7 +278,8 @@ class Marketplace extends Rest
                 $this->filter_default['category'],
                 $this->filter_default['price'],
                 $this->filter_default['intro'],
-                $this->filter_default['status']
+                $this->filter_default['status'],
+                FALSE
             );
         } catch (Exception $e) {
             throw new Engine_Exception(clearos_exception_message($e), CLEAROS_ERROR);
@@ -1444,8 +1445,8 @@ class Marketplace extends Rest
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        if (! preg_match("/^(list|tile)$/", $display_format))
-            return lang('marketplace_display_format_is_invalid');
+        if (! preg_match("/^(list|tile|table)$/", $display_format))
+            return lang('marketplace_invalid_display_type');
     }
 
     /**

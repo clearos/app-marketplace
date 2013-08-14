@@ -2,6 +2,7 @@
 
 $lang['marketplace_marketplace_options'] = 'Marketplace Options';
 $lang['marketplace_install_apps_later'] = 'Install Apps Later';
+$lang['marketplace_app_summary'] = 'App Summary';
 $lang['marketplace_app_description'] = 'ClearOS Marketplace is where you can add new apps and services to your system.  Apps available in the Marketplace have gone through a stringent quality control process by ClearCenter to ensure the quality and security of each submission.';
 $lang['marketplace_app_name'] = 'Marketplace';
 $lang['marketplace_confirm_review_replace'] = 'You have already reviewed this app... would you like to update your rating?';
@@ -136,6 +137,7 @@ $lang['marketplace_apps_per_page'] = 'Number of Apps to Display';
 $lang['marketplace_layout'] = 'Display Mode';
 $lang['marketplace_tile'] = 'Tile';
 $lang['marketplace_list'] = 'List';
+$lang['marketplace_table'] = 'Table';
 $lang['marketplace_quantity'] = 'Quantity';
 $lang['marketplace_credit_available'] = 'Credit Available!';
 $lang['marketplace_total'] = 'Total';
@@ -223,6 +225,7 @@ $lang['marketplace_apps_rule_requires'] = 'The app %s requires the %s to be sele
 $lang['marketplace_welcome_to_marketplace'] = 'Welcome to Marketplace';
 
 $lang['marketplace_getting_started'] = 'Getting Started';
+$lang['marketplace_app'] = 'App Name';
 $lang['marketplace_server_apps'] = 'Server Apps';
 $lang['marketplace_gateway_apps'] = 'Gateway Apps';
 $lang['marketplace_network_apps'] = 'Network Apps';
@@ -284,4 +287,5 @@ $lang['marketplace_install_by_category_description'] = 'Displays groups of apps 
 $lang['marketplace_install_by_qsf'] = 'Quick Select File';
 $lang['marketplace_install_by_qsf_description'] = 'ClearCenter and the ClearFoundation community have a wide selection of pre-configured templates that will quickly get you up and running.';
 $lang['marketplace_skip_wizard'] = 'Skip App Install Wizard';
+$lang['marketplace_invalid_display_type'] = 'Invalid display type.';
 $lang['marketplace_skip_wizard_description'] = 'Skip the Marketplace wizard.  You can install apps at any time by navigating to the Marketplace.';
