@@ -347,7 +347,7 @@ function update_cart(id, individual, redirect) {
 }
 
 function get_apps(realtime, offset) {
-    if ($('#display_format').val() == 'table')
+    if ($('#install_list').length != 0 && $('#display_format').val() == 'table')
         table_install_list.fnClearTable();
     $.ajax({
         type: 'POST',
@@ -461,10 +461,10 @@ function add_optional_apps(app_focus) {
     var content = '';
     $.each(novice_optional_apps, function(index, myapp) { 
         if (myapp.app_parent == app_focus)
-            if ($('#display_format').val() == 'tile')
-                content += get_app_as_tile(myapp.app_child);
-            else
+            if ($('#display_format').val() == 'list')
                 content += get_app_as_column(myapp.app_child);
+            else
+                content += get_app_as_tile(myapp.app_child);
     });
     $('#optional-apps').remove();
     if (content.length > 0)
@@ -499,7 +499,7 @@ function display_apps(data) {
         if (app.display_mask > 1)
             return true;
 
-        if ($('#display_format').val() == 'table') {
+        if ($('#install_list').length != 0 && $('#display_format').val() == 'table') {
             var new_row = table_install_list.fnAddData([
                 app.category_en_US,
                 app.name + (app.installed ? '' : '<input type=\'checkbox\' class=\'theme-hidden\' id=\'select-' + app.basename + '\' name=\'' + app.basename + '\' ' + (app.incart ? 'CHECKED ' : '') + '\'>'),
@@ -531,10 +531,10 @@ function display_apps(data) {
             });
         }
         if (!is_option) {
-            if ($('#display_format').val() == 'tile')
-                content += get_app_as_tile(app);
-            else
+            if ($('#display_format').val() == 'list')
                 content += get_app_as_column(app);
+            else
+                content += get_app_as_tile(app);
             if (novice_set[novice_index].exclusive && app.incart)
                 exclusive_app_selected = app.basename;
         }
