@@ -46,7 +46,7 @@ var in_wizard_or_novice = false;
 var novice_set = [
     {
         search:'99_directory', exclusive: true, title:'Directory Services',
-        description:'A directory service stores, organizes and provides access to information about your users, groups, networked devices and more.', helptitle: 'Directory Services', helpcontent: '<p>The options listed under Directory Services are mutually exclusive - you can select one or the other...not both.</p><p>If you do not have existing Microsoft server infrastructure running Windows Active Directory[TM], you will almost certainly want to select the OpenLDAP-based directory server.</p>'
+        description:'A directory service stores, organizes and provides access to information about your users, groups, networked devices and more.', helptitle: 'Directory Services', helpcontent: '<p>The options listed under Directory Services are mutually exclusive - you can select one or the other...not both.</p><p>If you do not have existing Microsoft server infrastructure running Windows Active Directory&trade;, you will almost certainly want to select the OpenLDAP-based directory server.</p>'
     },
     {
         search:'99_networking', exclusive: false, title:'Firewall and Networking',
@@ -62,7 +62,7 @@ var novice_set = [
     },
     {
         search:'99_mail', exclusive: true, title:'Groupware / E-Mail',
-        description:'Planning on running group collaboration and/or Email services or need to integrate with Google Apps?  ClearOS offers 4 variants for hosting your messaging services locally or in the cloud.', helptitle: 'Groupware/E-Mail', helpcontent: '<p>The ClearOS Marketplace currently supports four solutions for providing email and groupware services.</p><p>If you are already a GoogleApps subscriber or wish to migrate email services to GoogleApps, the Google Apps synchronization tool is an optional but useful app for syncronizing and provisioning accounts stored locally in OpenLDAP directory with Google Apps.</p><p>Cyrus provides a robust and lightweight IMAP(S)/POP(S) service for hosting a mail server without a web-based GUI (eg. use of mail client like Outlook[TM], Thunderbird etc.).</p><p>Zarafa Community is a full groupware solution intended for home users, while Zarafa Small Business is positioned as the best-selling open-source drop-in Exchange replacement.</p>'
+        description:'Planning on running group collaboration and/or Email services or need to integrate with Google Apps?  ClearOS offers 4 variants for hosting your messaging services locally or in the cloud.', helptitle: 'Groupware/E-Mail', helpcontent: '<p>The ClearOS Marketplace currently supports four solutions for providing email and groupware services.</p><p>If you are already a Google Apps subscriber or wish to migrate email services to Google Apps, the Google Apps synchronization tool is an optional but useful app for synchronizing and provisioning accounts stored locally in OpenLDAP directory with Google Apps.</p><p>Cyrus provides a robust and lightweight IMAP(S)/POP(S) service for hosting a mail server without a web-based GUI (eg. use of mail client like Outlook&trade;, Thunderbird etc.).</p><p>Zarafa Community is a full groupware solution intended for home users, while Zarafa Small Business is positioned as the best-selling open-source drop-in Exchange replacement.</p>'
     },
     {
         search:'99_disaster', exclusive: false, title:'Disaster Prevention and Recovery',
