@@ -616,7 +616,6 @@ function get_app_as_column(app) {
     content += '      </div>';
     content += '    </div>';
     content += '  </div>';
-    content += '  </a>';
     content += '</div>';
 
     return content;
