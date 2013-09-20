@@ -42,8 +42,9 @@ echo "<div id='app-selector-header'>
             <input type='radio' id='novice-2' name='radio' class='novice-select' /><label for='novice-2'>3</label>
             <input type='radio' id='novice-3' name='radio' class='novice-select' /><label for='novice-3'>4</label>
             <input type='radio' id='novice-4' name='radio' class='novice-select' /><label for='novice-4'>5</label>
-            <input type='radio' id='novice-5' name='radio' class='novice-select' /><label for='novice-5'>6</label>
-            <input type='radio' id='novice-6' name='radio' class='novice-select' /><label for='novice-6'>7</label>
+            <input type='radio' id='novice-5' name='radio' class='novice-select' /><label for='novice-5'>6</label>" .
+            (preg_match('/Professional/', $os_name) ? '' : "
+            <input type='radio' id='novice-6' name='radio' class='novice-select' /><label for='novice-6'>7</label>") . " 
           </div>
         </div>
       </div>

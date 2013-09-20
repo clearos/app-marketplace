@@ -61,6 +61,7 @@ class Select extends ClearOS_Controller
 
         $data['display_format'] = $this->marketplace->get_display_format();
         $data['mode'] = 'feature-wizard';
+        $data['os_name'] = $this->session->userdata('os_name');
 
         $this->page->view_form(
             'marketplace/novice', $data, lang('marketplace_marketplace'), array('type' => MY_Page::TYPE_SPOTLIGHT)

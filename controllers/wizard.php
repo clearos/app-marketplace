@@ -133,6 +133,7 @@ class Wizard extends ClearOS_Controller
         $data['display_format'] = 'tile';
         $data['wizard'] = TRUE;
         $data['mode'] = $mode;
+        $data['os_name'] = $this->session->userdata('os_name');
 
         // Handle form submit
         //-------------------
