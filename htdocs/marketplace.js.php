@@ -372,6 +372,10 @@ function get_apps(realtime, offset) {
             }
             // Hide whirly
             $('#app_list_overview').remove();
+            if (data.total == 0) {
+                $('#marketplace-app-container').append('<div style=\"padding-top: 60px;\">" . lang('marketplace_search_no_results') . "</div>');
+                return;
+            }
             $('#marketplace-loading').hide();
             $('#search_and_install').show();
             $('#filter').show();

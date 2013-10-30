@@ -124,9 +124,9 @@ echo "
 
 $display_options = button_set(
     array(
-        anchor_custom('/app/marketplace/display/index/tile', "<i style='line-height: 1.5em;' class='icon-th-large'></i>", 'high', array('no_escape_html' => TRUE)),
-        anchor_custom('/app/marketplace/display/index/list', "<i style='line-height: 1.5em;' class='icon-th-list'></i>", 'high', array('no_escape_html' => TRUE)),
-        anchor_custom('/app/marketplace/display/index/table', "<i style='line-height: 1.5em;' class='icon-table'></i>", 'high', array('no_escape_html' => TRUE))
+        anchor_custom('/app/marketplace/display/index/tile', "<i class='icon-th-large'></i>", 'high', array('no_escape_html' => TRUE)),
+        anchor_custom('/app/marketplace/display/index/list', "<i class='icon-th-list'></i>", 'high', array('no_escape_html' => TRUE)),
+        anchor_custom('/app/marketplace/display/index/table', "<i class='icon-table'></i>", 'high', array('no_escape_html' => TRUE))
     )
 );
 echo "
