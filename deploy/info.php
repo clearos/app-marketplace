@@ -54,7 +54,7 @@ $app['core_requires'] = array(
     'app-clearcenter-core => 1:1.2.4',
     'app-registration-core => 1:1.2.4',
     'app-base-core => 1:1.4.38',
-    'yum-marketplace-plugin',
+    'yum-marketplace-plugin >= 1.5',
     'theme-default >= 6.4.26',
     'clearos-framework >= 6.4.27',
     'clearos-release-jws >= 1.1'
