@@ -217,4 +217,5 @@ echo summary_table(
 
 // Need this value in JS
 echo "<input type='hidden' name='total' id='total' value='$total' />";
+echo "<input type='hidden' name='num_of_apps' id='num_of_apps' value='" . count($rows) . "' />";
 echo "<input type='hidden' name='has_prorated' id='has_prorated' value='" . ($has_prorated ? 1 : 1) . "' />";
