@@ -229,6 +229,7 @@ $lang['marketplace_app'] = 'App Name';
 $lang['marketplace_server_apps'] = 'Server Apps';
 $lang['marketplace_gateway_apps'] = 'Gateway Apps';
 $lang['marketplace_network_apps'] = 'Network Apps';
+$lang['marketplace_cloud_apps'] = 'Cloud Apps';
 $lang['marketplace_system_apps'] = 'System Apps';
 $lang['marketplace_reports_apps'] = 'Reporting Apps';
 $lang['marketplace_download_and_install'] = 'Download and Install';

@@ -17,6 +17,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 $this->lang->load('base');
+$this->lang->load('base_category');
 $this->lang->load('marketplace');
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -146,11 +147,12 @@ echo "
     <div id='filter' style='margin: 10px 0px 0px 0px;'>
       <select style='font-size: 8pt; margin-bottom: 2px;' class='filter_event' name='filter_category' id='filter_category'>
         <option value='all'" . (isset($category_select['all']) ? $category_select['all'] : '') . ">" . lang('marketplace_filter_by_category') . "</option>
-        <option value='server'" . (isset($category_select['server']) ? $category_select['server'] : '') . ">" . lang('base_server') . "</option>
-        <option value='network'" . (isset($category_select['network']) ? $category_select['network'] : '') . ">" . lang('base_network') . "</option>
-        <option value='gateway'" . (isset($category_select['gateway']) ? $category_select['gateway'] : '') . ">" . lang('base_gateway') . "</option>
-        <option value='system'" . (isset($category_select['system']) ? $category_select['system'] : '') . ">" . lang('base_system') . "</option>
-        <option value='reports'" . (isset($category_select['reports']) ? $category_select['reports'] : '') . ">" . lang('base_reports') . "</option>
+        <option value='cloud'" . (isset($category_select['cloud']) ? $category_select['cloud'] : '') . ">" . lang('base_category_cloud') . "</option>
+        <option value='server'" . (isset($category_select['server']) ? $category_select['server'] : '') . ">" . lang('base_category_server') . "</option>
+        <option value='network'" . (isset($category_select['network']) ? $category_select['network'] : '') . ">" . lang('base_category_network') . "</option>
+        <option value='gateway'" . (isset($category_select['gateway']) ? $category_select['gateway'] : '') . ">" . lang('base_category_gateway') . "</option>
+        <option value='system'" . (isset($category_select['system']) ? $category_select['system'] : '') . ">" . lang('base_category_system') . "</option>
+        <option value='reports'" . (isset($category_select['reports']) ? $category_select['reports'] : '') . ">" . lang('base_category_reports') . "</option>
       </select>
       <select style='font-size: 8pt; margin-bottom: 2px;' class='filter_event' name='filter_price' id='filter_price'>
         <option value='all'" . (isset($price_select['all']) ? $price_select['all'] : '') . ">" . lang('marketplace_filter_by_price') . "</option>

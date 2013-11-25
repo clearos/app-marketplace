@@ -494,6 +494,10 @@ function display_apps(data) {
         in_wizard_or_novice = true;
     else
         in_wizard_or_novice = false;
+    if (data.list.length == 0) {
+        $('#marketplace-app-container').append('<div style=\'padding: 70px 0px;\'>" . lang('marketplace_search_no_results') . "</div>');
+        return;
+    }
     jQuery.each(data.list, function(index, app) { 
         // Bitmask of 0 or 1 means allow to install or Pro only (which we display)
         if (app.display_mask > 1)

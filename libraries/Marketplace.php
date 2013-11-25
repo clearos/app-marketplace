@@ -121,7 +121,7 @@ class Marketplace extends Rest
     ///////////////////////////////////////////////////////////////////////////////
 
     protected $applist = array();
-    protected $filter_category = array('all', 'server', 'network', 'gateway', 'system', 'reports');
+    protected $filter_category = array('all', 'cloud', 'server', 'network', 'gateway', 'system', 'reports');
     protected $filter_price = array('all', 'free', 'paid');
     protected $filter_intro = array('all', '7', '30', '180', '365');
     protected $filter_status = array('all', 'installed', 'upgrade_available', 'new');
