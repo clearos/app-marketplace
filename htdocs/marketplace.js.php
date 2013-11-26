@@ -383,13 +383,13 @@ function get_apps(realtime, offset) {
             var next = offset + 1;
             if (data.total / apps_to_display_per_page < next)
                 next = Math.round(data.total / apps_to_display_per_page + .49999) - 1;
-            var paginate = '<a style=\'margin-right: 2px;\' class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/0\'>\<\<</a>';
-            paginate += '<a style=\'margin-right: 2px;\' class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + previous + '\'>\<</a>';
+            var paginate = '<a style=\'margin-right: 2px; display: inline;\' class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/0\'><i class=\'fa fa-fast-backward\'></i></a>';
+            paginate += '<a style=\'margin-right: 2px; display: inline;\' class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + previous + '\'><i class=\'fa fa-backward\'></i></a>';
             var pages = 0;
             if (apps_to_display_per_page > 0)
                 pages = Math.round(data.total / apps_to_display_per_page + .49999) - 1;
-            paginate += '<a style=\'margin-right: 2px;\' class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + next + '\'>\></a>';
-            paginate += '<a class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + pages + '\'>\>\></a>';
+            paginate += '<a style=\'margin-right: 2px; display: inline;\' class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + next + '\'><i class=\'fa fa-forward\'></i></a>';
+            paginate += '<a style=\'display: inline;\' class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + pages + '\'><i class=\'fa fa-fast-forward\'></i></a>';
             if (pages > 0) {
                 $('#pagination-top').html(paginate + '<div style=\'padding: 5px 0px 0px 0px; font-size: 7pt;\'>" . lang('marketplace_displaying') . " ' + (apps_to_display_per_page * offset + 1) + ' - ' + (apps_to_display_per_page * offset + data.list.length) + ' " . lang('base_of') . " ' + data.total + '</div>');
                 $('#pagination-bottom').html(paginate);
