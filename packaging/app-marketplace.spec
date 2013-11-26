@@ -1,7 +1,7 @@
 
 Name: app-marketplace
 Epoch: 1
-Version: 1.5.12
+Version: 1.5.13
 Release: 1%{dist}
 Summary: Marketplace
 License: Proprietary
@@ -84,7 +84,6 @@ exit 0
 %files core
 %defattr(-,root,root)
 %exclude /usr/clearos/apps/marketplace/packaging
-%exclude /usr/clearos/apps/marketplace/tests
 %dir /usr/clearos/apps/marketplace
 %dir %attr(755,webconfig,webconfig) /var/clearos/marketplace
 /usr/clearos/apps/marketplace/deploy
