@@ -97,6 +97,36 @@ class Search extends ClearOS_Controller
     }
 
     /**
+     * Marketplace search controller
+     *
+     * @param int $page page
+     *
+     * @return view
+     */
+
+    function category($category)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        $this->load->library('marketplace/Marketplace');
+
+        try {
+            $this->marketplace->set_search_criteria('', $category, 'all', 'all', 'all');
+        } catch (Exception $e) {
+            $this->page->view_exception($e);
+            return;
+        }
+
+        // Search and filter history
+        $data['filter'] = '';
+        $data['display_format'] = $this->marketplace->get_display_format();
+        $data['page'] = 0;
+        $data['number_of_apps_to_display'] = 0;
+
+        $this->page->view_form('marketplace/marketplace', $data, lang('marketplace_marketplace'), array('type' => MY_Page::TYPE_SPOTLIGHT));
+    }
+
+    /**
      * Marketplace reset filter controller
      *
      * @return view
