@@ -106,9 +106,9 @@ class Wizard extends ClearOS_Controller
         $category = 'all';
         if ($mode === FALSE) {
             $mode = 'mode1';
-            $category = 'server';
+            $category = 'cloud';
         } else if ($mode == 'mode2') {
-            $category = 'server';
+            $category = 'cloud';
         } else if ($mode == 'mode4') {
             // Exit Wizard
             $this->stop();

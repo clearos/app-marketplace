@@ -17,6 +17,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 $this->lang->load('base');
+$this->lang->load('base_category');
 $this->lang->load('marketplace');
 
 echo "<div style='text-align: center; padding: 10px 10px 0px 10px;'>";
@@ -44,11 +45,12 @@ echo "</script>\n";
 echo "<div id='app-selector-header'>
         <div id='category-container'>
           <div id='radio' class='ui-buttonset'>
-            <input type='radio' id='category-server' name='radio' class='marketplace-category' checked='checked' /><label for='category-server'>" . lang('base_server') . "</label>
-            <input type='radio' id='category-network' name='radio' class='marketplace-category' /><label for='category-network'>" . lang('base_network') . "</label>
-            <input type='radio' id='category-gateway' name='radio' class='marketplace-category' /><label for='category-gateway'>" . lang('base_gateway') . "</label>
-            <input type='radio' id='category-system' name='radio' class='marketplace-category' /><label for='category-system'>" . lang('base_system') . "</label>
-            <input type='radio' id='category-reports' name='radio' class='marketplace-category' /><label for='category-reports'>" . lang('base_reports') . "</label>
+            <input type='radio' id='category-cloud' name='radio' class='marketplace-category' checked='checked' /><label for='category-cloud'>" . lang('base_category_cloud') . "</label>
+            <input type='radio' id='category-gateway' name='radio' class='marketplace-category' /><label for='category-gateway'>" . lang('base_category_gateway') . "</label>
+            <input type='radio' id='category-server' name='radio' class='marketplace-category' /><label for='category-server'>" . lang('base_category_server') . "</label>
+            <input type='radio' id='category-network' name='radio' class='marketplace-category' /><label for='category-network'>" . lang('base_category_network') . "</label>
+            <input type='radio' id='category-system' name='radio' class='marketplace-category' /><label for='category-system'>" . lang('base_category_system') . "</label>
+            <input type='radio' id='category-reports' name='radio' class='marketplace-category' /><label for='category-reports'>" . lang('base_category_reports') . "</label>
           </div>
         </div>
       </div>

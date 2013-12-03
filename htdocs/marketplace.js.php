@@ -1552,8 +1552,12 @@ function get_progress() {
             }
 
             if (!json.busy) {
+		// Check to see if in Wizard, if so, exit wizard
                 // If no yum process is running, go back to Marketplace
-                window.location = '/app/marketplace';
+                if ($('#theme_wizard_complete').length != 0)
+			window.location = '/app/marketplace/wizard/stop';
+		else
+			window.location = '/app/marketplace';
             }
         },
         error: function(xhr, text, err) {
