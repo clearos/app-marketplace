@@ -78,26 +78,13 @@ class Ajax extends ClearOS_Controller
             // Load dependencies
             $this->load->library('marketplace/Marketplace');
 
-            $response = json_decode($this->marketplace->get_app_details($basename, $realtime));
-
-            // TODO: map these response codes to the following
-            // CLEAROS_INFO, CLEAROS_WARNING or CLEAROS_ERROR
-            if ($response->code != 0)
-                throw new Engine_Exception($response->errmsg, $response->code);
-
-            $details = $response->details;
+            $details = $this->marketplace->get_app_details($basename, $realtime);
 
             // Add flag to display recommended apps in RHS bar
             $details->hide_recommended_apps = $this->marketplace->get_hide_recommended_apps();
 
             // Add flag to hide support policy
             $details->hide_support_policy = $this->marketplace->get_hide_support_policy();
-
-            $cart_item = new \clearos\apps\marketplace\Cart_Item(Marketplace::APP_PREFIX . preg_replace("/_/", "-", $basename)); 
-            $cart_item->set(get_object_vars($details->pricing));
-            // Whether an item has an EULA or not is not in the pricing object
-            $cart_item->set_eula($details->eula);
-            $cart_item->serialize($this->session->userdata('sdn_rest_id'));
 
             // Save some installation and version info...in packaging world, RPM names use hyphen separator, not underscore
             $this->load->library('base/Software', Marketplace::APP_PREFIX . preg_replace("/_/", "-", $details->basename));

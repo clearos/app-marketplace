@@ -39,12 +39,10 @@ class Qsf extends ClearOS_Controller
     /**
      * Marketplace qsf default controller
      *
-     * @param String $category category
-     *
      * @return view
      */
 
-    function index($category)
+    function index()
     {
         // Load dependencies
         //------------------

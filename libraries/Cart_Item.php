@@ -116,7 +116,7 @@ class Cart_Item extends Engine
         if ($id === NULL)
             $id = rand();
 
-        $this->id = $id;
+        $this->id = preg_replace("/_/", "-", $id);
     }
 
     /**
@@ -749,6 +749,10 @@ class Cart_Item extends Engine
         clearos_profile(__METHOD__, __LINE__);
 
         try {
+            if (!file_exists(CLEAROS_CACHE_DIR . '/' . $this->get_id() . '.' . $id)) {
+                $marketplace = new Marketplace();
+                $code = $marketplace->get_app_details($this->get_id(), TRUE);
+            }
             $newobj = unserialize(file_get_contents(CLEAROS_CACHE_DIR . '/' . $this->get_id() . '.' . $id));
             $this->set_pid($newobj->get_pid());
             $this->set_description($newobj->get_description());

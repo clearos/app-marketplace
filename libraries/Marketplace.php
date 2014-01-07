@@ -636,8 +636,8 @@ class Marketplace extends Rest
         try {
             $cachekey = __CLASS__ . '-' . __FUNCTION__ . '-' . $basename; 
 
-            if (!$realtime && $this->_check_cache($cachekey))
-                return $this->cache;
+           // if (!$realtime && $this->_check_cache($cachekey))
+            //    return $this->cache;
     
             $extras = array('basename' => $basename);
 
@@ -646,8 +646,23 @@ class Marketplace extends Rest
             $result = $this->request('marketplace', 'get_app_details', $extras);
 
             $this->_save_to_cache($cachekey, $result);
+
+            $response = json_decode($result);
         
-            return $result;
+            // TODO: map these response codes to the following
+            // CLEAROS_INFO, CLEAROS_WARNING or CLEAROS_ERROR
+            if ($response->code != 0)
+                throw new Engine_Exception($response->errmsg, $response->code);
+
+            $details = $response->details;
+
+            $cart_item = new Cart_Item(Marketplace::APP_PREFIX . preg_replace("/_/", "-", $basename)); 
+            $cart_item->set(get_object_vars($details->pricing));
+            // Whether an item has an EULA or not is not in the pricing object
+            $cart_item->set_eula($details->eula);
+            $cart_item->serialize($this->CI->session->userdata['sdn_rest_id']);
+
+            return $details;
         } catch (Exception $e) {
             throw new Webservice_Exception(clearos_exception_message($e), CLEAROS_ERROR);
         }
