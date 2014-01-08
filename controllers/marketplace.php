@@ -128,8 +128,17 @@ class Marketplace extends ClearOS_Controller
 
         $data = array();
         try {
-            if ($action == 'delete')
-                $this->cart->remove_item($id);
+            if ($action == 'delete') {
+                if ($id == 'all') {
+                    $items = $this->cart->get_items();
+                    foreach ($items as $basename => $info)
+                        $this->cart->remove_item($basename);
+                    redirect('/marketplace');
+                    return;
+                } else {
+                    $this->cart->remove_item($id);
+                }
+            }
         } catch (Exception $e) {
             $data['itemnotfound'] = clearos_exception_message($e);
         }

@@ -27,7 +27,7 @@ $headers = array(
     lang('marketplace_category'),
     lang('marketplace_app'),
     lang('base_description'),
-    lang('marketplace_version'),
+    lang('marketplace_unit_price'),
     lang('marketplace_installed'),
 );
 
@@ -48,7 +48,7 @@ if ($search)
     $options['empty_table_message'] = "<div class='theme-loading-small'>" . lang('marketplace_searching_marketplace') . "</div>";
 else
     $options['empty_table_message'] = "<div class='theme-loading-small'>" . lang('marketplace_loading') . "</div>";
-$options['col-widths'] = array ('0%', '20%', '60%', '10%', '10%');
+$options['col-widths'] = array ('0%', '20%', '55%', '15%', '10%');
 $options['grouping'] = TRUE;
 $options['paginate'] = TRUE;
 

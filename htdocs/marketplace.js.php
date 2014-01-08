@@ -198,10 +198,10 @@ function update_install_form(data) {
 
 function get_image(type, id, domid) {
     $.ajax({
-        type: 'POST',
+        type: 'GET',
         dataType: 'json',
         url: '/app/marketplace/ajax/get_image',
-        data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&type=' + type + '&id=' + id,
+        data: 'type=' + type + '&id=' + id,
         success: function(data) {
             $('#' + domid).attr('src', data.location);
         },
@@ -507,8 +507,8 @@ function display_apps(data) {
             var new_row = table_install_list.fnAddData([
                 app.category_en_US,
                 app.name + (app.installed ? '' : '<input type=\'checkbox\' class=\'theme-hidden\' id=\'select-' + app.basename + '\' name=\'' + app.basename + '\' ' + (app.incart ? 'CHECKED ' : '') + '\'>'),
-                app.description_en_US,
-                app.latest_version,
+                '<p>' + app.description.replace(/\\n/g, '</p><p>') + '</p>',
+                (app.pricing.unit_price > 0 ? app.pricing.currency + app.pricing.unit_price + ' ' + UNIT[app.pricing.unit] : '" . lang('marketplace_free') . "'),
                 (app.installed ? '" . lang('base_yes') . "' : '" . lang('base_no') . "')
             ]);
             var nTr = table_install_list.fnSettings().aoData[new_row[0]].nTr;

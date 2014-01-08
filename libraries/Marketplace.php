@@ -1073,6 +1073,8 @@ class Marketplace extends Rest
             if (!$file->exists())
                 throw new File_Not_Found_Exception(clearos_exception_message($e));
 
+            $installed_apps = $this->get_installed_apps();
+
             // Move uploaded file to cache
             $file->move_to(self::FOLDER_MARKETPLACE . '/' . self::FILE_QSF);
             $file->chown('root', 'root'); 
@@ -1086,6 +1088,9 @@ class Marketplace extends Rest
                 if ($line_number == 0 && !preg_match('/# Quick Select File - Version \d+\.\d$/', $line)) {
                     throw new Validation_Exception(lang('marketplace_invalid_quick_select_file'));
                 } else if (preg_match('/^\s*#.*/', $line)) {
+                    continue;
+                } else if (array_key_exists(preg_replace("/_/", "-", $line), $installed_apps)) {
+                    // Already installed..nothing to do.
                     continue;
                 } else if (preg_match('/^' . self::APP_PREFIX . '.*/', $line)) {
                     $cart_obj = new Cart_Item($line);

@@ -197,6 +197,7 @@ $lang['marketplace_qsf_file'] = 'Quick Select File';
 $lang['marketplace_upload_qsf'] = 'Upload Quick Select File';
 $lang['marketplace_setting_is_invalid'] = 'Invalid setting.';
 $lang['marketplace_install_selected'] = 'Install Selected';
+$lang['marketplace_delete_all'] = 'Delete All';
 $lang['marketplace_no_apps_to_install'] = 'You have no Marketplace Apps selected to install.';
 $lang['marketplace_sdn_username_is_invalid'] = 'Username contains invalid characters.';
 $lang['marketplace_sdn_username_min_length'] = 'Username does not contain minimum number of characters';
