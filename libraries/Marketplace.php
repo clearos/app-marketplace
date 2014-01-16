@@ -636,8 +636,8 @@ class Marketplace extends Rest
         try {
             $cachekey = __CLASS__ . '-' . __FUNCTION__ . '-' . $basename; 
 
-           // if (!$realtime && $this->_check_cache($cachekey))
-            //    return $this->cache;
+            if (!$realtime && $this->_check_cache($cachekey))
+                return $this->cache;
     
             $extras = array('basename' => $basename);
 
