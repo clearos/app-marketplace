@@ -561,10 +561,10 @@ function display_apps(data) {
 
     if ($('#display_format').val() == 'tile') {
         $('.marketplace-app').tooltip({
-            offset: [-102, -425],
+            offset: [-48, -314],
             predelay: 1500,
             delay: 250,
-            position: 'top center',
+            position: 'top left',
             opacity: 0.95
         });
     }
@@ -646,13 +646,14 @@ function get_app_as_tile(app) {
         content += '<input class=\'theme-hidden marketplace-select\' type=\'checkbox\' id=\'select-' + app.basename + '\' name=\'' + app.basename + '\' ' + (app.incart ? 'CHECKED ' : '') + '/>';
     content += '</div>';
     content += '<div class=\'marketplace-description-tooltip\'>';
+    content += '<div class=\'marketplace-description-tooltip-content\'>';
     content += '<div style=\'padding: 5px; float: right;\'><img src=\'/cache/app-logo-' + app.basename.replace('/_/g', '-') + '.png\' alt=\'\'></div>';
     content += '<h2>' + app.name + '</h2>';
     content += '<p>' + app.description.replace(/\\n/g, '</p><p>') + '</p>';
     if (in_wizard_or_novice)
-        content += '<p style=\'text-align: right;\'><a href=\'http://www.clearcenter.com/marketplace/type/?basename=' + app.basename + '\' target=\'_blank\'>' + lang_marketplace_learn_more + '</a></p></div>';
+        content += '<p style=\'text-align: right;\'><a href=\'http://www.clearcenter.com/marketplace/type/?basename=' + app.basename + '\' target=\'_blank\'>' + lang_marketplace_learn_more + '</a></p></div></div>';
     else
-        content += '<p style=\'text-align: right;\'><a href=\'/app/marketplace/view/' + app.basename + '\'>' + lang_marketplace_learn_more + '</a></p></div>';
+        content += '<p style=\'text-align: right;\'><a href=\'/app/marketplace/view/' + app.basename + '\'>' + lang_marketplace_learn_more + '</a></p></div></div>';
     return content;
 }
 
