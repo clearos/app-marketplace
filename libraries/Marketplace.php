@@ -662,7 +662,7 @@ class Marketplace extends Rest
             $cart_item->set_eula($details->eula);
             $cart_item->serialize($this->CI->session->userdata['sdn_rest_id']);
 
-            return $details;
+            return $result;
         } catch (Exception $e) {
             throw new Webservice_Exception(clearos_exception_message($e), CLEAROS_ERROR);
         }

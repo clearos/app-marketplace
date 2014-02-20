@@ -78,7 +78,10 @@ class Ajax extends ClearOS_Controller
             // Load dependencies
             $this->load->library('marketplace/Marketplace');
 
-            $details = $this->marketplace->get_app_details($basename, $realtime);
+            $result = $this->marketplace->get_app_details($basename, $realtime);
+
+            $response = json_decode($result);
+            $details = $response->details;
 
             // Add flag to display recommended apps in RHS bar
             $details->hide_recommended_apps = $this->marketplace->get_hide_recommended_apps();
