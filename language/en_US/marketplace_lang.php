@@ -13,6 +13,7 @@ $lang['marketplace_no_data'] = 'Please wait... no progress data is currently ava
 $lang['marketplace_no_apps_selected'] = 'No apps have been selected for installation.';
 $lang['marketplace_unable_to_retrieve_cart_item'] = 'Session expired - unable to retrieve app definitions... please refresh the page.';
 $lang['marketplace_item_not_found'] = 'Item not found.';
+$lang['marketplace_app_does_not_exist'] = 'Error getting app metadata or app is not defined';
 $lang['marketplace_description'] = 'Description';
 $lang['marketplace_unit_price'] = 'Unit Price';
 $lang['marketplace_clear_search_history'] = 'Clear Search History';

@@ -23,7 +23,6 @@ $this->lang->load('marketplace');
 // Content 
 ///////////////////////////////////////////////////////////////////////////////
 
-// TODO: translate
 // TODO: move style elements to theme
 
 $banner = "<img style='float: right; padding-left: 20px;' src='" . clearos_app_htdocs('marketplace') . "/marketplace.png' alt=''>";

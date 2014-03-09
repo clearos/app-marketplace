@@ -751,7 +751,9 @@ class Cart_Item extends Engine
         try {
             if (!file_exists(CLEAROS_CACHE_DIR . '/' . $this->get_id() . '.' . $id)) {
                 $marketplace = new Marketplace();
-                $code = $marketplace->get_app_details($this->get_id(), TRUE);
+                $info = $marketplace->get_app_details($this->get_id(), TRUE);
+                if ($info->code != 0 || !$info->exists)
+                    throw new Engine_Exception(lang('marketplace_app_does_not_exist') . ' - ' . $this->get_id() . '.');
             }
             $newobj = unserialize(file_get_contents(CLEAROS_CACHE_DIR . '/' . $this->get_id() . '.' . $id));
             $this->set_pid($newobj->get_pid());
