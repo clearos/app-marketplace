@@ -25,7 +25,7 @@ $this->lang->load('marketplace');
 ///////////////////////////////////////////////////////////////////////////////
 
 if ($wizard)
-    echo form_open_multipart('marketplace/wizard/selection/mode3');
+    echo form_open_multipart('marketplace/wizard/selection');
 else
     echo form_open_multipart('marketplace/qsf');
 echo form_header(lang('marketplace_quick_select'));
