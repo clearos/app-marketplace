@@ -47,6 +47,7 @@ use \clearos\apps\accounts\Accounts_Configuration as Accounts_Configuration;
 use \clearos\apps\mode\Mode_Engine as Mode_Engine;
 use \clearos\apps\mode\Mode_Factory as Mode_Factory;
 use \clearos\apps\clearcenter\Rest as Rest;
+use \clearos\apps\clearcenter\Subscription_Engine as Subscription_Engine;
 use \clearos\apps\Marketplace\Cart as Cart;
 use \clearos\apps\Marketplace\Cart_Item as Cart_Item;
 
@@ -59,6 +60,7 @@ clearos_load_library('accounts/Accounts_Configuration');
 clearos_load_library('mode/Mode_Engine');
 clearos_load_library('mode/Mode_Factory');
 clearos_load_library('clearcenter/Rest');
+clearos_load_library('clearcenter/Subscription_Engine');
 clearos_load_library('marketplace/Cart');
 clearos_load_library('marketplace/Cart_Item');
 
@@ -694,6 +696,9 @@ class Marketplace extends Rest
 
             $result = $this->request('marketplace', 'app_store_purchase', $extras);
 
+            // If a purchase was made, force subscription update
+            $subscriptions = new Subscription_Engine();
+            $subscriptions->get_subscription_updates(TRUE);
             return $result;
         } catch (Exception $e) {
             throw new Webservice_Exception(clearos_exception_message($e), CLEAROS_ERROR);
