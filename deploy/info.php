@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 $app['basename'] = 'marketplace';
-$app['version'] = '1.5.24';
+$app['version'] = '1.5.25';
 $app['release'] = '1';
 $app['vendor'] = 'ClearCenter';
 $app['packager'] = 'ClearCenter';
@@ -51,7 +51,7 @@ $app['requires'] = array(
 );
 
 $app['core_requires'] = array(
-    'app-clearcenter-core => 1:1.2.4',
+    'app-clearcenter-core => 1:1.5.11',
     'app-registration-core => 1:1.2.4',
     'app-base-core => 1:1.4.38',
     'yum-marketplace-plugin >= 1.5',
