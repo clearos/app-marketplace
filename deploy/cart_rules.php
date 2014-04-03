@@ -53,6 +53,11 @@ $rules = array(
         'app-kaspersky-gateway-250-users' => 'app-kaspersky-gateway',
         'app-kaspersky-mail-50-users' => 'app-kaspersky-mail',
         'app-kaspersky-mail-100-users' => 'app-kaspersky-mail',
-        'app-kaspersky-mail-250-users' => 'app-kaspersky-mail'
+        'app-kaspersky-mail-250-users' => 'app-kaspersky-mail',
+        'app-owncloud-business-5-users' => 'app-owncloud-business',
+        'app-owncloud-business-10-users' => 'app-owncloud-business',
+        'app-owncloud-business-20-users' => 'app-owncloud-business',
+        'app-owncloud-business-50-users' => 'app-owncloud-business',
+        'app-owncloud-business-100-users' => 'app-owncloud-business'
     )
 );
