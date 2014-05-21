@@ -627,7 +627,7 @@ function get_app_as_column(app) {
 
 function get_app_as_tile(app) {
     var content = '';
-    content += '<div class=\'marketplace-app-event marketplace-app' + (app.incart ? ' marketplace-selected' : '') + '\' id=\'' + app.basename + '\'>';
+    content += '<div class=\'box box-solid bg-light-blue marketplace-app-event marketplace-app' + (app.incart ? ' marketplace-selected' : '') + '\' id=\'' + app.basename + '\'>';
     if (app.installed)
         content += '<span class=\'marketplace-installed\'>INSTALLED</span>';
     content += '<img src=\'" . clearos_app_htdocs('marketplace') . "/market_default.png\' '
