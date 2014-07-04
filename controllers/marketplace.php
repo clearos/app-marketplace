@@ -80,7 +80,15 @@ class Marketplace extends ClearOS_Controller
             return;
         }
 
+        $data['filters'] = $this->marketplace->get_filter_options();
+        $data['selected'] = array(
+            'category' => 'all',
+            'price' => 'all',
+            'intro' => 'all',
+            'status' => 'all' 
+        );
         $data['search'] = $first['active'];
+        //$data['search'] = lang('marketplace_search');
 
         if ($data['display_format'] == 'table')
             $this->page->view_form('table_list', $data, lang('marketplace_marketplace'), array('type' => MY_Page::TYPE_SPOTLIGHT));
@@ -106,6 +114,14 @@ class Marketplace extends ClearOS_Controller
         $data['basename'] = $basename;
         $data['is_installed'] = $this->software->is_installed();
         $data['pseudonym'] = $this->marketplace->get_pseudonym();
+        $data['filters'] = $this->marketplace->get_filter_options();
+        $data['selected'] = array(
+            'category' => 'all',
+            'price' => 'all',
+            'intro' => 'all',
+            'status' => 'all' 
+        );
+        $data['search'] = lang('marketplace_search');
         $this->page->view_form('marketplace/app', $data, lang('marketplace_marketplace'), array('type' => MY_Page::TYPE_SPOTLIGHT));
     }
 

@@ -19,12 +19,76 @@
 $this->lang->load('base');
 $this->lang->load('marketplace');
 
-echo "<div class='ui-widget marketplace-footer'></div>";
-echo "<div id='app_overview' style='text-align: center; padding: 60px 10px 30px 10px;'>";
-echo lang('marketplace_loading');
-echo "<div style='padding: 10px 0px 10px 0px;'>" . loading() . "</div>";
-echo "</div>";
+//echo "<div class='ui-widget marketplace-footer'></div>";
+//echo "<div id='app_overview' style='text-align: center; padding: 60px 10px 30px 10px;'>";
+//echo lang('marketplace_loading');
+//echo "<div style='padding: 10px 0px 10px 0px;'>" . loading() . "</div>";
+//echo "</div>";
 
+echo box_open("$basename", array('id' => 'app_name', 'class' => 'marketplace-app-info-container'));
+echo row_open();
+echo column_open(2);
+echo app_logo($basename);
+echo column_close();
+echo column_open(10, NULL, NULL, array('class' => 'marketplace-app-info'));
+echo row_open();
+echo column_open(12);
+echo "<h4 class='marketplace-about-app'>" . lang('marketplace_about_this_app') . "</h4>";
+echo column_close();
+echo row_close();
+echo row_open();
+echo column_open(3);
+echo 
+    "      <div id='field_installed_version' class='marketplace-about'>" .
+    "        <div class='marketplace-about-field'>" . lang('marketplace_installed_version') . ":</div>" .
+    "        <div id='app_installed_version' class='marketplace-about-value'></div>" .
+    "      </div>" .
+    "      <div id='field_latest_version' class='marketplace-about'>" . 
+    "        <div class='marketplace-about-field'>" . lang('marketplace_latest_version') . ":</div>" .
+    "        <div id='app_latest_version' class='marketplace-about-value'></div>" .
+    "      </div>"
+;
+echo column_close();
+echo column_open(3);
+echo 
+    "      <div id='field_cost' class='marketplace-about'>" . 
+    "        <div class='marketplace-about-field'>" . lang('marketplace_cost') . ":</div>" .
+    "        <div id='app_cost' class='marketplace-about-value'></div>" .
+    "      </div>" .
+    "      <div id='field_introduced' class='marketplace-about'>" .
+    "        <div class='marketplace-about-field'>" . lang('marketplace_released') . ":</div>" .
+    "        <div id='app_introduced' class='marketplace-about-value'></div>" .
+    "      </div>"
+;
+echo column_close();
+echo column_open(3);
+echo 
+    "      <div id='field_category' class='marketplace-about'>" .
+    "        <div class='marketplace-about-field'>" . lang('marketplace_category') . ":</div>" .
+    "        <div id='app_category' class='marketplace-about-value'></div>" .
+    "      </div>" .
+    "      <div id='field_support_policy' class='marketplace-about'>" . 
+    "        <div class='marketplace-about-field'>" . lang('marketplace_app_supported') . ":</div>" .
+    "        <div id='app_support_policy' class='marketplace-about-value'></div>" .
+    "      </div>"
+;
+echo column_close();
+echo column_open(3);
+echo 
+    "      <div id='field_license' class='marketplace-about'>" .
+    "        <div class='marketplace-about-field'>" . lang('marketplace_license') . ":</div>" .
+    "        <div id='app_license' class='marketplace-about-value'></div>" .
+    "      </div>" .
+    "      <div id='field_license_library' class='marketplace-about'>" . 
+    "        <div class='marketplace-about-field'>" . lang('marketplace_license_library') . ":</div>" .
+    "        <div id='app_license_library' class='marketplace-about-value'></div>" .
+    "      </div>"
+;
+echo column_close();
+echo row_close();
+echo column_close();
+echo row_close();
+echo box_close();
 
 $tabinfo = Array();
 
@@ -35,7 +99,7 @@ $tabinfo['versions']['title'] = lang('marketplace_version_information');
 $tabinfo['overview']['content'] = 
     "<table width='100%' style='margin-top: 10px;' border='0'>" .
     "  <tr>" .
-    "    <td valign='top' width='70%'><h2 id='app_name'></h2>" .
+//    "    <td valign='top' width='70%'><h2 id='app_name'></h2>" .
     "      <div id='app_description'></div>" .
     "<div id='availability_warning_box' style='width: 95%; display: none'>" .
     infobox_warning(lang('marketplace_not_available'), "<div id='availability_warning'></div>") .
@@ -63,7 +127,7 @@ $tabinfo['overview']['content'] =
     "      <h2>" . lang('marketplace_other_apps_by_devel') . "</h2>" .
     "      <div style='position: relative; width: 100%; clear: both;' id='app_other_by_devel'></div>" .
     "    </td>" .
-    "    <td valign='top' width='30%'><img id='detail_img' src='" . clearos_app_htdocs('marketplace') . "/market_default.png' alt=''>" .
+    "    <td valign='top' width='30%'>" . app_logo() .
     "      <div style='padding: 15px 0px 15px 0px;' id='app_action'>" .
     "        <div class='app_actions' id='a_upgrade' style='display: none; padding-top: 5px;'>" .
     form_submit_custom('but_upgrade', lang('marketplace_install_upgrade'), 'high', array ('id' => 'indiv_upgrade')) .
@@ -87,15 +151,6 @@ $tabinfo['overview']['content'] =
     "      <div style='padding: 5px 0px 15px 0px;'>" . strtoupper(lang('marketplace_about_this_app')) . "</div>" .
     "      <div id='field_rating' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_rating')) . ":" .
     "        <div style='padding: 0px 0px 10px 0px;' id='app_rating'></div>" .
-    "      </div>" .
-    "      <div id='field_installed_version' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_installed_version')) . ":" .
-    "        <div style='padding: 0px 0px 10px 0px;' id='app_installed_version'></div>" .
-    "      </div>" .
-    "      <div id='field_latest_version' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_latest_version')) . ":" .
-    "        <div style='padding: 0px 0px 10px 0px;' id='app_latest_version'></div>" .
-    "      </div>" .
-    "      <div id='field_releast_date' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_latest_release_date')) . ":" .
-    "        <div style='padding: 0px 0px 10px 0px;' id='app_latest_release_date'></div>" .
     "      </div>" .
     "      <div id='field_support_policy' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_app_supported')) . ":" .
     "        <div style='padding: 0px 0px 10px 0px;' id='app_support_policy'></div>" .

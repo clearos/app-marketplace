@@ -289,6 +289,47 @@ class Marketplace extends Rest
     }
 
     /**
+     * Get filter options.
+     *
+     * @return array
+     * @throws Engine_Exception
+     */
+
+    function get_filter_options()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+        return array(
+            'category' => array(
+                'all' => lang('marketplace_filter_by_category'),
+                'cloud' => lang('base_category_cloud'),
+                'server' => lang('base_category_server'),
+                'network' => lang('base_category_network'),
+                'gateway' => lang('base_category_gateway'),
+                'system' => lang('base_category_system'),
+                'reports' => lang('base_category_reports')
+            ),
+            'price' => array(
+                'all' => lang('marketplace_filter_by_price'),
+                'free' => lang('marketplace_free'),
+                'paid' => lang('marketplace_paid')
+            ),
+            'intro' => array(
+                'all' => lang('marketplace_filter_by_intro'),
+                '7' => lang('marketplace_added_7_day'),
+                '30' => lang('marketplace_added_30_day'),
+                '180' => lang('marketplace_added_6_month'),
+                '365' => lang('marketplace_added_1_year'),
+            ),
+            'status' => array(
+                'all' => lang('marketplace_filter_by_install'),
+                'installed' => lang('marketplace_installed_apps'),
+                'upgrade_available' => lang('marketplace_upgrade_apps'),
+                'new' => lang('marketplace_new_apps')
+            ),
+        );
+    }
+
+    /**
      * Get the search/filter criteria.
      *
      * @return mixed

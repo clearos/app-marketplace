@@ -702,7 +702,7 @@ function get_app_details(id) {
             // Hide the loading page
             $('#app_overview').remove();
             $('#tabs').show();
-            $('#app_name').html(data.name);
+            $('#app_name_title').html(data.name);
             $('#app_description').html('<p>' + data.description.replace(/\\n/g, '</p><p>') + '</p>');
             if (data.installed_version == '')
                 $('#app_installed_version').html('" . lang('marketplace_not_installed') . "');
@@ -745,52 +745,7 @@ function get_app_details(id) {
                 $('#a_install').show();
             }
 
-            $('#app_support_policy').html(
-                '<div id=\'theme-support-policy-trigger\'>' +
-                '<div class=\'theme-support theme-support-' + (data.supported & 1) + '\'></div>' +
-                '<div class=\'theme-support theme-support-' + (data.supported & 2) + '\'></div>' +
-                '<div class=\'theme-support theme-support-' + (data.supported & 4) + '\'></div>' +
-                '<div class=\'theme-support theme-support-' + (data.supported & 8) + '\'></div>' +
-                '<div class=\'theme-support theme-support-' + (data.supported & 16) + '\'></div>' +
-                '</div>' +
-                '<div class=\'theme-rhs-tooltip\'>' +
-                '<p class=\'theme-support-legend-title\'>' + lang_marketplace_support_legend + '</p>' +
-                '<div class=\'theme-support theme-support-1\' style=\'margin-right: 5px;\'></div>' +
-                '<div class=\'theme-support-type\'>' + lang_marketplace_support_1_title + '</div>' +
-                lang_marketplace_support_1_description +
-                '</p>' +
-                '<p><div class=\'theme-support theme-support-2\' style=\'margin-right: 5px;\'></div>' +
-                '<div class=\'theme-support-type\'>' + lang_marketplace_support_2_title + '</div>' +
-                lang_marketplace_support_2_description +
-                '</p>' +
-                '<p><div class=\'theme-support theme-support-4\' style=\'margin-right: 5px;\'></div>' +
-                '<div class=\'theme-support-type\'>' + lang_marketplace_support_4_title + '</div>' +
-                lang_marketplace_support_4_description +
-                '</p>' +
-                '<p><div class=\'theme-support theme-support-8\' style=\'margin-right: 5px;\'></div>' +
-                '<div class=\'theme-support-type\'>' + lang_marketplace_support_8_title + '</div>' +
-                lang_marketplace_support_8_description +
-                '</p>' +
-                '<p><div class=\'theme-support theme-support-16\' style=\'margin-right: 5px;\'></div>' +
-                '<div class=\'theme-support-type\'>' + lang_marketplace_support_16_title + '</div>' +
-                lang_marketplace_support_16_description +
-                '</p>' +
-                '<div class=\'theme-support-learn-more\'>' +
-                '<a href=\'http://www.clearcenter.com/clearcare/landing\' target=\'_blank\'>' + lang_marketplace_learn_more + '...</a>' +
-                '</div>' +
-                '</div>'
-            );
-
-            $('#theme-support-policy-trigger').tooltip({
-                offset: [-240, -310],
-                position: 'center left',
-                effect: 'slide',
-                direction: 'left',
-                slideOffset: 110, 
-                opacity: 0.95,
-                delay: 500,
-                predelay: 200
-            });
+            $('#app_support_policy').html(get_support_policy(data));
 
             $('#indiv_configure').attr('href', '/' + data.url_config);
 

@@ -19,8 +19,20 @@
 
 $this->lang->load('base');
 $this->lang->load('marketplace');
-$this->load->view('marketplace/banner');
+//$this->load->view('marketplace/banner');
 
+echo box_open();
+echo row_open();
+echo column_open(7, NULL, NULL, array('id' => 'marketplace_filter_container'));
+foreach ($filters as $name => $options) {
+    echo marketplace_filter($name, $options, $selected[$name]);
+}
+echo column_close();
+echo column_open(5, NULL, NULL, array('id' => 'marketplace_filter_container', 'class' => 'search-form'));
+echo marketplace_search($search);
+echo column_close();
+echo row_close();
+echo box_close();
 echo "<div id='app_list_overview' style='text-align: center; padding: 60px 10px 30px 10px;'>";
 if ($search)
     echo "<div style='padding: 10px 0px 0px 0px;'>" . loading('normal', lang('marketplace_searching_marketplace'), array('icon-below' => TRUE)) . "</div>";
