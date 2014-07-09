@@ -813,12 +813,11 @@ function get_app_details(id) {
             if (screenshots.length == 0)
                 $('#app_screenshots').append('<div>" . lang('marketplace_no_screenshots') . "</div>');
             for (index = 0 ; index < screenshots.length; index++) {
-                $('#app_screenshots').append('<div style=\'position: relative; width: 33%;'
-                    + 'float: left;\'><a href=\'/cache/screenshot-' + screenshots[index].id + '.png\' title=\''
-                    + screenshots[index].caption + '\'><img id=\'screenshot-' + index + '\' '
-                    + 'src=\'" . clearos_app_htdocs('marketplace') . "/placeholder.png\' '
-                    + 'style=\'height:120; width: 120; padding-bottom: 10px;\' alt=\''
-                    + screenshots[index].caption + '\'></a></div>');
+                $('#app_screenshots').append(
+                    '<a href=\'/cache/screenshot-' + screenshots[index].id + '.png\' data-lightbox=\'ss-set\' data-title=\'' + screenshots[index].caption + '\'>' +
+                    '<img id=\'screenshot-' + index + '\' src=\'" . clearos_app_htdocs('marketplace') . "/placeholder.png\' class=\'theme-screenshot-img\'> ' +
+                    '</a>'
+                );
                 get_image('screenshot', screenshots[index].id, 'screenshot-' + index);
             }
 
@@ -995,24 +994,6 @@ function get_app_details(id) {
                     (index < versions.length - 1 ? '<hr>' : '')
                 );
             }
-            // Hack because of some interference with JQuery UI and tabs
-            $('#documentation').css('padding', '1px 5px 1px 5px');
-            $('#learn_more').css('padding', '1px 5px 1px 5px');
-            $('#indiv_install').css('padding', '1px 5px 1px 5px');
-            $('#indiv_repo').css('padding', '1px 5px 1px 5px');
-            $('#indiv_configure').css('padding', '1px 5px 1px 5px');
-            $('#warranty_link').css('padding', '1px 5px 1px 5px');
-
-            $(function() {
-                // TODO - We need some PHP function to grab image path
-                $('#app_screenshots a').lightBox({
-                        imageLoading: '/themes/default/images/loading.gif',
-                        imageBtnPrev: '" . clearos_app_htdocs('marketplace') . "/prev.png',
-                        imageBtnNext: '" . clearos_app_htdocs('marketplace') . "/next.png',
-                        imageBtnClose: '" . clearos_app_htdocs('marketplace') . "/close.png'
-                    }
-                );
-            });
         },
         error: function(xhr, text, err) {
             clearos_dialog_box('error', '" . lang('base_warning') . "', xhr.responseText.toString());

@@ -90,16 +90,39 @@ echo column_close();
 echo row_close();
 echo box_close();
 
-$tabinfo = Array();
-
 $tabinfo['overview']['title'] = lang('marketplace_overview');
 $tabinfo['reviews']['title'] = lang('marketplace_reviews');
 $tabinfo['versions']['title'] = lang('marketplace_version_information');
 
-$tabinfo['overview']['content'] = 
+/* Overview */
+echo row_open(array('id' => 'marketplace-overview'));
+echo "<h3>" . lang('marketplace_overview') . "</h3>";
+echo "<div id='app_description'></div>";
+echo row_close();
+
+/* Developer */
+echo row_open(array('id' => 'marketplace-developer'));
+echo "<h3>" . lang('marketplace_developer') . "</h3>";
+echo marketplace_developer_field('app_devel_org', lang('marketplace_devel_org')); 
+echo marketplace_developer_field('app_devel_contact', lang('marketplace_devel_contact')); 
+echo marketplace_developer_field('app_devel_email', lang('marketplace_devel_email')); 
+echo marketplace_developer_field('app_devel_website', lang('marketplace_devel_website')); 
+echo row_close();
+
+/* Screenshots */
+echo row_open(array('id' => 'marketplace-screenshot'));
+echo "<h3>" . lang('marketplace_screenshots') . "</h3>";
+echo screenshot_set('app_screenshots');
+echo row_close();
+
+/* Reviews */
+echo row_open(array('id' => 'marketplace-review'));
+echo "<h3>" . lang('marketplace_reviews') . "</h3>";
+echo row_close();
+$DELETEME = 
     "<table width='100%' style='margin-top: 10px;' border='0'>" .
     "  <tr>" .
-//    "    <td valign='top' width='70%'><h2 id='app_name'></h2>" .
+//    "    <td valign='top' width='70%'><h2 class='app-name'></h2>" .
     "      <div id='app_description'></div>" .
     "<div id='availability_warning_box' style='width: 95%; display: none'>" .
     infobox_warning(lang('marketplace_not_available'), "<div id='availability_warning'></div>") .
@@ -112,15 +135,6 @@ $tabinfo['overview']['content'] =
     anchor_custom('/app/software_repository/index/detailed', lang('marketplace_learn_more'), 'high', array('id' => 'learn_more', 'target' => '_blank')) .
     "      </span>" .
     "      </div>" .
-    "      <h2>" . lang('marketplace_developer') . "</h2>" .
-    "      <table width='100%' border='0'>" .
-    "        <tr><td width='40%'>" . lang('marketplace_devel_org') . "</td><td width='60%' id='app_devel_org'></td></tr>" .
-    "        <tr><td>" . lang('marketplace_devel_contact') . "</td><td id='app_devel_contact'></td></tr>" .
-    "        <tr><td>" . lang('marketplace_devel_email') . "</td><td id='app_devel_email'></td></tr>" .
-    "        <tr><td>" . lang('marketplace_devel_website') . "</td><td id='app_devel_website'></td></tr>" .
-    "      </table>" .
-    "      <h2>" . lang('marketplace_screenshots') . "</h2>" .
-    "      <div style='position: relative; width: 100%; clear: both;' id='app_screenshots'></div><br clear='all'>" .
     "      <h2 class='complementary'>" . lang('marketplace_complementary_apps') . "</h2>" .
     "      <p class='complementary'>" . lang('marketplace_complementary_apps_info') . "</p>" .
     "      <div style='position: relative; width: 100%; clear: both;' id='app_complementary' class='complementary'></div>" .
@@ -209,13 +223,6 @@ $tabinfo['reviews']['content'] = "<h2 style='position: relative; float: left'>" 
     "</div>" .
     "<div id='app_ratings'></div>"
 ;
-$tabinfo['versions']['content'] = "<h2>" . lang('marketplace_localization') . "</h2>" .
-    "<div id='app_locale'></div>" .
-    "<h2>" . lang('marketplace_version_history') . "</h2>" .
-    "<div id='app_versions'></div>"
-;
-
-echo tab($tabinfo);
-
-echo "<script type='text/javascript'>$('#tabs').hide(); get_app_details('" . $basename . "');</script>\n";
+echo "<script type='text/javascript'>get_app_details('" . $basename . "');</script>\n";
 echo "<input type='hidden' name='basename' id='basename' value='" . $basename . "' />";
+
