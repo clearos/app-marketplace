@@ -72,8 +72,8 @@ class Ajax extends ClearOS_Controller
             if ($this->input->post('realtime'))
                 $realtime = TRUE;
 
-            if ($this->input->post('id'))
-                $basename = $this->input->post('id');
+            if ($this->input->post('basename'))
+                $basename = $this->input->post('basename');
 
             // Load dependencies
             $this->load->library('marketplace/Marketplace');

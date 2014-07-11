@@ -25,7 +25,7 @@ $this->lang->load('marketplace');
 //echo "<div style='padding: 10px 0px 10px 0px;'>" . loading() . "</div>";
 //echo "</div>";
 
-echo box_open("$basename", array('id' => 'app_name', 'class' => 'marketplace-app-info-container'));
+echo box_open($basename, array('id' => 'app_name', 'class' => 'marketplace-app-info-container'));
 echo row_open();
 echo column_open(2);
 echo app_logo($basename);
@@ -90,10 +90,6 @@ echo column_close();
 echo row_close();
 echo box_close();
 
-$tabinfo['overview']['title'] = lang('marketplace_overview');
-$tabinfo['reviews']['title'] = lang('marketplace_reviews');
-$tabinfo['versions']['title'] = lang('marketplace_version_information');
-
 /* Overview */
 echo row_open(array('id' => 'marketplace-overview'));
 echo "<h3>" . lang('marketplace_overview') . "</h3>";
@@ -118,7 +114,18 @@ echo row_close();
 /* Reviews */
 echo row_open(array('id' => 'marketplace-review'));
 echo "<h3>" . lang('marketplace_reviews') . "</h3>";
+echo form_submit_custom('review', lang('marketplace_submit_review'), 'high', array ('id' => ($is_installed ? 'add_review' : 'prevent_review')));
+echo marketplace_review($basename, $pseudonym);
+echo "<div id='app_ratings'></div>";
 echo row_close();
+
+
+// TODO
+//    "<div id='availability_warning_box' style='width: 95%; display: none'>" .
+//    infobox_warning(lang('marketplace_not_available'), "<div id='availability_warning'></div>") .
+//    "</div>" .
+
+
 $DELETEME = 
     "<table width='100%' style='margin-top: 10px;' border='0'>" .
     "  <tr>" .
@@ -166,30 +173,6 @@ $DELETEME =
     "      <div id='field_rating' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_rating')) . ":" .
     "        <div style='padding: 0px 0px 10px 0px;' id='app_rating'></div>" .
     "      </div>" .
-    "      <div id='field_support_policy' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_app_supported')) . ":" .
-    "        <div style='padding: 0px 0px 10px 0px;' id='app_support_policy'></div>" .
-    "      </div>" .
-    "      <div id='field_repo' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_software_repo')) . ":" .
-    "        <div style='padding: 0px 0px 10px 0px;' id='app_repo'></div>" .
-    "      </div>" .
-    "      <div id='field_cost' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_cost')) . ":" .
-    "        <div style='padding: 0px 0px 10px 0px;' id='app_cost'></div>" .
-    "      </div>" .
-    "      <div id='field_category' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_category')) . ":" .
-    "        <div style='padding: 0px 0px 10px 0px;' id='app_category'></div>" .
-    "      </div>" .
-    "      <div id='field_tags' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_tags')) . ":" .
-    "        <div style='padding: 0px 0px 10px 0px;' id='app_tags'></div>" .
-    "      </div>" .
-    "      <div id='field_license' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_license')) . ":" .
-    "        <div style='padding: 0px 0px 10px 0px;' id='app_license'></div>" .
-    "      </div>" .
-    "      <div id='field_license_library' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_license_library')) . ":" .
-    "        <div style='padding: 0px 0px 10px 0px;' id='app_license_library'></div>" .
-    "      </div>" .
-    "      <div id='field_introduced' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_app_introduced')) . ":" .
-    "        <div style='padding: 0px 0px 10px 0px;' id='app_introduced'></div>" .
-    "      </div>" .
     "    </td>" .
     "    </td>" .
     "    </td>" .
@@ -197,8 +180,6 @@ $DELETEME =
     "</table>"
 ;
 $tabinfo['reviews']['content'] = "<h2 style='position: relative; float: left'>" . lang('marketplace_user_reviews') . "</h2>" .
-    "<div style='position: relative; float: right; padding-top: 10px;'>" . form_submit_custom('review', lang('marketplace_submit_review'), 'high', array ('id' => ($is_installed ? 'add_review' : 'prevent_review'))) .
-    "</div><br clear='all'>" .
     "<div id='review_form' style='display: none;'>" .
     "  <h2>" . lang('marketplace_write_a_review') . "</h2>" .
     "  <div>" .
@@ -223,6 +204,9 @@ $tabinfo['reviews']['content'] = "<h2 style='position: relative; float: left'>" 
     "</div>" .
     "<div id='app_ratings'></div>"
 ;
-echo "<script type='text/javascript'>get_app_details('" . $basename . "');</script>\n";
+echo "<script type='text/javascript'>";
+echo "$(document).ready(function() {";
+echo "    get_app_details('" . $basename . "');";
+echo "});";
+echo "</script>";
 echo "<input type='hidden' name='basename' id='basename' value='" . $basename . "' />";
-

@@ -681,12 +681,12 @@ function get_rating(rating, num_of_ratings, show_avg, show_total) {
     return content;
 }
 
-function get_app_details(id) {
+function get_app_details(basename) {
     $.ajax({
         type: 'POST',
         dataType: 'json',
         url: '/app/marketplace/ajax/get_app_details',
-        data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&id=' + id,
+        data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&basename=' + basename,
         success: function(data) {
             if (data.code != undefined && data.code == 3) {
                 $('#app_overview').remove();
@@ -867,49 +867,8 @@ function get_app_details(id) {
             if (ratings.length == 0) {
                 $('#app_ratings').append('<p>" . lang('marketplace_no_reviews') . "</p>');
             }
-            for (index = 0 ; index < ratings.length; index++) {
-                var rating_header = ratings[index].comment;
-                var show_full_comment = false;
-                if (rating_header.indexOf('\\n') > 0) {
-                    show_full_comment = true;
-                    position = rating_header.indexOf('\\n');
-                    if (position < 25)
-                        rating_header = rating_header.substring(0, position);
-                    else
-                        rating_header = rating_header.substring(0, 25) + '...';
-                } else if (rating_header.length > 25) {
-                    rating_header = rating_header.substring(0, 25) + '...';
-                    show_full_comment = true;
-                }
-                $('#app_ratings').append(
-					'<div class=\'reviews\'>' +
-                    '<div style=\'padding: 5px 0px 5px 0px;\'><b style=\'font-size: 1.2em;\'>' +
-                    rating_header + '</b><div style=\'float: right; font-weight: bold;\'>' +
-                    '<span style=\'font-size: 1.2em;\' id=\'agree_' + ratings[index].id + '\'>' +
-                    ratings[index].agree + '</span><a class=\'peer_review\' href=\'#-1-' + ratings[index].id + '\'>' +
-                    '<span style=\'padding: 0px 15px 0px 5px;\'>' +
-                    '<img src=\'" . clearos_app_htdocs('marketplace') . "/icon_thumb_up.gif\'>&#160;" .
-                    lang('marketplace_agree') . "</span></a>' +
-                    '<span style=\'font-size: 1.2em;\' id=\'disagree_' + ratings[index].id + '\'>' +
-                    ratings[index].disagree + '</span>' +
-                    '<a class=\'peer_review\' href=\'#-0-' + ratings[index].id + '\'>' +
-                    '<span style=\'padding: 0px 0px 0px 5px;\'>' +
-                    '<img src=\'" . clearos_app_htdocs('marketplace') . "/icon_thumb_down.gif\'>&#160;" .
-                    lang('marketplace_disagree') . "</span></a></div></div>' +
-                    '<div>' +
-                    get_rating(ratings[index].rating, -1, false, false) +
-                    ' " . lang('marketplace_by') . " ' + ratings[index].pseudonym + ' - ' +
-                    $.datepicker.formatDate('MM d, yy', new Date(ratings[index].timestamp)) +
-                    '</div>' + (show_full_comment ? '<p>' + ratings[index].comment.replace(/\\n/g, '</p><p>') + '</p></div>' : '')
-                );
-            }
 
-            $('a.peer_review').click(function (e) {
-                e.preventDefault();
-                var parts = $(this).attr('href').split('-');
-                clearos_is_authenticated();
-                peer_review(id, parseInt(parts[1]), parseInt(parts[2]));
-            });
+            $('#app_ratings').append(clearos_app_rating(basename, ratings));
 
             var locales = data.locales;
             var contributors = data.locales_contributors;
@@ -1061,94 +1020,6 @@ function toggle_payment_display() {
         $('#po_number').show();
     else
         $('#po_number').hide();
-}
-
-function prevent_review() {
-    clearos_dialog_box('review_error', '" . lang('base_warning') . "', '" . lang('marketplace_no_install_no_review') . "');
-}
-
-function add_review(id) {
-    $('#review_form').show();
-    // Sometimes browser autocompletes this field
-    $('#comment').val('');
-    clearos_is_authenticated();
-}
-
-function submit_review(update) {
-    $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        url: '/app/marketplace/ajax/add_review',
-        data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&basename=' + $('#basename').val() + '&comment=' + $('#comment').val()
-            + '&rating=' + $('#rating').val() + '&pseudonym=' + $('#pseudonym').val() + (update ? '&update=1' : ''),
-        success: function(data) {
-            if (data.code != 0) {
-                // Check to see if there's already a review
-                if (data.code == 8) {
-                    clearos_confirm_review_replace();
-                    return;
-                }
-                clearos_dialog_box('submit_review_error', '" . lang('base_warning') . "', data.errmsg);
-            } else {
-                $('#review_form').hide(); 
-                var options = new Object();
-                options.reload_on_close = true;
-                clearos_dialog_box('submit_info', '" . lang('base_information') . "', data.status, options);
-            }
-        },
-        error: function(xhr, text, err) {
-            clearos_dialog_box('error', '" . lang('base_warning') . "', xhr.responseText.toString());
-        }
-    });
-}
-
-function update_rating(rating) {
-    for (var starindex = 1; starindex <= 5; starindex++) {
-        if (rating >= starindex)
-            $('#star' + starindex).attr('src', '" . clearos_app_htdocs('marketplace') . "/star_on.png');
-        else
-            $('#star' + starindex).attr('src', '" . clearos_app_htdocs('marketplace') . "/star_off.png');
-    }
-    $('#rating').val(rating);
-}
-
-function peer_review(id, approve, dbid) {
-    $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        url: '/app/marketplace/ajax/peer_review',
-        data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&basename=' + $('#basename').val() + '&id=' + id + '&approve=' + approve + '&dbid=' + dbid,
-        success: function(data) {
-            if (data.code == 1) {
-                clearos_is_authenticated();
-            } else if (data.code != 0) {
-                clearos_dialog_box('peer_review_error', '" . lang('base_warning') . "', data.errmsg);
-            } else {
-                if (approve > 0) {
-                    // Already rated
-                    if (data.updated_review != undefined) {
-                        $('#agree_' + dbid).html(parseInt($('#agree_' + dbid).text()) + 1);
-                        if (parseInt($('#disagree_' + dbid).text()) > 0)
-                            $('#disagree_' + dbid).html(parseInt($('#disagree_' + dbid).text()) - 1);
-                    } else if (data.new_review != undefined) {
-                        $('#agree_' + dbid).html(parseInt($('#agree_' + dbid).text()) + 1);
-                    }
-                } else {
-                    // New rating
-                    if (data.updated_review != undefined) {
-                        $('#disagree_' + dbid).html(parseInt($('#disagree_' + dbid).text()) + 1);
-                        if (parseInt($('#agree_' + dbid).text()) > 0)
-                            $('#agree_' + dbid).html(parseInt($('#agree_' + dbid).text()) - 1);
-                    } else if (data.new_review != undefined) {
-                        $('#disagree_' + dbid).html(parseInt($('#disagree_' + dbid).text()) + 1);
-                    }
-                }
-            }
-        },
-        error: function(xhr, text, err) {
-            clearos_dialog_box('error', '" . lang('base_warning') . "', xhr.responseText.toString());
-        }
-    });
 }
 
 function get_novice_set() {
@@ -1374,14 +1245,6 @@ $(document).ready(function() {
         $('#char-remaining').html(1000 - charLength + ' " . lang('marketplace_remaining') . "');
     });
 
-    $('#marketplace-home').click(function() {
-        window.location = '/app/marketplace';
-    });
-
-    $('#marketplace-home').mouseover(function() {
-        $(this).css('cursor', 'pointer');
-    });
-
     $('.filter_event').change(function(event) {
       this.form.submit();
     });
@@ -1402,10 +1265,8 @@ $(document).ready(function() {
             add_review(this.id);
         else if (this.id == 'prevent_review')
             prevent_review();
-        else if (this.id == 'submit_review')
-            submit_review(false);
         else if (this.id == 'cancel_review')
-            $('#review_form').hide();
+            $('#review-form').modal({show: true, backdrop: 'static'});
         else if (this.id == 'indiv_upgrade')
             update_cart($('#basename').val(), this.id, true, true);
         else if (this.id == 'indiv_buy')
@@ -1489,12 +1350,12 @@ function get_progress() {
             }
 
             if (!json.busy) {
-		// Check to see if in Wizard, if so, exit wizard
+                // Check to see if in Wizard, if so, exit wizard
                 // If no yum process is running, go back to Marketplace
                 if ($('#theme_wizard_complete').length != 0)
-			window.location = '/app/marketplace/wizard/stop';
-		else
-			window.location = '/app/marketplace';
+                    window.location = '/app/marketplace/wizard/stop';
+                else
+                    window.location = '/app/marketplace';
             }
         },
         error: function(xhr, text, err) {
@@ -1523,35 +1384,6 @@ function clearos_eula(basename, id, message) {
       },
       '" . lang('marketplace_do_not_agree') . "': function() {
         window.location = '/app/marketplace/install/delete/' + basename;
-      }
-    }
-  });
-  $('.ui-dialog-titlebar-close').hide();
-}
-
-function clearos_confirm_review_replace() {
-  $('#theme-page-container').append('<div id=\"confirm_view_replace\" title=\"" . lang('base_warning') . "\">' +
-      '<div class=\"dialog_alert_icon\"></div>' +
-      '<div class=\"dialog_alert_text\">" . lang('marketplace_confirm_review_replace') . "</div>' +
-    '</div>'
-  );
-  $('#confirm_view_replace').dialog({
-    autoOpen: true,
-    bgiframe: true,
-    title: false,
-    modal: true,
-    resizable: false,
-    draggable: false,
-    closeOnEscape: false,
-    height: 180,
-    width: 350,
-    buttons: {
-      '" . lang('base_cancel') . "': function() {
-        $(this).dialog('close');
-      },
-      '" . lang('base_confirm') . "': function() {
-        $(this).dialog('close');
-        submit_review(true);
       }
     }
   });
