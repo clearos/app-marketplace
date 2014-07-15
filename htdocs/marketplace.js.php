@@ -823,44 +823,17 @@ function get_app_details(basename) {
 
             // Complementary apps
             var complementary_apps = data.complementary_apps;
-            if (complementary_apps.length == 0) {
-                $('.complementary').remove();
-            }
-            for (index = 0 ; index < complementary_apps.length; index++) {
-                $('#app_complementary').append(
-                    '<div style=\'padding-bottom: 60px;\'><div style=\'position: '
-                    + 'relative; width: 60px; float: left;\'><a href=\'' + complementary_apps[index].basename + '\'>'
-                    + '<img align=\'left\' id=\'app-logo-complementary-' + complementary_apps[index].basename
-                    + '\' src=\'" . clearos_app_htdocs('marketplace') . "/market_default.png\' '
-                    + 'style=\'padding-bottom: 10px;\' alt=\'' + complementary_apps[index].name
-                    + '\'></a></div><div style=\'position: relative; width: 400px; float: left;\'>'
-                    + '<a href=\'' + complementary_apps[index].basename + '\' style=\'font-weight: bold;\'>'
-                    + complementary_apps[index].name + '</a>&#160;&#160;' + get_rating(complementary_apps[index].rating, -1, true, false)
-                    + '<p>' + complementary_apps[index].description.replace(/\\n/g, '</p><p>')
-                    + '</p></div></div><br clear=\'all\'>'
-                );
-                get_image('app-logo', complementary_apps[index].basename, 'app-logo-complementary-' + complementary_apps[index].basename);
-            }
+            if (complementary_apps.length == 0)
+                $('#app_complementary').remove();
+
+            for (index = 0 ; index < complementary_apps.length; index++)
+                $('#app_complementary').append(clearos_related_apps('complementary', complementary_apps));
 
             // Other apps by developer
-            var other_apps = data.other_by_devel;
-            if (other_apps.length == 0)
+            if (data.other_by_devel.length == 0)
                 $('#app_other_by_devel').append('<div>" . lang('marketplace_no_other_apps') . "</div>');
-            for (index = 0 ; index < other_apps.length; index++) {
-                $('#app_other_by_devel').append(
-                    '<div style=\'padding-bottom: 60px;\'><div style=\'position: '
-                    + 'relative; width: 60px; float: left;\'><a href=\'' + other_apps[index].basename + '\'>'
-                    + '<img align=\'left\' id=\'app-logo-' + other_apps[index].basename
-                    + '\' src=\'" . clearos_app_htdocs('marketplace') . "/market_default.png\' '
-                    + 'style=\'padding-bottom: 10px;\' alt=\'' + other_apps[index].name
-                    + '\'></a></div><div style=\'position: relative; width: 400px; float: left;\'>'
-                    + '<a href=\'' + other_apps[index].basename + '\' style=\'font-weight: bold;\'>'
-                    + other_apps[index].name + '</a>&#160;&#160;' + get_rating(other_apps[index].rating, -1, true, false)
-                    + '<p>' + other_apps[index].description.replace(/\\n/g, '</p><p>')
-                    + '</p></div></div><br clear=\'all\'>'
-                );
-                get_image('app-logo', other_apps[index].basename, 'app-logo-' + other_apps[index].basename);
-            }
+            for (index = 0 ; index < data.other_by_devel.length; index++)
+                $('#app_other_by_devel').append(clearos_related_apps('other_by_devel', data.other_by_devel));
 
             // Ratings
             var ratings = data.ratings;
@@ -874,83 +847,15 @@ function get_app_details(basename) {
             var contributors = data.locales_contributors;
             var contributor_list = '';
             for (index = 0 ; index < contributors.length; index++) {
-                contributor_list += '<li style=\'margin-left: 0;\'>' + contributors[index].contact +
-                    '  (<a href=\'mailto:' + contributors[index].email + '\'>' + contributors[index].email + '</a>)</li>';
+                $('#app_localization_contributor').append(
+                    '<li style=\'margin-left: 0;\'>' + contributors[index].contact +
+                    '  (<a href=\'mailto:' + contributors[index].email + '\'>' + contributors[index].email + '</a>)</li>'
+                );
             }
             $('#app_locale').append('<table id=\'locale_table\' border=\'0\' width=\'100%\'></table>');
             for (index = 0 ; index < locales.length; index++) {
-                $('#locale_table').append(
-                '<tr>' +
-                '<td width=\'5%\'>' + locales[index].locale + '</td>' +
-                '<td width=\'35%\'><div id=\'lang-' + locales[index].locale + '\' style=\'width:80%; height: 10px;\'></div></td>' +
-                (index == 0 ? '<td width=\'60%\' rowspan=\'5\' valign=\'top\'>' +
-                '<p style=\'font-weight: bold; text-decoration: underline;\'>" .
-                lang('marketplace_translation_acknowledgements') . "' +
-                '</p><ol style=\'list-style-position: inside; margin: 0px 0px 0px 0px;' +
-                ' padding-left: 0px;\'>' + contributor_list + '</ol></td>' : '') +
-                '</tr>'
-                );
-                $('#lang-' + locales[index].locale).progressbar({
-                  value: locales[index].completion
-                });
-                // Fix brain damage from progress bar within tab
-                $('#lang-' + locales[index].locale + ' div').removeClass('ui-widget-header');
-            }
-            var versions = data.versions;
-            for (index = 0 ; index < versions.length; index++) {
-                var logs = '';
-                versions[index].change_log.forEach(function(item) {
-                    logs += '<li style=\'margin-left: 0;\'>' + item + '</li>';
-                });
-                $('#app_versions').append(
-                    '<table width=\'100%\' border=\'0\'>' +
-                    '  <tr>' +
-                    '    <td width=\'30%\'>" . lang('marketplace_version') . "</td>' +
-                    '    <td width=\'70%\'>' + versions[index].version + '-' + versions[index].release + '</td>' +
-                    '  </tr>' +
-                    '  <tr>' +
-                    '    <td>" . lang('marketplace_released') . "</td>' +
-                    '    <td>' + $.datepicker.formatDate('MM d, yy', new Date(versions[index].released)) + '</td>' +
-                    '  </tr>' +
-                    (versions[index].repo_name != undefined && versions[index].repo_name != '' ?
-                    '  <tr>' +
-                    '    <td>" . lang('marketplace_software_repo') . "</td>' +
-                    '    <td>' + versions[index].repo_name + '</td>' +
-                    '  </tr>'
-                    : '') +
-                    (versions[index].hash != undefined && versions[index].hash != '' ?
-                    '  <tr>' +
-                    '    <td>" . lang('marketplace_sha256') . "</td>' +
-                    '    <td>' + versions[index].hash + '</td>' +
-                    '  </tr>'
-                    : '') +
-                    '  <tr>' +
-                    '    <td>" . lang('marketplace_copyright') . "</td>' +
-                    '    <td>' + versions[index].copyright + '</td>' +
-                    '  </tr>' +
-                    '  <tr>' +
-                    '    <td>" . lang('marketplace_packager') . "</td>' +
-                    '    <td>' + versions[index].packager + '</td>' +
-                    '  </tr>' +
-                    '  <tr>' +
-                    '    <td>" . lang('marketplace_license') . "</td>' +
-                    '    <td>' + versions[index].license + '</td>' +
-                    '  </tr>' +
-                    '  <tr>' +
-                    '    <td>" . lang('marketplace_license_library') . "</td>' +
-                    '    <td>' + versions[index].license_library + '</td>' +
-                    '  </tr>' +
-                    '  <tr>' +
-                    '    <td valign=\'top\'>" . lang('marketplace_change_log') . "</td>' +
-                    '    <td><ol style=\'list-style-position: inside; margin: 0px 0px 0px 0px;' +
-                    ' padding-left: 0px;\'>' + logs + '</ol></td>' +
-                    '  </tr>' +
-                    '  <tr>' +
-                    '    <td>" . lang('marketplace_notes') . "</td>' +
-                    '    <td>' + versions[index].notes + '</td>' +
-                    '  </tr>' +
-                    '</table>' +
-                    (index < versions.length - 1 ? '<hr>' : '')
+                $('#app_localization').append(
+                    '<div>' + locales[index].locale + '</div>' + clearos_progress_bar(locales[index].completion, null)
                 );
             }
         },

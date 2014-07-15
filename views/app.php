@@ -19,6 +19,7 @@
 $this->lang->load('base');
 $this->lang->load('marketplace');
 
+
 //echo "<div class='ui-widget marketplace-footer'></div>";
 //echo "<div id='app_overview' style='text-align: center; padding: 60px 10px 30px 10px;'>";
 //echo lang('marketplace_loading');
@@ -90,6 +91,11 @@ echo column_close();
 echo row_close();
 echo box_close();
 
+echo "<div id='availability_warning_box' style='display: none'>" .
+        infobox_warning(lang('marketplace_not_available'), "<div id='availability_warning'></div>") .
+     "</div>"
+;
+
 /* Overview */
 echo row_open(array('id' => 'marketplace-overview'));
 echo "<h3>" . lang('marketplace_overview') . "</h3>";
@@ -111,6 +117,19 @@ echo "<h3>" . lang('marketplace_screenshots') . "</h3>";
 echo screenshot_set('app_screenshots');
 echo row_close();
 
+/* Localization */
+echo row_open(array('id' => 'marketplace-localization'));
+echo "<h3>" . lang('marketplace_localization') . "</h3>";
+echo column_open(5);
+echo "<div id='app_localization'></div>";
+echo column_close();
+echo column_open(7);
+echo "<h4>" . lang('marketplace_translation_acknowledgements') . "</h4>";
+echo "<ol id='app_localization_contributor'>";
+echo "</ol>";
+echo column_close();
+echo row_close();
+
 /* Reviews */
 echo row_open(array('id' => 'marketplace-review'));
 echo "<h3>" . lang('marketplace_reviews') . "</h3>";
@@ -119,30 +138,20 @@ echo marketplace_review($basename, $pseudonym);
 echo "<div id='app_ratings'></div>";
 echo row_close();
 
+/* Complimentary */
+echo row_open(array('id' => 'marketplace-complementary'));
+echo "<h3>" . lang('marketplace_complementary_apps') . "</h3>";
+echo "  <p class='complementary'>" . lang('marketplace_complementary_apps_info') . "</p>";
+echo "<div id='app_complementary'></div>";
+echo row_close();
 
-// TODO
-//    "<div id='availability_warning_box' style='width: 95%; display: none'>" .
-//    infobox_warning(lang('marketplace_not_available'), "<div id='availability_warning'></div>") .
-//    "</div>" .
+/* Other Apps */
+echo row_open(array('id' => 'marketplace-other'));
+echo "<h3>" . lang('marketplace_other_apps_by_devel') . "</h3>";
+echo "<div id='app_other_by_devel'></div>";
+echo row_close();
 
-
-$DELETEME = 
-    "<table width='100%' style='margin-top: 10px;' border='0'>" .
-    "  <tr>" .
-//    "    <td valign='top' width='70%'><h2 class='app-name'></h2>" .
-    "      <div id='app_description'></div>" .
-    "<div id='availability_warning_box' style='width: 95%; display: none'>" .
-    infobox_warning(lang('marketplace_not_available'), "<div id='availability_warning'></div>") .
-    "</div>" .
-    "      <div>" .
-    "      <span style='margin-right: 5px;'>" .
-    anchor_custom('/app/software_repository/index/detailed', lang('marketplace_documentation'), 'high', array('id' => 'documentation', 'target' => '_blank')) .
-    "      </span>" .
-    "      <span>" .
-    anchor_custom('/app/software_repository/index/detailed', lang('marketplace_learn_more'), 'high', array('id' => 'learn_more', 'target' => '_blank')) .
-    "      </span>" .
-    "      </div>" .
-    "      <h2 class='complementary'>" . lang('marketplace_complementary_apps') . "</h2>" .
+/*
     "      <p class='complementary'>" . lang('marketplace_complementary_apps_info') . "</p>" .
     "      <div style='position: relative; width: 100%; clear: both;' id='app_complementary' class='complementary'></div>" .
     "      <h2>" . lang('marketplace_other_apps_by_devel') . "</h2>" .
@@ -179,31 +188,7 @@ $DELETEME =
     "  </tr>" . 
     "</table>"
 ;
-$tabinfo['reviews']['content'] = "<h2 style='position: relative; float: left'>" . lang('marketplace_user_reviews') . "</h2>" .
-    "<div id='review_form' style='display: none;'>" .
-    "  <h2>" . lang('marketplace_write_a_review') . "</h2>" .
-    "  <div>" .
-    "    <table width='100%' border='0'>" .
-    "      <tr class='rating'><td onclick='update_rating(0)'>" . lang('marketplace_rating') . "</td>" .
-    "        <td>" .
-    "          <img src='" . clearos_app_htdocs('marketplace') . "/star_off.png' alt='-' id='star1' onclick='update_rating(1)' />" .
-    "          <img src='" . clearos_app_htdocs('marketplace') . "/star_off.png' alt='-' id='star2' onclick='update_rating(2)' />" .
-    "          <img src='" . clearos_app_htdocs('marketplace') . "/star_off.png' alt='-' id='star3' onclick='update_rating(3)' />" .
-    "          <img src='" . clearos_app_htdocs('marketplace') . "/star_off.png' alt='-' id='star4' onclick='update_rating(4)' />" .
-    "          <img src='" . clearos_app_htdocs('marketplace') . "/star_off.png' alt='-' id='star5' onclick='update_rating(5)' />" .
-    "          <input type='hidden' name='rating' id='rating' value='0' />" .
-    "        </td>" .
-    "      </tr>" .
-    "      <tr class='rating'><td valign='top'>" . lang('marketplace_comment') . "</td><td><textarea id='comment' style='font-size: 9pt; width: 400px; height: 80px;'></textarea><div id='char-remaining'>1000 " . lang('marketplace_remaining') . "</div></td></tr>" .
-    "      <tr class='rating'><td>" . lang('marketplace_submitted_by') . "</td>" .
-    "        <td><input type='text' id='pseudonym' name='pseudonym' value='$pseudonym' /></td>" .
-    "      </tr>" .
-    "    </table>" .
-    "    <div class='rating'><td>&#160;</td><td>" . field_button_set(array(form_submit_custom('submit_review', lang('marketplace_submit_review'), 'high', array ('id' => 'submit_review')), form_submit_custom('cancel_review', lang('base_cancel'), 'high', array ('id' => 'cancel_review')))) . "</div>" .
-    "  </div>" .
-    "</div>" .
-    "<div id='app_ratings'></div>"
-;
+*/
 echo "<script type='text/javascript'>";
 echo "$(document).ready(function() {";
 echo "    get_app_details('" . $basename . "');";
