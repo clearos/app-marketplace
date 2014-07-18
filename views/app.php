@@ -19,13 +19,9 @@
 $this->lang->load('base');
 $this->lang->load('marketplace');
 
+echo loading('2em', lang('marketplace_loading'), array('icon-below' => TRUE, 'center' => TRUE, 'id' => 'app-loading', 'class' => 'marketplace-app-loading'));
 
-//echo "<div class='ui-widget marketplace-footer'></div>";
-//echo "<div id='app_overview' style='text-align: center; padding: 60px 10px 30px 10px;'>";
-//echo lang('marketplace_loading');
-//echo "<div style='padding: 10px 0px 10px 0px;'>" . loading() . "</div>";
-//echo "</div>";
-
+echo "<div id='app-details-container' class='theme-hidden'>";
 echo box_open($basename, array('id' => 'app_name', 'class' => 'marketplace-app-info-container'));
 echo row_open();
 echo column_open(2);
@@ -150,6 +146,8 @@ echo row_open(array('id' => 'marketplace-other'));
 echo "<h3>" . lang('marketplace_other_apps_by_devel') . "</h3>";
 echo "<div id='app_other_by_devel'></div>";
 echo row_close();
+
+echo "</div>";
 
 /*
     "      <p class='complementary'>" . lang('marketplace_complementary_apps_info') . "</p>" .

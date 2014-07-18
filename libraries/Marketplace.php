@@ -48,8 +48,9 @@ use \clearos\apps\mode\Mode_Engine as Mode_Engine;
 use \clearos\apps\mode\Mode_Factory as Mode_Factory;
 use \clearos\apps\clearcenter\Rest as Rest;
 use \clearos\apps\clearcenter\Subscription_Engine as Subscription_Engine;
-use \clearos\apps\Marketplace\Cart as Cart;
-use \clearos\apps\Marketplace\Cart_Item as Cart_Item;
+use \clearos\apps\marketplace\Cart as Cart;
+use \clearos\apps\marketplace\Cart_Item as Cart_Item;
+use \clearos\apps\tasks\Cron as Cron;
 
 clearos_load_library('base/Configuration_File');
 clearos_load_library('base/File');
@@ -63,6 +64,7 @@ clearos_load_library('clearcenter/Rest');
 clearos_load_library('clearcenter/Subscription_Engine');
 clearos_load_library('marketplace/Cart');
 clearos_load_library('marketplace/Cart_Item');
+clearos_load_library('tasks/Cron');
 
 // Exceptions
 //-----------
@@ -73,6 +75,7 @@ use \clearos\apps\base\Yum_Busy_Exception as Yum_Busy_Exception;
 
 clearos_load_library('base/Engine_Exception');
 clearos_load_library('base/Validation_Exception');
+clearos_load_library('base/Yum_Busy_Exception');
 
 ///////////////////////////////////////////////////////////////////////////////
 // C L A S S
@@ -1030,6 +1033,17 @@ class Marketplace extends Rest
 
         try {
             $dependencies = $this->get_app_deletion_dependancies($basename);
+
+            // Delete any cron configlets
+            try {
+                $cron = new Cron();
+                foreach ($dependencies as $pkg)
+                    $cron->delete_configlet($pkg); 
+            } catch (\Exception $e) {
+                // Ignore
+            } 
+            // Stop any services
+
             $apps = implode(' ', array_keys($dependencies));
             $options = array('validate_exit_code' => FALSE);
             $shell = new Shell();

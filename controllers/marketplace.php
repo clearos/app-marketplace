@@ -90,10 +90,15 @@ class Marketplace extends ClearOS_Controller
         $data['search'] = $first['active'];
         //$data['search'] = lang('marketplace_search');
 
-        if ($data['display_format'] == 'table')
-            $this->page->view_form('table_list', $data, lang('marketplace_marketplace'), array('type' => MY_Page::TYPE_SPOTLIGHT));
-        else
-            $this->page->view_form('marketplace', $data, lang('marketplace_marketplace'), array('type' => MY_Page::TYPE_SPOTLIGHT));
+        // Add setting link to breadcrumb trail
+        $breadcrumb_links = array(
+            'settings' => array('url' => '/app/marketplace/settings', 'tag' => lang('base_settings')),
+        );
+
+        $this->page->view_form(
+            'marketplace', $data, lang('marketplace_marketplace'),
+            array('type' => MY_Page::TYPE_SPOTLIGHT, 'breadcrumb_links' => $breadcrumb_links)
+        );
     }
 
     /**

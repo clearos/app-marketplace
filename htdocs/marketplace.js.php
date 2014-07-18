@@ -365,36 +365,14 @@ function get_apps(realtime, offset) {
                     clearos_dialog_box('error', '" . lang('base_warning') . "', data.errmsg, options);
                     return;
                 } else {
-                    $('#marketplace-loading').hide();
-                    $('#app_list_overview').html(data.errmsg);
+                    $('#app-search-load').hide();
+                    clearos_dialog_box('error', '" . lang('base_warning') . "', data.errmsg, options);
                     return;
                 }
             }
             // Hide whirly
-            $('#app_list_overview').remove();
-            $('#marketplace-loading').hide();
-            $('#search_and_install').show();
-            $('#filter').show();
-            display_apps(data);
-
-            var previous = offset - 1;
-            if (previous < 0)
-                previous = 0;
-            var next = offset + 1;
-            if (data.total / apps_to_display_per_page < next)
-                next = Math.round(data.total / apps_to_display_per_page + .49999) - 1;
-            var paginate = '<a style=\'margin-right: 2px; display: inline;\' class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/0\'><i class=\'fa fa-fast-backward\'></i></a>';
-            paginate += '<a style=\'margin-right: 2px; display: inline;\' class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + previous + '\'><i class=\'fa fa-backward\'></i></a>';
-            var pages = 0;
-            if (apps_to_display_per_page > 0)
-                pages = Math.round(data.total / apps_to_display_per_page + .49999) - 1;
-            paginate += '<a style=\'margin-right: 2px; display: inline;\' class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + next + '\'><i class=\'fa fa-forward\'></i></a>';
-            paginate += '<a style=\'display: inline;\' class=\'theme-anchor theme-anchor-add theme-anchor-important\' href=\'/app/marketplace/search/index/' + pages + '\'><i class=\'fa fa-fast-forward\'></i></a>';
-            if (pages > 0) {
-                $('#pagination-top').html(paginate + '<div style=\'padding: 5px 0px 0px 0px; font-size: 7pt;\'>" . lang('marketplace_displaying') . " ' + (apps_to_display_per_page * offset + 1) + ' - ' + (apps_to_display_per_page * offset + data.list.length) + ' " . lang('base_of') . " ' + data.total + '</div>');
-                $('#pagination-bottom').html(paginate);
-            }
-            
+            $('#app-search-load').hide();
+            clearos_marketplace_app_list($('#display_format').val(), data.list);
         },
         error: function(xhr, text, err) {
             // Don't display any errors if ajax request was aborted due to page redirect/reload
@@ -700,8 +678,8 @@ function get_app_details(basename) {
             }
 
             // Hide the loading page
-            $('#app_overview').remove();
-            $('#tabs').show();
+            $('#app-loading').remove();
+            $('#app-details-container').show(600);
             $('#app_name_title').html(data.name);
             $('#app_description').html('<p>' + data.description.replace(/\\n/g, '</p><p>') + '</p>');
             if (data.installed_version == '')
@@ -822,23 +800,20 @@ function get_app_details(basename) {
             }
 
             // Complementary apps
-            var complementary_apps = data.complementary_apps;
-            if (complementary_apps.length == 0)
+            if (data.complementary_apps.length == 0)
                 $('#app_complementary').remove();
 
-            for (index = 0 ; index < complementary_apps.length; index++)
-                $('#app_complementary').append(clearos_related_apps('complementary', complementary_apps));
+            clearos_related_apps('complementary', data.complementary_apps);
 
             // Other apps by developer
             if (data.other_by_devel.length == 0)
                 $('#app_other_by_devel').append('<div>" . lang('marketplace_no_other_apps') . "</div>');
-            for (index = 0 ; index < data.other_by_devel.length; index++)
-                $('#app_other_by_devel').append(clearos_related_apps('other_by_devel', data.other_by_devel));
+            clearos_related_apps('other_by_devel', data.other_by_devel);
 
             // Ratings
             var ratings = data.ratings;
             if (ratings.length == 0) {
-                $('#app_ratings').append('<p>" . lang('marketplace_no_reviews') . "</p>');
+                $('#app_ratings').append('<div style=\'margin-top: 10px;\'>" . lang('marketplace_no_reviews') . "</div>');
             }
 
             $('#app_ratings').append(clearos_app_rating(basename, ratings));
@@ -852,7 +827,6 @@ function get_app_details(basename) {
                     '  (<a href=\'mailto:' + contributors[index].email + '\'>' + contributors[index].email + '</a>)</li>'
                 );
             }
-            $('#app_locale').append('<table id=\'locale_table\' border=\'0\' width=\'100%\'></table>');
             for (index = 0 ; index < locales.length; index++) {
                 $('#app_localization').append(
                     '<div>' + locales[index].locale + '</div>' + clearos_progress_bar(locales[index].completion, null)
@@ -958,6 +932,7 @@ $(document).ready(function() {
     if ($(location).attr('href').match('.*marketplace\/wizard\/selection\/.*$') != null)
         window.location = '/app/marketplace/wizard';
 
+    
     $('#theme-left-menu a').css('min-width', '105px');
     $('#display_options a').css('min-width', '');
     $('#tabs-overview a').css('min-width', '85px');

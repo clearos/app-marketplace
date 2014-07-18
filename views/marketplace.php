@@ -33,17 +33,14 @@ echo marketplace_search($search);
 echo column_close();
 echo row_close();
 echo box_close();
-echo "<div id='app_list_overview' style='text-align: center; padding: 60px 10px 30px 10px;'>";
 if ($search)
-    echo "<div style='padding: 10px 0px 0px 0px;'>" . loading('normal', lang('marketplace_searching_marketplace'), array('icon-below' => TRUE)) . "</div>";
+    echo loading('2em', lang('marketplace_searching'), array('icon-below' => TRUE, 'center' => TRUE, 'id' => 'app-search-load', 'class' => 'marketplace-app-loading'));
 else
-    echo "<div style='padding: 10px 0px 0px 0px;'>" . loading('normal', lang('marketplace_loading')) . "</div>";
-echo "</div>";
+    echo loading('2em', lang('marketplace_loading'), array('icon-below' => TRUE, 'center' => TRUE, 'id' => 'app-search-load', 'class' => 'marketplace-app-loading'));
 
-echo form_open('marketplace/settings', array('method' => 'GET', 'name' => 'form_app_list', 'id' => 'form_app_list'));
-echo "<div id='marketplace-app-container'></div>";
+echo form_open('marketplace', array('method' => 'GET', 'name' => 'form_app_list', 'id' => 'form_app_list'));
+echo marketplace_layout();
 echo form_close();
-echo "<div id='pagination-bottom' style='font-size: .7em; padding: 0px 10px 30px 0px;'></div>";
 echo "<script type='text/javascript'>\n";
 echo "  $(document).ready(function() {\n";
 echo "    get_apps(\n";
