@@ -141,7 +141,7 @@ function update_install_form(data) {
             if (data.preauth) {
                 $('#option_preauth').show();
                 $('#card_number').html(data.preauth_card);
-                $('#preauth').attr('checked', true);
+                $('#preauth').prop('checked', true);
                 has_valid_payment_method = true;
             } else {
                 $('#option_preauth').hide();
@@ -153,7 +153,7 @@ function update_install_form(data) {
                 } else {
                     has_valid_payment_method = true;
                     if (!data.preauth)
-                        $('#po').attr('checked', true);
+                        $('#po').prop('checked', true);
                 }
                 // TODO Should use Jquery number formatter plugin
                 $('#po_available').html(data.po_currency + ' ' + data.po_available.toFixed(2)
@@ -169,7 +169,7 @@ function update_install_form(data) {
                 } else {
                     has_valid_payment_method = true;
                     if (!data.preauth && !data.po)
-                        $('#debit').attr('checked', true);
+                        $('#debit').prop('checked', true);
                 }
                 // TODO Should use Jquery number formatter plugin
                 $('#debit_available').html(data.debit_currency + ' ' + data.debit_available.toFixed(2).toLocaleString()
@@ -274,10 +274,10 @@ function bulk_cart_update(apps, toggle) {
                 $.each(data.apps, function (id, app) {
                     $('#' + app.id).removeClass('marketplace-selected');
 					if (app.state == 1) {
-                        $('#' + app.id).attr('checked', false);
+                        $('#' + app.id).prop('checked', false);
                         $('#' + app.id).removeClass('marketplace-hover');
                     } else {
-                        $('#' + app.id).attr('checked', true);
+                        $('#' + app.id).prop('checked', true);
                         $('#' + app.id).addClass('marketplace-selected');
                     }
                 });
@@ -300,10 +300,10 @@ function bulk_cart_update(apps, toggle) {
                         $('#' + id).removeClass('marketplace-selected');
                     });
                 } else {
-                    if ($('#select-' + this.id).is(':checked')) {
+                    if ($('#select-' + this.id).prop('checked')) {
                         category_class = '';
                     } else {
-                        $('#select-' + this.id).attr('checked', true);
+                        $('#select-' + this.id).prop('checked', true);
                         $(this).removeClass('marketplace-hover');
                         $(this).addClass('marketplace-selected');
                         category_class = 'marketplace-selected';
@@ -323,18 +323,18 @@ function update_cart(id, individual, redirect) {
         type: 'POST',
         dataType: 'json',
         url: '/app/marketplace/ajax/update_cart',
-        data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&id=' + id + '&add=' + (individual || $('#select-' + id + ':checked').val() !== undefined ? '1' : '0'),
+        data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&id=' + id + '&add=' + (individual || $('#select-' + id).prop('checked') ? '1' : '0'),
         success: function(data) {
             if (data.code == 0 && redirect)
                 window.location = '/app/marketplace/install';
             if (data.code != 0) {
-                $('#' + id).removeClass('marketplace-selected');
-                if ($('#select-' + id).is(':checked')) {
-                    $('#' + id).attr('checked', false);
-                    $('#' + id).removeClass('marketplace-hover');
+                $('#active-select-' + id).addClass('theme-hidden');
+                if ($('#select-' + id).prop('checked')) {
+                    $('#select-' + id).prop('checked', false);
+                    marketplace_select_app(id);
                 } else {
-                    $('#' + id).attr('checked', true);
-                    $('#' + id).addClass('marketplace-selected');
+                    $('#select-' + id).prop('checked', true);
+                    marketplace_unselect_app(id);
                 }
                 clearos_dialog_box('invalid_cart', '" . lang('base_warning') . "', data.errmsg);
             }
@@ -382,16 +382,8 @@ function get_apps(realtime, offset) {
     });
 }
 
-$(document).on('mouseover', '.marketplace-app-event', function(event) {
-    if (!$(this).hasClass('marketplace-selected') && $('#select-' + this.id).val() != undefined) {
-        $('.marketplace-app-event').css('cursor', 'pointer');
-        $(this).addClass('marketplace-hover');
-    } else {
-        $('.marketplace-app-event').css('cursor', 'default');
-    }
-}).on('mouseout', '.marketplace-app-event', function(event) {
-    $(this).removeClass('marketplace-hover');
-}).on('click', '.marketplace-app-event', function(event) {
+$(document).on('click', '.marketplace-app-event', function(e) {
+    e.preventDefault();
     if ($('#select-' + this.id).val() == undefined) {
         var id = this.id + '-na';
         var original = $('#' + this.id + '-na').css('color');
@@ -401,30 +393,28 @@ $(document).on('mouseover', '.marketplace-app-event', function(event) {
             $('#' + id).css('color', original);
         });
         return;
-    } else if ($('#select-' + this.id).is(':checked')) {
-        $('#select-' + this.id).removeAttr('checked');
-        $(this).removeClass('marketplace-selected');
-        $(this).addClass('marketplace-hover');
+    } else if ($('#select-' + this.id).prop('checked')) {
+        $('#select-' + this.id).prop('checked', false);
+        marketplace_unselect_app(this.id);
     } else {
-        $('#select-' + this.id).attr('checked', true);
-        $(this).removeClass('marketplace-hover');
-        $(this).addClass('marketplace-selected');
+        $('#select-' + this.id).prop('checked', true);
+        marketplace_select_app(this.id);
     }
     clicked_app = this.id
     if ($('#wizard_marketplace_mode').val() == 'mode1' && novice_set[novice_index].exclusive && $('#' + this.id,'#optional-apps').length != 1) {
         // Need to unset all other apps before selecting this one
         var apps = Array();
         $.each($('#form_app_list input[type=\'checkbox\']'), function (index, value) {
-            if (clicked_app == value.id.replace('select-', '') && $('#' + value.id).is(':checked')) {
+            if (clicked_app == value.id.replace('select-', '') && $('#' + value.id).prop('checked')) {
                 apps[index] = {state: '1', id: this.id.replace('select-', '')};
             } else {
-                $('#' + value.id).removeAttr('checked');
+                $('#' + value.id).prop('checked', false);
                 $('#' + value.id.replace('select-', '')).removeClass('marketplace-selected');
                 apps[index] = {state: '0', id: this.id.replace('select-', '')};
             }
         });
         bulk_cart_update(JSON.stringify(apps), 'exclusive');
-        if ($('#select-' + this.id).is(':checked'))
+        if ($('#select-' + this.id).prop('checked'))
             add_optional_apps(clicked_app);
         else
             $('#optional-apps').remove();
@@ -841,10 +831,10 @@ function get_app_details(basename) {
 
 function checkout(type) {
     $('#free_checkout').hide();
-    if ($('#po:checked').val() !== undefined && $('#po_number').val() == '') {
+    if ($('#po').prop('checked') && $('#po_number').val() == '') {
         clearos_dialog_box('invalid_po_err', '" . lang('base_warning') . "', '" . lang('marketplace_invalid_po') . "');
         return;
-    } else if (type == 'paid' && $('input[name=payment_method]:checked').val() == undefined) {
+    } else if (type == 'paid' && !$('input[name=payment_method]').prop('checked')) {
         clearos_dialog_box('invalid_method_err', '" . lang('base_warning') . "', '" . lang('marketplace_select_payment_method') . "');
         return;
     } else {
@@ -856,11 +846,11 @@ function checkout(type) {
         if (type == 'free' || type == 'eval') {
             whirlyText += '...';
         } else {
-            if ($('#preauth:checked').val() !== undefined)
+            if ($('#preauth').prop('checked'))
                 whirlyText += ' " . strtolower(lang('marketplace_credit_card')) . "...';
-            if ($('#po:checked').val() !== undefined)
+            if ($('#po').prop('checked'))
                 whirlyText += ' " . strtolower(lang('marketplace_purchase_order')) . "...';
-            else if ($('#debit:checked').val() !== undefined)
+            else if ($('#debit').prop('checked'))
                 whirlyText += ' " . strtolower(lang('marketplace_debit')) . "...';
         }
         processingText += '<div style=\\'width:100%; text-align: center;\\'><div class=\\'theme-loading-normal\\' style=\\'margin: 0 auto;\\'>' + whirlyText + '</div></div>';
@@ -874,7 +864,7 @@ function checkout(type) {
         type: 'POST',
         dataType: 'json',
         url: '/app/marketplace/ajax/checkout',
-        data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&payment=' + $('input[name=payment_method]:checked').val() + '&po=' + $('#po_number').val(),
+        data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&payment=' + $('input[name=payment_method]').prop('checked') + '&po=' + $('#po_number').val(),
         success: function(data) {
             if (data.code != 0) {
                 $('#processing_info').dialog('close');
@@ -895,7 +885,7 @@ function checkout(type) {
 }
 
 function toggle_payment_display() {
-    if ($('#po:checked').val() !== undefined)
+    if ($('#po').prop('checked'))
         $('#po_number').show();
     else
         $('#po_number').hide();
@@ -1019,12 +1009,12 @@ $(document).ready(function() {
             click: function() {
                 $('.marketplace-category').removeClass('marketplace-category-selected');
                 $('.marketplace-category').removeClass('marketplace-hover');
-                if ($('#select-' + this.id).is(':checked')) {
-                    $('#select-' + this.id).removeAttr('checked');
+                if ($('#select-' + this.id).prop('checked')) {
+                    $('#select-' + this.id).prop('checked', false);
                     $(this).removeClass('marketplace-category-selected');
                     category_class = '';
                 } else {
-                    $('#select-' + this.id).attr('checked', true);
+                    $('#select-' + this.id).prop('checked', true);
                     $(this).removeClass('marketplace-hover');
                     $(this).addClass('marketplace-category-selected');
                     category_class = 'marketplace-category-selected';

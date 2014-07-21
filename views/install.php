@@ -190,18 +190,18 @@ foreach ($items as $item) {
 if (count($rows) === 0) {
     if ($this->session->userdata('wizard'))
         $anchors = array(
-            anchor_custom('/app/marketplace/install/delete/all', lang('marketplace_delete_all')),
-            anchor_custom('/app/marketplace/wizard/stop', lang('marketplace_install_apps_later'))
+            anchor_custom('/app/marketplace/wizard/stop', lang('marketplace_install_apps_later')),
+            anchor_custom('/app/marketplace/install/delete/all', lang('marketplace_delete_all'), 'low')
         );
     else
         $anchors = array(
-            anchor_custom('/app/marketplace/install/delete/all', lang('marketplace_delete_all')),
-            form_submit_custom('free_checkout', lang('marketplace_download_and_install'), 'high', array('id' => 'free_checkout'))
+            form_submit_custom('free_checkout', lang('marketplace_download_and_install'), 'high', array('id' => 'free_checkout')),
+            anchor_custom('/app/marketplace/install/delete/all', lang('marketplace_delete_all'), 'low')
         );
 } else if ($total == 0) {
     $anchors = array(
-        anchor_custom('/app/marketplace/install/delete/all', lang('marketplace_delete_all')),
-        form_submit_custom('free_checkout', lang('marketplace_download_and_install'), 'high', array('id' => 'free_checkout'))
+        form_submit_custom('free_checkout', lang('marketplace_download_and_install'), 'high', array('id' => 'free_checkout')),
+        anchor_custom('/app/marketplace/install/delete/all', lang('marketplace_delete_all'), 'low')
     );
 } else {
     $anchors = array(anchor_custom('/app/marketplace/install/delete/all', lang('marketplace_delete_all')));

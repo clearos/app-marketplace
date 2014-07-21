@@ -92,6 +92,7 @@ class Marketplace extends ClearOS_Controller
 
         // Add setting link to breadcrumb trail
         $breadcrumb_links = array(
+            'checkout' => array('url' => '/app/marketplace/install', 'tag' => lang('marketplace_install')),
             'settings' => array('url' => '/app/marketplace/settings', 'tag' => lang('base_settings')),
         );
 
@@ -170,9 +171,15 @@ class Marketplace extends ClearOS_Controller
         // Search and filter history
         $data['filter'] = $this->marketplace->get_search_history();
 
+        // Add return to MarketplaceP breadcrumb trail
+        $breadcrumb_links = array(
+            'marketplace' => array('url' => '/app/marketplace', 'tag' => lang('marketplace_marketplace'))
+        );
         // Get items in cart
         $data['items'] = $this->cart->get_items();
-        $this->page->view_form('marketplace/install', $data, lang('marketplace_install'), array('type' => MY_Page::TYPE_SPOTLIGHT));
+        $this->page->view_form('marketplace/install', $data, lang('marketplace_install'),
+            array('type' => MY_Page::TYPE_SPOTLIGHT, 'breadcrumb_links' => $breadcrumb_links)
+        );
     }
 
     /**
