@@ -87,8 +87,11 @@ class Marketplace extends ClearOS_Controller
             'intro' => 'all',
             'status' => 'all' 
         );
-        $data['search'] = $first['active'];
-        //$data['search'] = lang('marketplace_search');
+
+        if ($first['active'] && $first['search'])
+            $data['search'] = $first['search'];
+        else
+            $data['search'] = NULL;
 
         // Add setting link to breadcrumb trail
         $breadcrumb_links = array(

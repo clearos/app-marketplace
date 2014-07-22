@@ -923,7 +923,6 @@ $(document).ready(function() {
     if ($(location).attr('href').match('.*marketplace\/wizard\/selection\/.*$') != null)
         window.location = '/app/marketplace/wizard';
 
-    
     $('#theme-left-menu a').css('min-width', '105px');
     $('#display_options a').css('min-width', '');
     $('#tabs-overview a').css('min-width', '85px');
@@ -1060,7 +1059,8 @@ $(document).ready(function() {
         $('#theme_wizard_nav_next').hide();
     } else if ($(location).attr('href').match('.*marketplace\/install') != null && $('#num_of_apps').val() == 0) {
         $('#free_checkout').hide();
-        table_install_apps.fnClearTable();
+        var t = get_table_install_apps();
+        t.fnClearTable();
     }
 
     if ($(location).attr('href').match('.*marketplace\/progress') != null) {

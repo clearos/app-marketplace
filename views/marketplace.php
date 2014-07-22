@@ -19,23 +19,22 @@
 
 $this->lang->load('base');
 $this->lang->load('marketplace');
-//$this->load->view('marketplace/banner');
 
+echo form_open('marketplace/search');
 echo box_open();
 echo row_open();
 echo column_open(8, NULL, NULL, array('id' => 'marketplace_filter_container'));
-echo form_open('marketplace/search');
 foreach ($filters as $name => $options)
     echo marketplace_filter($name, $options, $selected[$name]);
-echo form_close();
 echo column_close();
 echo column_open(4, NULL, NULL, array('id' => 'marketplace_filter_container', 'class' => 'search-form'));
 echo marketplace_search($search);
 echo column_close();
 echo row_close();
 echo box_close();
+echo form_close();
 if ($search)
-    echo loading('2em', lang('marketplace_searching'), array('icon-below' => TRUE, 'center' => TRUE, 'id' => 'app-search-load', 'class' => 'marketplace-app-loading'));
+    echo loading('2em', lang('marketplace_searching_marketplace'), array('icon-below' => TRUE, 'center' => TRUE, 'id' => 'app-search-load', 'class' => 'marketplace-app-loading'));
 else
     echo loading('2em', lang('marketplace_loading'), array('icon-below' => TRUE, 'center' => TRUE, 'id' => 'app-search-load', 'class' => 'marketplace-app-loading'));
 

@@ -119,7 +119,7 @@ $rows = array(
 foreach ($items as $item) {
     $detail_buttons = button_set(
         array(
-            anchor_delete('/app/marketplace/install/delete/' . $item->get_id())
+            anchor_delete('/app/marketplace/install/delete/' . $item->get_id(), 'high')
         )
     );
 

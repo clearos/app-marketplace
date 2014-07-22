@@ -96,11 +96,22 @@ class Search extends ClearOS_Controller
             'intro' => $this->input->post('filter_intro'),
             'status' => $this->input->post('filter_status')
         );
+        if ($this->input->post('search'))
+            $data['search'] = $this->input->post('search');
+        else
+            $data['search'] = NULL;
         $data['display_format'] = $this->marketplace->get_display_format();
         $data['page'] = (int)$page;
         $data['number_of_apps_to_display'] = $this->marketplace->get_number_of_apps_to_display();
 
-        $this->page->view_form('marketplace', $data, lang('marketplace_marketplace'), array('type' => MY_Page::TYPE_SPOTLIGHT));
+        // Add setting link to breadcrumb trail
+        $breadcrumb_links = array(
+            'checkout' => array('url' => '/app/marketplace/install', 'tag' => lang('marketplace_install')),
+            'settings' => array('url' => '/app/marketplace/settings', 'tag' => lang('base_settings')),
+        );
+        $this->page->view_form('marketplace', $data, lang('marketplace_marketplace'),
+            array('type' => MY_Page::TYPE_SPOTLIGHT, 'breadcrumb_links' => $breadcrumb_links)
+        );
     }
 
     /**
