@@ -89,11 +89,18 @@ class Search extends ClearOS_Controller
 
         // Search and filter history
         $data['filter'] = $this->marketplace->get_search_history();
+        $data['filters'] = $this->marketplace->get_filter_options();
+        $data['selected'] = array(
+            'category' => $this->input->post('filter_category'),
+            'price' => $this->input->post('filter_price'),
+            'intro' => $this->input->post('filter_intro'),
+            'status' => $this->input->post('filter_status')
+        );
         $data['display_format'] = $this->marketplace->get_display_format();
         $data['page'] = (int)$page;
         $data['number_of_apps_to_display'] = $this->marketplace->get_number_of_apps_to_display();
 
-        $this->page->view_form('marketplace/marketplace', $data, lang('marketplace_marketplace'), array('type' => MY_Page::TYPE_SPOTLIGHT));
+        $this->page->view_form('marketplace', $data, lang('marketplace_marketplace'), array('type' => MY_Page::TYPE_SPOTLIGHT));
     }
 
     /**

@@ -23,12 +23,13 @@ $this->lang->load('marketplace');
 
 echo box_open();
 echo row_open();
-echo column_open(7, NULL, NULL, array('id' => 'marketplace_filter_container'));
-foreach ($filters as $name => $options) {
+echo column_open(8, NULL, NULL, array('id' => 'marketplace_filter_container'));
+echo form_open('marketplace/search');
+foreach ($filters as $name => $options)
     echo marketplace_filter($name, $options, $selected[$name]);
-}
+echo form_close();
 echo column_close();
-echo column_open(5, NULL, NULL, array('id' => 'marketplace_filter_container', 'class' => 'search-form'));
+echo column_open(4, NULL, NULL, array('id' => 'marketplace_filter_container', 'class' => 'search-form'));
 echo marketplace_search($search);
 echo column_close();
 echo row_close();
