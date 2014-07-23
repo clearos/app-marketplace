@@ -213,7 +213,7 @@ if (count($rows) === 0) {
 
 $options['default_rows'] = 100;
 $options['id'] = 'install_apps';
-$options['empty_table_message'] = 'No apps selected.';
+$options['empty_table_message'] = lang('marketplace_no_apps_selected');
 $rows = array_merge($rows['apps'], $rows['packages']);
 
 echo summary_table(

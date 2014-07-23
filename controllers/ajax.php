@@ -137,9 +137,8 @@ class Ajax extends ClearOS_Controller
             // Get installed apps
             $installed_apps = $this->marketplace->get_installed_apps(); 
 
-            $max = $this->input->post('max');
-            $offset = $this->input->post('offset');
-            $search_reset = $this->input->post('search_reset');
+            $max = $this->input->post('max') ? $this->input->post('max') : 0;
+            $offset = $this->input->post('offset') ? $this->input->post('offset') : 0;
 
             // On searches or filtering, we grab all apps, so override max, offset will be ignored 
             $filter = $this->marketplace->get_search_criteria();
@@ -162,10 +161,12 @@ class Ajax extends ClearOS_Controller
             $applist = $response->list;
             foreach ($applist as $app) {
                 $cart_item = new \clearos\apps\marketplace\Cart_Item(Marketplace::APP_PREFIX . preg_replace("/_/", "-", $app->basename)); 
-                $cart_item->set(get_object_vars($app->pricing));
-                // Whether an item has an EULA or not is not in the pricing object
-                $cart_item->set_eula($app->eula);
-                $cart_item->serialize($this->session->userdata('sdn_rest_id'));
+                if ($cart_item->cache_expired()) {
+                    $cart_item->set(get_object_vars($app->pricing));
+                    // Whether an item has an EULA or not is not in the pricing object
+                    $cart_item->set_eula($app->eula);
+                    $cart_item->serialize($this->session->userdata('sdn_rest_id'));
+                }
 
                 // Save some installation and version info - replace underscore with hyphen for RPM name
                 $rpm = Marketplace::APP_PREFIX . preg_replace("/_/", "-", $app->basename);

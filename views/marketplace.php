@@ -33,6 +33,9 @@ echo column_close();
 echo row_close();
 echo box_close();
 echo form_close();
+
+echo paginate();
+
 if ($search)
     echo loading('2em', lang('marketplace_searching_marketplace'), array('icon-below' => TRUE, 'center' => TRUE, 'id' => 'app-search-load', 'class' => 'marketplace-app-loading'));
 else

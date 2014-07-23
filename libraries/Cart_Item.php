@@ -718,18 +718,16 @@ class Cart_Item extends Engine
     /**
      * Serializes object and saves to file.
      *
-     * @param String $id a unique SDN session ID
-     *
      * @return void
      * @throws Engine_Exception
      */
 
-    public function serialize($id)
+    public function serialize()
     {
         clearos_profile(__METHOD__, __LINE__);
 
         try {
-            file_put_contents(CLEAROS_CACHE_DIR . '/' . $this->get_id() . '.' . $id, serialize($this));
+            file_put_contents(CLEAROS_CACHE_DIR . '/' . $this->get_id(), serialize($this));
         } catch (Exception $e) {
             throw new Engine_Exception(clearos_exception_message($e), CLEAROS_ERROR);
         }
@@ -738,18 +736,16 @@ class Cart_Item extends Engine
     /**
      * Unserializes an object from file.
      *
-     * @param String $id a unique SDN session ID
-     *
      * @return void
      * @throws Engine_Exception
      */
 
-    public function unserialize($id)
+    public function unserialize()
     {
         clearos_profile(__METHOD__, __LINE__);
 
         try {
-            if (!file_exists(CLEAROS_CACHE_DIR . '/' . $this->get_id() . '.' . $id)) {
+            if (!file_exists(CLEAROS_CACHE_DIR . '/' . $this->get_id())) {
                 $marketplace = new Marketplace();
                 $basename = preg_replace('/^' . Marketplace::APP_PREFIX . '/', '', $this->get_id());
                 $basename = preg_replace("/-/", "_", $basename);
@@ -757,7 +753,7 @@ class Cart_Item extends Engine
                 if (!$response->details->exists)
                     throw new Engine_Exception(lang('marketplace_app_does_not_exist') . ' - ' . $this->get_id() . '.');
             }
-            $newobj = unserialize(file_get_contents(CLEAROS_CACHE_DIR . '/' . $this->get_id() . '.' . $id));
+            $newobj = unserialize(file_get_contents(CLEAROS_CACHE_DIR . '/' . $this->get_id()));
             $this->set_pid($newobj->get_pid());
             $this->set_description($newobj->get_description());
             $this->set_quantity($newobj->get_quantity());
@@ -777,6 +773,32 @@ class Cart_Item extends Engine
         } catch (Exception $e) {
             throw new Engine_Exception(clearos_exception_message($e), CLEAROS_ERROR);
         }
+    }
+
+    /**
+     * Determine if cached object is expired.
+     *
+     * @return void
+     * @throws Engine_Exception
+     */
+
+    public function cache_expired()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        $filename = CLEAROS_CACHE_DIR . '/' . $this->get_id();
+
+        if (!file_exists($filename))
+            return TRUE;
+
+        $stat = stat($filename);
+        $cache_time = $stat['ctime'];
+        $time_now = time();
+        // 30 minute cache time on cart objects
+        if ($time_now - $cache_time > 1800)
+            return TRUE;
+
+        return FALSE;
     }
 
     ///////////////////////////////////////////////////////////////////////////////
