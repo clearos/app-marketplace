@@ -106,8 +106,7 @@ class Search extends ClearOS_Controller
 
         // Add setting link to breadcrumb trail
         $breadcrumb_links = array(
-            'checkout' => array('url' => '/app/marketplace/install', 'tag' => lang('marketplace_install')),
-            'settings' => array('url' => '/app/marketplace/settings', 'tag' => lang('base_settings')),
+            'settings' => array('url' => '/app/marketplace/settings', 'tag' => lang('base_settings'))
         );
         $this->page->view_form('marketplace', $data, lang('marketplace_marketplace'),
             array('type' => MY_Page::TYPE_SPOTLIGHT, 'breadcrumb_links' => $breadcrumb_links)

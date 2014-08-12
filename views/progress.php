@@ -23,23 +23,25 @@ if ($alt_in_use) {
     echo infobox_highlight(lang('marketplace_unavailable'), lang('marketplace_package_manager_in_use'));
     return;
 }
-echo "<div id='info'></div>";
+//echo "<div id='info'></div>";
 
-echo "<div class='marketplace-progress-spash' style='width:300px; float: left; border: padding: 0px;'>\n";
-echo "<p>" . lang('marketplace_thankyou') . "</p>\n";
-echo "<p style='padding-top: 110px;'>" . lang('marketplace_progress_help') . "</p>\n";
-echo "<p>" . lang('marketplace_delete_help') . "</p>\n";
-echo "</div>\n";
-echo "<div id='summary-info' style='width:380px; float: right;'>\n";
-echo "<h2>" . lang('marketplace_overall_progress') . "</h2>\n";
+echo row_open();
+echo column_open(4, array('class' => 'marketplace-progress-spash'));
+echo "<h3>" . lang('marketplace_thankyou') . "</h3>\n";
+echo "<p>" . lang('marketplace_progress_help') . "</p>\n";
+echo column_close();
+echo column_open(8, array('class' => 'summary-info'));
+echo "<h3>" . lang('marketplace_overall_progress') . "</h3>\n";
 echo progress_bar('overall', array('input' => 'overall'));
-echo "<h2 style='clear: both;'>" . lang('marketplace_operation_progress') . "</h2>\n";
+echo "<h3 style='clear: both;'>" . lang('marketplace_operation_progress') . "</h3>\n";
 echo "<div>\n";
 echo progress_bar('progress', array('input' => 'progress'));
 echo "</div>\n";
-echo "<h2 style='clear: both;'>" . lang('marketplace_details') . "</h2>\n";
+echo "<h3 style='clear: both;'>" . lang('marketplace_details') . "</h3>\n";
 echo "<div id='details'></div>\n";
 echo "  <div id='reload_button' class='theme-hidden' style='margin-top: 10px; text-align: center;'>\n";
-echo anchor_custom('progress', lang('marketplace_reload_after_updates'), 'high');
+echo anchor_custom('/app/marketplace', lang('marketplace_reload_after_updates'), 'high');
 echo "  </div>\n";
 echo "</div>\n";
+echo column_close();
+echo row_close();

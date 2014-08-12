@@ -95,8 +95,7 @@ class Marketplace extends ClearOS_Controller
 
         // Add setting link to breadcrumb trail
         $breadcrumb_links = array(
-            'checkout' => array('url' => '/app/marketplace/install', 'tag' => lang('marketplace_install')),
-            'settings' => array('url' => '/app/marketplace/settings', 'tag' => lang('base_settings')),
+            'settings' => array('url' => '/app/marketplace/settings', 'tag' => lang('base_settings'))
         );
 
         $this->page->view_form(
@@ -247,8 +246,9 @@ class Marketplace extends ClearOS_Controller
         // Delete/clear Cache
         if ($this->input->post('delete_cache')) {
             try {
-                $this->marketplace->delete_cache(NULL, TRUE);
+                $this->marketplace->delete_cache(NULL, Market::PREFIX);
                 $this->page->set_message(lang('marketplace_cache_confirm'), 'info');
+                redirect('/marketplace');
             } catch (Exception $e) {
                 $this->page->view_exception($e);
                 return;

@@ -119,35 +119,38 @@ function update_install_form(data) {
     }
     if (data.code == 0) {
         if ($('#total').val() > 0) {
-            $('#r_bill_cycle').show();
-            $('#r_total').show();
-            $('#display-total').html(data.currency + ' ' + (parseFloat($('#total').val())).toFixed(2).toLocaleString());
+            $('.cos-account-loading').remove();
+            // Use _text here since control is hidden
+            $('#username_text').html(data.sdn_username);
+            $('#billing_cycle_field').show();
+            $('#display_total_field').show();
+            $('#display_total_text').html(data.currency + ' ' + (parseFloat($('#total').val())).toFixed(2).toLocaleString());
             if (data.evaluation) {
-                $('#bill_cycle').html('" . lang('marketplace_not_applicable') . " - " . lang('marketplace_trial_in_progress') . "');
-                $('#r_notes').show();
-                $('#notes').html('<div>" . lang('marketplace_note_evaluation_and_payment') . "</div>');
+                $('#billing_cycle_field').html('" . lang('marketplace_not_applicable') . " - " . lang('marketplace_trial_in_progress') . "');
+                $('#notes_field').show();
+                $('#notes_text').html('<div>" . lang('marketplace_note_evaluation_and_payment') . "</div>');
             } else {
-                $('#bill_cycle').html($.datepicker.formatDate('MM d, yy', new Date(data.billing_cycle)));
+                $('#billing_cycle_text').html($.datepicker.formatDate('MM d, yy', new Date(data.billing_cycle)));
             }
             
             if ($('#has_prorated').val() > 0) {
-                $('#r_notes').show();
-                $('#notes').append('<div>" . lang('marketplace_prorated_discount_included') . "</div>');
+                $('#notes_field').show();
+                $('#notes_text').append('<div>" . lang('marketplace_prorated_discount_included') . "</div>');
             }
                 
-            $('#r_payment_method').show();
+            $('#payment_method_field').show();
             // Check all payment types
             var has_valid_payment_method = false;
             if (data.preauth) {
-                $('#option_preauth').show();
+                $('#preauth_field').show();
                 $('#card_number').html(data.preauth_card);
                 $('#preauth').prop('checked', true);
                 has_valid_payment_method = true;
             } else {
-                $('#option_preauth').hide();
+                $('#preauth_field').hide();
             }
             if (data.po) {
-                $('#option_po').show();
+                $('#po_field').show();
                 if ($('#total').val() > data.po_available) {
                     $('#po').attr('disabled', true);
                 } else {
@@ -160,10 +163,10 @@ function update_install_form(data) {
                     + ' " . lang('marketplace_limit') . "' + ($('#total').val() > data.po_available.toFixed(2).toLocaleString() ? ' - " .
                     lang('marketplace_insufficient_funds') . "' : ''));
             } else {
-                $('#option_po').hide();
+                $('#po_field').hide();
             }
             if (data.debit) {
-                $('#option_debit').show();
+                $('#debit_field').show();
                 if ($('#total').val() > data.debit_available) {
                     $('#debit').attr('disabled', true);
                 } else {
@@ -176,7 +179,7 @@ function update_install_form(data) {
                     + ($('#total').val() > data.debit_available ? ' - " .
                     lang('marketplace_insufficient_funds') . "' : ''));
             } else {
-                $('#option_debit').hide();
+                $('#debit_field').hide();
             }
             
             // Show/hide PO input
@@ -373,7 +376,7 @@ function get_apps(realtime, offset) {
             }
             // Hide whirly
             $('#app-search-load').hide();
-            clearos_marketplace_app_list($('#display_format').val(), data.list);
+            clearos_marketplace_app_list($('#display_format').val(), data.list, $('#number_of_apps_to_display').val(), data.total);
         },
         error: function(xhr, text, err) {
             // Don't display any errors if ajax request was aborted due to page redirect/reload
@@ -448,95 +451,6 @@ function add_optional_apps(app_focus) {
             opacity: 0.95
             });
     });
-}
-
-function display_apps(data) {
-    var applist = [];
-    var categorylist = [];
-    var content = '';
-    var category_class = '';
-    var toggle_state = 'none';
-    var exclusive_app_selected = null;
-    novice_optional_apps = [];
-
-    if ($('#wizard_marketplace_mode').val() == 'mode1')
-        in_wizard_or_novice = true;
-    else
-        in_wizard_or_novice = false;
-    if (data.list.length == 0) {
-        $('#marketplace-app-container').append('<div style=\'padding: 70px 0px;\'>" . lang('marketplace_search_no_results') . "</div>');
-        return;
-    }
-    jQuery.each(data.list, function(index, app) { 
-        // Bitmask of 0 or 1 means allow to install or Pro only (which we display)
-        if (app.display_mask > 1)
-            return true;
-
-        if ($('#install_list').length != 0 && $('#display_format').val() == 'table') {
-            var new_row = table_install_list.fnAddData([
-                app.category_en_US,
-                app.name + (app.installed ? '' : '<input type=\'checkbox\' class=\'theme-hidden\' id=\'select-' + app.basename + '\' name=\'' + app.basename + '\' ' + (app.incart ? 'CHECKED ' : '') + '\'>'),
-                '<p>' + app.description.replace(/\\n/g, '</p><p>') + '</p>',
-                (app.pricing.unit_price > 0 ? app.pricing.currency + app.pricing.unit_price + ' ' + UNIT[app.pricing.unit] : '" . lang('marketplace_free') . "'),
-                (app.installed ? '" . lang('base_yes') . "' : '" . lang('base_no') . "')
-            ]);
-            var nTr = table_install_list.fnSettings().aoData[new_row[0]].nTr;
-            nTr.id = app.basename;
-            var my_classes = 'marketplace-app-event';
-            if (app.incart)
-                my_classes += ' marketplace-selected';
-            
-            nTr.className = my_classes;
-            return true;
-        }
-        if (!app.incart)
-            toggle_state = 'all';
-        applist.push(app.basename);
-        var tags = app.tags.split(' ');
-        var is_option = false;
-        // Only look at tags in mode 1 (novice) of wizard or MP select
-        if ($('#wizard_marketplace_mode').val() == 'mode1') {
-            $.each(tags, function(tagindex, tag) {
-                if ($.isNumeric(tag.substring(0, 2)) && parseInt(tag.substring(0, 2)) == 0) {
-                    is_option = true;
-                    novice_optional_apps.push({app_parent: tag.substring(3, tag.length).toLowerCase(), app_child:app});
-                }
-            });
-        }
-        if (!is_option) {
-            if ($('#display_format').val() == 'list')
-                content += get_app_as_column(app);
-            else
-                content += get_app_as_tile(app);
-            if (novice_set[novice_index].exclusive && app.incart)
-                exclusive_app_selected = app.basename;
-        }
-    });
-
-    if (toggle_state == 'all') {
-        $('#toggle_select').html('<span class=\'ui-button-text\'>" . lang('marketplace_select_all') . "</span>');
-        $('#toggle_select').attr('href', '/app/marketplace/all');
-    } else {
-        $('#toggle_select').html('<span class=\'ui-button-text\'>" . lang('marketplace_select_none') . "</span>');
-        $('#toggle_select').attr('href', '/app/marketplace/none');
-    }
-
-    $('#marketplace-app-container').append(content);
-    for (var index = 0; index < applist.length; index++)
-        get_image('app-logo', applist[index], 'app-logo-' + applist[index]);
-
-    if ($('#wizard_marketplace_mode').val() == 'mode1' && exclusive_app_selected)
-        add_optional_apps(exclusive_app_selected);
-
-    if ($('#display_format').val() == 'tile') {
-        $('.marketplace-app').tooltip({
-            offset: [-48, -314],
-            predelay: 1500,
-            delay: 250,
-            position: 'top left',
-            opacity: 0.95
-        });
-    }
 }
 
 function get_app_as_column(app) {
@@ -1076,6 +990,7 @@ $(document).ready(function() {
     } else if ($(location).attr('href').match('.*install') != null || $(location).attr('href').match('.*install\/delete\/.*') != null) {
         if ($('#total').val() == 0) {
             allow_noauth_mods();
+            $('#account-information-container').remove();
         } else {
             $('#infotable').show();
             auth_options.reload_after_auth = true;
@@ -1083,12 +998,8 @@ $(document).ready(function() {
             if ($('#total').val() > 0)
                 get_account_info(false);
             else
-                $('#account_information').remove();
+                $('#account-information-container').remove();
         }
-        $('#install_apps tbody tr').each(function(){
-            $(this).find('td:eq(1)').attr('nowrap', 'nowrap');
-            $(this).find('td:eq(4)').attr('nowrap', 'nowrap');
-        });
     }
 
     $('#toggle_select').click(function(e) {
@@ -1131,9 +1042,9 @@ $(document).ready(function() {
     });
     $('input').click(function() {
         if (this.id == 'add_review')
-            add_review(this.id);
+            clearos_add_review();
         else if (this.id == 'prevent_review')
-            prevent_review();
+            clearos_prevent_review();
         else if (this.id == 'cancel_review')
             $('#review-form').modal({show: true, backdrop: 'static'});
         else if (this.id == 'indiv_upgrade')
@@ -1188,9 +1099,9 @@ function get_progress() {
             if (json.busy && !json.wc_busy && $(location).attr('href').match('.*progress\/busy$') == null)
                 window.location = '/app/marketplace/progress/busy';
 
-            $('#progress').animate_progressbar(parseInt(json.progress));
+            clearos_set_progress_bar('progress', parseInt(json.progress), null);
 
-            $('#overall').animate_progressbar(parseInt(json.overall));
+            clearos_set_progress_bar('overall', parseInt(json.overall), null);
 
             if (json.code === 0) {
                 $('#details').html(json.details);
@@ -1198,8 +1109,8 @@ function get_progress() {
                 // Do nothing...no data yet
             } else {
                 // Uh oh...something bad happened
-                $('#progress').progressbar({value: 0});
-                $('#overall').progressbar({value: 0});
+                clearos_set_progress_bar('progress', 0, null);
+                clearos_set_progress_bar('overall', 0, null);
                 $('#details').html(json.errmsg);
             }
 
@@ -1209,10 +1120,12 @@ function get_progress() {
             } else if (json.overall == 100) {
                 if ($('#theme_wizard_nav_next').length == 0) {
                     $('#reload_button').show();
-                    $('#progress').progressbar({value: 100});
-                    $('#overall').progressbar({value: 100});
+                    clearos_set_progress_bar('progress', 100, null);
+                    clearos_set_progress_bar('overall', 100, null);
                     $('#details').html(installation_complete);
                 }
+                // TODO DELETE setTimeout
+                window.setTimeout(get_progress, 5000);
                 return;
             } else {
                 window.setTimeout(get_progress, 1000);
@@ -1292,6 +1205,10 @@ function clearos_sdn_account_setup(landing_url, username, device_id) {
   $('.ui-dialog-titlebar-close').hide();
 }
 
+function update_po() {
+    $('#po').prop('checked', true);
+    $('#display_po').html(' (' + $('#po_number') + ')');
+}
 ";
 
 // vim: syntax=javascript ts=4

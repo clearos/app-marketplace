@@ -22,19 +22,31 @@ $this->lang->load('marketplace');
 
 echo form_open('marketplace/search');
 echo box_open();
-echo row_open();
+echo row_open(array('class' => 'marketplace-search-filter'));
 echo column_open(8, NULL, NULL, array('id' => 'marketplace_filter_container'));
 foreach ($filters as $name => $options)
     echo marketplace_filter($name, $options, $selected[$name]);
 echo column_close();
-echo column_open(4, NULL, NULL, array('id' => 'marketplace_filter_container', 'class' => 'search-form'));
+echo column_open(4, NULL, NULL, array('id' => 'marketplace_search_container', 'class' => 'search-form'));
 echo marketplace_search($search);
+echo column_close();
+echo row_close();
+echo row_open();
+echo column_open(8, NULL, NULL, array('id' => 'marketplace_tools_container'));
+$buttons = array(
+    anchor_custom('/app/marketplace/install', lang('marketplace_install_selected_apps'), 'high'),
+    anchor_custom('/app/marketplace/all', lang('marketplace_select_all'), 'low', array('id' => 'toggle_select')),
+    anchor_custom('/app/marketplace/search/reset_filter', lang('marketplace_reset_filters'), 'low') 
+);
+echo button_set($buttons);
+echo column_close();
+echo column_open(4, NULL, NULL, array('id' => 'marketplace_paginate_container', 'class' => 'theme-hidden'));
+echo paginate('/app/marketplace/search/index');
 echo column_close();
 echo row_close();
 echo box_close();
 echo form_close();
 
-echo paginate();
 
 if ($search)
     echo loading('2em', lang('marketplace_searching_marketplace'), array('icon-below' => TRUE, 'center' => TRUE, 'id' => 'app-search-load', 'class' => 'marketplace-app-loading'));

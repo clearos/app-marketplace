@@ -440,8 +440,12 @@ class Ajax extends ClearOS_Controller
                 throw new Engine_Exception(lang('marketplace_no_install_no_review'), CLEAROS_WARNING);
 
             $this->load->library('marketplace/Marketplace');
+
+            // Auto submit 'Anonymous' if pseudonym is not provided.
             echo $this->marketplace->add_review(
-                $this->input->post('basename'), $this->input->post('rating'), $this->input->post('comment'), $this->input->post('pseudonym'), $this->input->post('update')
+                $this->input->post('basename'), $this->input->post('rating'), $this->input->post('comment'),
+                (!$this->input->post('pseudonym') ? lang('marketplace_anonymous') : $this->input->post('pseudonym')),
+                $this->input->post('update')
             );
         } catch (Exception $e) {
             echo json_encode(Array('code' => clearos_exception_code($e), 'errmsg' => clearos_exception_message($e)));
@@ -566,7 +570,7 @@ class Ajax extends ClearOS_Controller
             $this->cart->clear();
 
             // Clear cache to force fetching new status
-            $this->marketplace->delete_cache();
+            $this->marketplace->delete_cache(NULL, Marketplace::PREFIX);
 
             // Clear app cache install list
             $this->marketplace->delete_cached_app_install_list();

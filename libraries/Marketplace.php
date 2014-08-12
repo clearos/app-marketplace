@@ -107,6 +107,7 @@ class Marketplace extends Rest
     const COMMAND_RPM = '/bin/rpm';
     const FOLDER_MARKETPLACE = '/var/clearos/marketplace';
     const MAX_RECORDS = 10;
+    const PREFIX = 'mp-';
     const APP_PREFIX = 'app-';
     const PID_MASK_DEVICE_ASSIGN = 1;
     const PID_MASK_FUTURE_2 = 2;
@@ -644,7 +645,7 @@ class Marketplace extends Rest
         try {
             $cachekey = __CLASS__ . '-' . __FUNCTION__ . '-' . $max . '-' . $offset; 
 
-            if (!$realtime && $this->_check_cache($cachekey))
+            if (!$realtime && $this->_check_cache($cachekey, self::PREFIX))
                 return $this->cache;
     
             // Tell caller that we had no cache, had to use realtime
@@ -656,7 +657,7 @@ class Marketplace extends Rest
 
             $result = $this->request('marketplace', 'get_apps', $extras);
 
-            $this->_save_to_cache($cachekey, $result);
+            $this->_save_to_cache($cachekey, $result, self::PREFIX);
         
             return $result;
         } catch (Exception $e) {
@@ -682,7 +683,7 @@ class Marketplace extends Rest
         try {
             $cachekey = __CLASS__ . '-' . __FUNCTION__ . '-' . $basename; 
 
-            if (!$realtime && $this->_check_cache($cachekey))
+            if (!$realtime && $this->_check_cache($cachekey, self::PREFIX))
                 return $this->cache;
     
             $extras = array('basename' => $basename);
@@ -691,7 +692,7 @@ class Marketplace extends Rest
 
             $result = $this->request('marketplace', 'get_app_details', $extras);
 
-            $this->_save_to_cache($cachekey, $result);
+            $this->_save_to_cache($cachekey, $result, self::PREFIX);
 
             $response = json_decode($result);
         
@@ -786,8 +787,7 @@ class Marketplace extends Rest
             // Delete the cached file for this app
             // FIXME...this will work, but its ugly.
             $cachekey = __CLASS__ . '-get_app_details-' . $basename; 
-            $filename = md5($cachekey) . "." . $this->CI->session->userdata['sdn_rest_id']; 
-            $this->delete_cache($filename);
+            $this->delete_cache(self::PREFIX . md5($cachekey));
 
             return $result;
         } catch (Exception $e) {
@@ -840,7 +840,7 @@ class Marketplace extends Rest
 
             $cachekey = __CLASS__ . '-' . __FUNCTION__ . '-' . $id; 
 
-            if (!$realtime && $this->_check_cache($cachekey))
+            if (!$realtime && $this->_check_cache($cachekey, self::PREFIX))
                 return $this->cache;
 
             $extras = array("id" => $id);

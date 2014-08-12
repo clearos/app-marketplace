@@ -19,76 +19,36 @@
 $this->lang->load('base');
 $this->lang->load('marketplace');
 
-echo "<div id='installer' style='text-align: center;'></div>";
-
-echo "<div id='info'></div>";
-
 ///////////////////////////////////////////////////////////////////////////////
 // Form open
 ///////////////////////////////////////////////////////////////////////////////
 
-// Hack...too difficult to use a table widget here.  Should we have another widget?
-echo "<div class='theme-form-container'>";
-echo "<table id='infotable' class='theme-hidden theme-form-wrapper' style='width:100%;' cellpadding='0' cellspacing='0'>";
+$buttons = array(
+    form_submit_custom('buy_checkout', lang('marketplace_buy_and_install'), 'high', array('id' => 'buy_checkout'))
+);
 
-echo "<tr class='theme-form-header'>" .
-    "  <td colspan='2'><p class='theme-form-header-heading'>" . lang('marketplace_account_info') . "</p></td>" .
-    "</tr>";
-echo "<tr id='r_account' class='theme-fieldview'>" .
-    "  <td class='theme-field-left'>" . lang('marketplace_account') . "</td>" .
-    "  <td class='theme-field-right'><span id='display_sdn_username'>" . loading() . "</span></td>" .
-    "</tr>" .
-    "<tr id='r_bill_cycle' class='theme-fieldview' style='display: none;'>" .
-    "  <td class='theme-field-left'>" . lang('marketplace_billing_cycle') . "</td>" .
-    "  <td class='theme-field-right'><span id='bill_cycle'></span></td>" .
-    "</tr>" .
-    "<tr id='r_total' class='theme-hidden theme-fieldview billing-field'>" .
-    "  <td valign='top' class='theme-field-left'>" . lang('marketplace_total') . "</td>" .
-    "  <td class='theme-field-right'><span id='display-total'/></div></td>" .
-    "</tr>" .
-    "<tr id='r_payment_method' class='theme-fieldview' style='display: none;'>" .
-    "  <td valign='top' class='theme-field-left'>" . lang('marketplace_payment_method') . "</td>" .
-    "  <td class='theme-field-right'><div id='payment_method'>" .
-    "    <div id='payment_processing' style='display: none;'></div>" .
-    "    <div id='payment_options'>" .
-    "      <div id='option_preauth' style='height: 22px;'>" .
-    "        <input style='margin: 0px; float: left;' type='radio' class='payment_option' name='payment_method' value='preauth' id='preauth' onclick='toggle_payment_display()'>" .
-    "        <div style='float:left; padding-top: 1px;'>" .
-    "          <label for='preauth' style='padding-left: 5px;'>" . lang('marketplace_credit_card') . " (<span id='card_number'></span>)</label>" .
-    "        </div>" .
-    "      </div>" .
-    "      <div id='option_po' style='clear: left; height: 22px;'>" .
-    "        <input style='float: left; margin: 0px;' type='radio' class='payment_option' name='payment_method' value='po' id='po' onclick='toggle_payment_display()'>" .
-    "        <div style='float:left; padding-top: 1px;'><label for='po' style='padding-left: 5px;'>" . lang('marketplace_purchase_order') . " (<span id='po_available'></span>)</label></div> " .
-    "        <input type='text' id='po_number' value='' style='width:120px; margin: -1px 0px 0px 5px;' name='po_number' />" .
-    "      </div>" .
-    "      <div id='option_debit' style='clear:left; height: 22px;'>" .
-    "        <input style='margin: 0px; float: left;' class='payment_option' type='radio' name='payment_method' value='debit' id='debit' onclick='toggle_payment_display()'>" .
-    "        <div style='float:left; padding-top: 1px;'>" .
-    "          <label for='debit' style='padding-left: 5px;'>" . lang('marketplace_debit') . " (<span id='debit_available'></span>)</label>" .
-    "        </div>" .
-    "      </div>" .
-    "    </div>" .
-    "  </div></td>" .
-    "</tr>" .
-    "<tr id='r_notes' class='theme-fieldview' style='display: none;'>" .
-    "  <td class='theme-field-left'>" . lang('marketplace_notes') . "</td>" .
-    "  <td class='theme-field-right'><span id='notes'></span></td>" .
-    "</tr>" .
-    "<tr id='r_eval_install' class='theme-fieldview' style='display: none;'>" .
-    "  <td class='theme-field-left'>&nbsp;</td>" .
-    "  <td class='theme-field-right'><span id='eval_install_cell'>" . form_submit_custom('eval_checkout', lang('marketplace_eval_and_install'), 'high', array('id' => 'eval_checkout')) . "</span></td>" . 
-    "</tr>" .
-    "<tr id='r_fee_install' class='theme-fieldview' style='display: none;'>" .
-    "  <td class='theme-field-left'>&nbsp;</td>" .
-    "  <td class='theme-field-right'><span id='fee_install_cell'>" . form_submit_custom('buy_checkout', lang('marketplace_buy_and_install'), 'high', array('id' => 'buy_checkout')) . "</span></td>" . 
-    "</tr>"
-;
-echo "</table>";
-echo "</div>";
+echo form_open('marketplace/install', array('id' => 'account-information-container'));
+echo form_header(lang('marketplace_account_info'));
+echo field_dropdown('username', '', array(), lang('marketplace_account'), TRUE);
+echo field_input('billing_cycle', '', lang('marketplace_billing_cycle'), TRUE);
+echo field_input('display_total', $display_total, lang('marketplace_total'), TRUE);
+echo field_radio_set(
+    lang('marketplace_payment_method'),
+    array(
+        field_radio_set_item('preauth', 'payment_method', lang('marketplace_credit_card') . " (<span id='card_number'></span>)", TRUE, FALSE),
+        field_radio_set_item('po', 'payment_method', lang('marketplace_purchase_order') . "<span id='display_po'></span>", FALSE, FALSE),
+        field_radio_set_item('debit', 'payment_method', lang('marketplace_debit') . " (<span id='debit_available'></span>)", FALSE, FALSE)
+    ),
+    'payment_method',
+    array('orientation' => 'vertical')
+);
+echo field_input('notes', $notes, lang('marketplace_notes'), TRUE);
+echo field_button_set($buttons);
+echo form_footer(array('loading' => 'cos-account-loading'));
+echo form_close();
 
 if ($itemnotfound)
-    echo infobox_warning(lang('base_warning'), $itemnotfound) . "<br />";
+    echo infobox_warning(lang('base_warning'), $itemnotfound);
 
 ///////////////////////////////////////////////////////////////////////////////
 // Headers
@@ -183,20 +143,21 @@ foreach ($items as $item) {
         $total += $item->get_quantity() * $item->get_unit_price() * (1 - $item->get_discount()/100);
 }
 
+// Merge apps and packages
+$rows = array_merge($rows['apps'], $rows['packages']);
+
 ///////////////////////////////////////////////////////////////////////////////
 // Anchors
 ///////////////////////////////////////////////////////////////////////////////
 
-if (count($rows) === 0) {
+if (count($rows) == 0) {
     if ($this->session->userdata('wizard'))
         $anchors = array(
-            anchor_custom('/app/marketplace/wizard/stop', lang('marketplace_install_apps_later')),
-            anchor_custom('/app/marketplace/install/delete/all', lang('marketplace_delete_all'), 'low')
+            anchor_custom('/app/marketplace/wizard/stop', lang('marketplace_install_apps_later'))
         );
     else
         $anchors = array(
-            form_submit_custom('free_checkout', lang('marketplace_download_and_install'), 'high', array('id' => 'free_checkout')),
-            anchor_custom('/app/marketplace/install/delete/all', lang('marketplace_delete_all'), 'low')
+            form_submit_custom('free_checkout', lang('marketplace_download_and_install'), 'high', array('id' => 'free_checkout'))
         );
 } else if ($total == 0) {
     $anchors = array(
@@ -214,7 +175,6 @@ if (count($rows) === 0) {
 $options['default_rows'] = 100;
 $options['id'] = 'install_apps';
 $options['empty_table_message'] = lang('marketplace_no_apps_selected');
-$rows = array_merge($rows['apps'], $rows['packages']);
 
 echo summary_table(
     lang('marketplace_app_install_list'),
@@ -224,7 +184,19 @@ echo summary_table(
     $options
 );
 
-// Need this value in JS
+if (count($rows) == 0)
+    echo infobox_and_redirect(lang('marketplace_select_apps'), lang('marketplace_app_select_help'), '/app/marketplace', lang('marketplace_search_marketplace'));
+    
+// Need these value in JS
 echo "<input type='hidden' name='total' id='total' value='$total' />";
 echo "<input type='hidden' name='num_of_apps' id='num_of_apps' value='" . count($rows) . "' />";
+echo "<input type='hidden' name='po_number' id='po_number' value='' />";
 echo "<input type='hidden' name='has_prorated' id='has_prorated' value='" . ($has_prorated ? 1 : 1) . "' />";
+echo modal_input(
+    lang('marketplace_po_required'),
+    lang('marketplace_po_enter'),
+    array("id" => "po"),
+    "po_number",
+    "modal-input-po",
+    array("callback" => "update_po();")
+);
