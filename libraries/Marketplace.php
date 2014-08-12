@@ -932,6 +932,48 @@ class Marketplace extends Rest
     }
 
     /**
+     * Fetches app logo.
+     *
+     * @param String $basename app basename
+     *
+     * @return Object  JSON-encoded response
+     *
+     * @throws Webservice_Exception
+     */
+
+    public function get_app_logo($basename)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        try {
+
+            $cache_time = 2592000; // 30 days
+            $filename = CLEAROS_CACHE_DIR . "/mp-logo-" . $basename;
+            $lastmod = @filemtime($filename);
+            if ($lastmod && (time() - $lastmod < $cache_time)) {
+                // Use cached file.
+                return json_encode(
+                    array(  
+                        "code" => 0,
+                        "location" => "/cache/mp-logo-$basename",
+                        "base64" => base64_encode(file_get_contents($filename))
+                    )
+                );
+            }
+            
+            $extras = array("static" => TRUE, "basename" => $basename);
+
+            $result = $this->static_content('marketplace/logos/', $basename . ".svg");
+
+            file_put_contents($filename, $result);
+        
+            return json_encode(array("code" => 0, "location" => "/cache/mp-logo-" . $basename, "base64" => base64_encode($result)));
+        } catch (Exception $e) {
+            throw new Webservice_Exception(clearos_exception_message($e), CLEAROS_ERROR);
+        }
+    }
+
+    /**
      * Fetches a screenshot or logo.
      *
      * @param String $type the type of image (logo, screenshot etc.)

@@ -351,8 +351,7 @@ function update_cart(id, individual, redirect) {
 }
 
 function get_apps(realtime, offset) {
-    if ($('#install_list').length != 0 && $('#display_format').val() == 'table')
-        table_install_list.fnClearTable();
+
     $.ajax({
         type: 'POST',
         dataType: 'json',
@@ -377,6 +376,11 @@ function get_apps(realtime, offset) {
             // Hide whirly
             $('#app-search-load').hide();
             clearos_marketplace_app_list($('#display_format').val(), data.list, $('#number_of_apps_to_display').val(), data.total);
+            $('.theme-placeholder').each(function( index ) {
+                // Yank of prefix (app-logo-)
+                clearos_get_app_logo(this.id.substr(9), this.id);
+                console.log( index + ': ' + this.id.substr(9) );
+            });
         },
         error: function(xhr, text, err) {
             // Don't display any errors if ajax request was aborted due to page redirect/reload
@@ -441,16 +445,6 @@ function add_optional_apps(app_focus) {
     $('#optional-apps').remove();
     if (content.length > 0)
         $('#marketplace-app-container').append('<div id=\'optional-apps\' style=\'margin-top: 15px; padding-top: 10px; border-top: 1px dotted grey;\'><h1>" . lang('marketplace_optional_apps') . "</h1>' + content + '</div>');
-    $.each(novice_optional_apps, function(index, myapp) {
-        get_image('app-logo', myapp.app_child.basename, 'app-logo-' + myapp.app_child.basename);
-        // Tooltip is broken wrt to using .on() function
-        $('#' + myapp.app_child.basename).tooltip({
-            offset: [-102, -425],
-            predelay: 2000,
-            position: 'top center',
-            opacity: 0.95
-            });
-    });
 }
 
 function get_app_as_column(app) {
