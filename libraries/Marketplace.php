@@ -961,13 +961,53 @@ class Marketplace extends Rest
                 );
             }
             
-            $extras = array("static" => TRUE, "basename" => $basename);
-
             $result = $this->static_content('marketplace/logos/', $basename . ".svg");
 
             file_put_contents($filename, $result);
         
             return json_encode(array("code" => 0, "location" => "/cache/mp-logo-" . $basename, "base64" => base64_encode($result)));
+        } catch (Exception $e) {
+            throw new Webservice_Exception(clearos_exception_message($e), CLEAROS_ERROR);
+        }
+    }
+
+    /**
+     * Fetches app screenshot.
+     *
+     * @param String $basename app basename
+     * @param int    $index    index of screenshot
+     *
+     * @return Object  JSON-encoded response
+     *
+     * @throws Webservice_Exception
+     */
+
+    public function get_app_screenshot($basename, $index)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        try {
+
+            // SDN servers do not have ss- prefix
+            $cache_time = 2592000; // 30 days
+            $filename = $basename . "_" . $index . ".png";
+            $cache_file = CLEAROS_CACHE_DIR . "/ss-" . $filename;
+            $lastmod = @filemtime($cache_file);
+            if ($lastmod && (time() - $lastmod < $cache_time)) {
+                // Use cached file.
+                return json_encode(
+                    array(  
+                        "code" => 0,
+                        "location" => "/cache/ss-$filename"
+                    )
+                );
+            }
+            
+            $result = $this->static_content('marketplace/screenshots', $filename);
+
+            file_put_contents($cache_file, $result);
+        
+            return json_encode(array("code" => 0, "location" => "/cache/ss-$filename"));
         } catch (Exception $e) {
             throw new Webservice_Exception(clearos_exception_message($e), CLEAROS_ERROR);
         }

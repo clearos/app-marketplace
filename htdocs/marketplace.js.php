@@ -593,33 +593,51 @@ function get_app_details(basename) {
             if ((data.pricing.pid_bitmask & 256) != 256) {
                 // 256 is the bit that indicates there is an RPM associated with this app
                 // If it is not set, hide irrelevant info in rhs info bar
-                $('#field_installed_version').hide();
-                $('#field_latest_version').hide();
-                $('#field_latest_release_date').hide();
-                $('#field_license').hide();
-                $('#field_license_library').hide();
+                $('#app_installed_version').html('" . lang('marketplace_not_applicable') . "');
+                $('#app_latest_version').html('" . lang('marketplace_not_applicable') . "');
+                $('#app_latest_release_date').html('---');
+                $('#app_license').html('" . lang('marketplace_not_applicable') . "');
+                $('#app_license_library').html('" . lang('marketplace_not_applicable') . "');
             }
-            if (data.display_mask != 0) {
-                // A non-zero display_mask means the app is not available to install
-            } else if (data.installed && data.up2date) {
-                $('#a_configure').show();
+
+            // A non-zero display_mask means the app is not available to install
+            if (data.installed) {
+                $('#indiv_configure').show();
+
                 if (!data.no_uninstall)
-                    $('#a_uninstall').show();
-            } else if (!data.repo_enabled) {
-                $('#a_repo').show();
+                    $('#indiv_uninstall').show();
+                else
+                    $('#indiv_uninstall').remove();
+
+                if (data.up2date)
+                    $('#indiv_upgrade').remove();
+                else
+                    $('#indiv_upgrade').show();
+            } else {
+                $('#indiv_configure').remove();
+                $('#indiv_uninstall').remove();
+                $('#indiv_upgrade').remove();
+                $('#indiv_uninstall').remove();
+                if (data.pricing.unit_price != 0) {
+                    if (data.pricing.exempt) {
+                        $('#indiv_install').show();
+                        $('#indiv_buy').remove();
+                    } else {
+                        $('#indiv_buy').show();
+                        $('#indiv_install').remove();
+                    }
+                } else {
+                    $('#indiv_install').show();
+                    $('#indiv_buy').remove();
+                }
+            }
+                
+            if (!data.repo_enabled) {
+                $('#indiv_repo').show();
                 // tack on repo name to href for repo
                 $('#indiv_repo').attr('href', '/app/software_repository/index/detailed/' + data.repo_name);
-            } else if (data.installed) {
-                $('#a_upgrade').show();
-                $('#a_configure').show();
-                if (!data.no_uninstall)
-                    $('#a_uninstall').show();
-            } else if (data.pricing.exempt && data.pricing.unit_price != 0) {
-                $('#a_install').show();
-            } else if (data.pricing.unit_price != 0) {
-                $('#a_buy').show();
             } else {
-                $('#a_install').show();
+                $('#indiv_repo').remove();
             }
 
             $('#app_support_policy').html(get_support_policy(data));
@@ -650,12 +668,12 @@ function get_app_details(basename) {
             }
                 
             if (data.url_learn_more == '')
-                $('#learn_more').hide();
+                $('#learn_more').remove();
             else
                 $('#learn_more').attr('href', data.url_learn_more);
 
             if (data.url_documentation == '')
-                $('#documentation').hide();
+                $('#documentation').remove();
             else
                 $('#documentation').attr('href', data.url_documentation);
 
@@ -687,35 +705,34 @@ function get_app_details(basename) {
                 + data.devel_website + '</a>');
             // Screenshots
             var screenshots = data.screenshots;
-            if (screenshots.length == 0)
+            if (screenshots.length == 0) {
                 $('#app_screenshots').append('<div>" . lang('marketplace_no_screenshots') . "</div>');
-            for (index = 0 ; index < screenshots.length; index++) {
-                $('#app_screenshots').append(
-                    '<a href=\'/cache/screenshot-' + screenshots[index].id + '.png\' data-lightbox=\'ss-set\' data-title=\'' + screenshots[index].caption + '\'>' +
-                    '<img id=\'screenshot-' + index + '\' src=\'" . clearos_app_htdocs('marketplace') . "/placeholder.png\' class=\'theme-screenshot-img\'> ' +
-                    '</a>'
-                );
-                get_image('screenshot', screenshots[index].id, 'screenshot-' + index);
+            } else {
+                $('#app_screenshots').append(clearos_screenshots(basename, screenshots));
+                // Kick off Ajax to fetch screenshots
+                $('.theme-screenshot-img').each(function() {
+                    clearos_get_app_screenshot(basename, $(this).attr('data-index'));
+                });
             }
 
             // Complementary apps
             if (data.complementary_apps.length == 0)
-                $('#app_complementary').remove();
+                $('#marketplace-complementary').remove();
 
             clearos_related_apps('complementary', data.complementary_apps);
 
             // Other apps by developer
             if (data.other_by_devel.length == 0)
                 $('#app_other_by_devel').append('<div>" . lang('marketplace_no_other_apps') . "</div>');
-            clearos_related_apps('other_by_devel', data.other_by_devel);
+            else
+                clearos_related_apps('other_by_devel', data.other_by_devel);
 
             // Ratings
             var ratings = data.ratings;
-            if (ratings.length == 0) {
+            if (ratings.length == 0)
                 $('#app_ratings').append('<div style=\'margin-top: 10px;\'>" . lang('marketplace_no_reviews') . "</div>');
-            }
-
-            $('#app_ratings').append(clearos_app_rating(basename, ratings));
+            else
+                $('#app_ratings').append(clearos_app_rating(basename, ratings));
 
             var locales = data.locales;
             var contributors = data.locales_contributors;
@@ -1036,7 +1053,7 @@ $(document).ready(function() {
     });
     $('input').click(function() {
         if (this.id == 'add_review')
-            clearos_add_review();
+            clearos_add_review($('#app_name_title').html());
         else if (this.id == 'prevent_review')
             clearos_prevent_review();
         else if (this.id == 'cancel_review')

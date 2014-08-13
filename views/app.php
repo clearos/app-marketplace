@@ -87,7 +87,7 @@ echo column_close();
 echo row_close();
 echo box_close();
 
-echo "<div id='availability_warning_box' style='display: none'>" .
+echo "<div id='availability_warning_box' class='theme-hidden'>" .
         infobox_warning(lang('marketplace_not_available'), "<div id='availability_warning'></div>") .
      "</div>"
 ;
@@ -97,6 +97,21 @@ echo row_open(array('id' => 'marketplace-overview'));
 echo "<h3>" . lang('marketplace_overview') . "</h3>";
 echo "<div id='app_description'></div>";
 echo row_close();
+
+$buttons = array(
+    form_submit_custom('but_upgrade', lang('marketplace_install_upgrade'), 'high', array ('id' => 'indiv_upgrade', 'hide' => TRUE)),
+    anchor_custom('/app/software_repository/index/detailed', lang('marketplace_enable_repo'), 'high', array('id' => 'indiv_repo', 'hide' => TRUE)),
+    anchor_custom('/app/' . $basename, lang('base_configure'), 'high', array('id' => 'indiv_configure', 'hide' => TRUE)),
+    form_submit_custom('but_buy', lang('marketplace_buy'), 'high', array ('id' => 'indiv_buy', 'hide' => TRUE)),
+    form_submit_custom('but_install', lang('marketplace_download_and_install'), 'high', array ('id' => 'indiv_install', 'hide' => TRUE)),
+    anchor_custom('/app/marketplace/uninstall/' . $basename, lang('marketplace_uninstall'), 'high', array('id' => 'indiv_uninstall', 'hide' => TRUE)),
+    anchor_custom('#', lang('marketplace_documentation'), 'high', array('id' => 'documentation', 'target' => '_blank')),
+    anchor_custom('#', lang('marketplace_learn_more'), 'high', array('id' => 'learn_more', 'target' => '_blank'))
+);
+
+echo "<div class='marketplace-indiv-button-set'>";
+echo button_set($buttons);
+echo "</div>";
 
 /* Developer */
 echo row_open(array('id' => 'marketplace-developer'));
@@ -149,47 +164,9 @@ echo row_close();
 
 echo "</div>";
 
-/*
-    "      <p class='complementary'>" . lang('marketplace_complementary_apps_info') . "</p>" .
-    "      <div style='position: relative; width: 100%; clear: both;' id='app_complementary' class='complementary'></div>" .
-    "      <h2>" . lang('marketplace_other_apps_by_devel') . "</h2>" .
-    "      <div style='position: relative; width: 100%; clear: both;' id='app_other_by_devel'></div>" .
-    "    </td>" .
-    "    <td valign='top' width='30%'>" . app_logo() .
-    "      <div style='padding: 15px 0px 15px 0px;' id='app_action'>" .
-    "        <div class='app_actions' id='a_upgrade' style='display: none; padding-top: 5px;'>" .
-    form_submit_custom('but_upgrade', lang('marketplace_install_upgrade'), 'high', array ('id' => 'indiv_upgrade')) .
-    "        </div>" .
-    "        <div class='app_actions' id='a_repo' style='display: none; padding-top: 5px; margin-left: 2px;'>" .
-    anchor_custom('/app/software_repository/index/detailed', lang('marketplace_enable_repo'), 'high', array('id' => 'indiv_repo')) .
-    "        </div>" .
-    "        <div class='app_actions' id='a_configure' style='display: none; padding-top: 5px; margin-left: 2px;'>" .
-    anchor_custom('/app/' . $basename, lang('base_configure'), 'high', array('id' => 'indiv_configure')) .
-    "        </div>" .
-    "        <div class='app_actions' id='a_buy' style='display: none; padding-top: 5px;'>" .
-    form_submit_custom('but_buy', lang('marketplace_buy'), 'high', array ('id' => 'indiv_buy')) .
-    "        </div>" .
-    "        <div class='app_actions' id='a_install' style='display: none; padding-top: 5px;'>" .
-    form_submit_custom('but_install', lang('marketplace_download_and_install'), 'high', array ('id' => 'indiv_install')) .
-    "        </div>" .
-    "        <div class='app_actions' id='a_uninstall' style='display: none; padding-top: 5px; margin-left: 2px;'>" .
-    anchor_custom('/app/marketplace/uninstall/' . $basename, lang('marketplace_uninstall'), 'high', array('id' => 'undiv_uninstall')) .
-    "        </div>" .
-    "      </div>" .
-    "      <div style='padding: 5px 0px 15px 0px;'>" . strtoupper(lang('marketplace_about_this_app')) . "</div>" .
-    "      <div id='field_rating' style='padding: 0px 0px 5px 0px;'>" . strtoupper(lang('marketplace_rating')) . ":" .
-    "        <div style='padding: 0px 0px 10px 0px;' id='app_rating'></div>" .
-    "      </div>" .
-    "    </td>" .
-    "    </td>" .
-    "    </td>" .
-    "  </tr>" . 
-    "</table>"
-;
-*/
 echo "<script type='text/javascript'>";
 echo "$(document).ready(function() {";
-echo "    get_app_details('" . $basename . "');";
+echo "    get_app_details('" . $basename . "'); $('.btn-group').button('refresh');";
 echo "});";
 echo "</script>";
 echo "<input type='hidden' name='basename' id='basename' value='" . $basename . "' />";
