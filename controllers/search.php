@@ -96,7 +96,7 @@ class Search extends ClearOS_Controller
             'intro' => $this->input->post('filter_intro'),
             'status' => $this->input->post('filter_status')
         );
-        if ($this->input->post('search'))
+        if ($this->input->post('search') && !$this->input->post('search_cancel'))
             $data['search'] = $this->input->post('search');
         else
             $data['search'] = NULL;

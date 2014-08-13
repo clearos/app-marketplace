@@ -1167,41 +1167,14 @@ function clearos_eula(basename, id, message) {
 }
 
 function clearos_sdn_account_setup(landing_url, username, device_id) {
-  $('#theme-page-container').append('<div id=\"sdn_marketplace_setup_dialog\" title=\"" . lang('marketplace_sdn_account_setup') . "\">' +
-      '<p style=\"text-align: left; width: 250px;\">' +
-        '" . lang('marketplace_sdn_account_setup_help_1') . "' +
-      '</p>' +
-      '<p style=\"text-align: left; width: 250px;\">' +
-        '" . lang('marketplace_sdn_account_setup_help_2') . "' +
-      '</p>' +
-    '</div>'
-  );
-  $('#sdn_marketplace_setup_dialog').dialog({
-    autoOpen: true,
-    bgiframe: true,
-    title: false,
-    modal: true,
-    resizable: false,
-    draggable: false,
-    closeOnEscape: false,
-    height: 250,
-    width: 450,
-    buttons: {
-      '" . lang('marketplace_setup_payment_on_clear') . "': function() {
-        $(this).dialog('close');
-        window.open(landing_url + '?username=' + username + '&device_id=' + device_id);
-      },
-      '" . lang('base_cancel') . "': function() {
-        $(this).dialog('close');
-      }
-    }
-  });
-  $('.ui-dialog-titlebar-close').hide();
+  $('#payment_method').append(theme_sdn_account_setup(landing_url, username, device_id));
+  $('#sdn-account-setup-dialog').modal({show: true, backdrop: 'static'});
 }
 
 function update_po() {
     $('#po').prop('checked', true);
-    $('#display_po').html(' (' + $('#po_number') + ')');
+    $('#display_po').html(' (' + $('#po_number').val() + ')');
+    $('#mi-po_number').val('');
 }
 ";
 
