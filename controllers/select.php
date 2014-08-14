@@ -64,7 +64,7 @@ class Select extends ClearOS_Controller
         $data['os_name'] = $this->session->userdata('os_name');
 
         $this->page->view_form(
-            'marketplace/novice', $data, lang('marketplace_marketplace'), array('type' => MY_Page::TYPE_SPOTLIGHT)
+            'marketplace/novice', $data, lang('marketplace_marketplace') . ' - ' . lang('marketplace_feature_wizard'), array('type' => MY_Page::TYPE_SPOTLIGHT)
         );
     }
 

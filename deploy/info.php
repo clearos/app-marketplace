@@ -30,14 +30,6 @@ $app['controllers']['selection']['inline_help'] = array(
 $app['controllers']['install']['wizard_name'] = lang('marketplace_app_review');
 $app['controllers']['install']['wizard_description'] = lang('marketplace_app_review_description');
 
-// Yuck - TODO - Probably shouldn't be using help_box function to do this
-$app['controllers']['select']['help_action'] = array(
-    'url' => '/app/marketplace/all',
-    'text' => lang('marketplace_select_all'),
-    'priority' => 'high',
-    'js' => array('id' => 'toggle_select')
-);
-
 /////////////////////////////////////////////////////////////////////////////
 // Packaging
 /////////////////////////////////////////////////////////////////////////////
