@@ -108,7 +108,6 @@ function get_account_info(userinit) {
     });
 }
 
-
 function update_install_form(data) {
 
     // If no apps are selected, no need to continue
@@ -199,23 +198,6 @@ function update_install_form(data) {
     }
 }
 
-function get_image(type, id, domid) {
-    $.ajax({
-        type: 'GET',
-        dataType: 'json',
-        url: '/app/marketplace/ajax/get_image',
-        data: 'type=' + type + '&id=' + id,
-        success: function(data) {
-            $('#' + domid).attr('src', data.location);
-        },
-        error: function(xhr, text, err) {
-            // Don't display any errors if ajax request was aborted due to page redirect/reload
-            if (xhr['abort'] == undefined)
-                clearos_dialog_box('error', '" . lang('base_warning') . "', xhr.responseText.toString());
-        }
-    });
-}
-
 function get_eula(basename, id) {
     $.ajax({
         type: 'POST',
@@ -226,11 +208,10 @@ function get_eula(basename, id) {
             if (data.code != 0) {
                 clearos_dialog_box('eula_failure', '" . lang('base_warning') . "', data.errmsg);
             } else {
-                if (data.noeula != undefined) {
+                if (data.noeula != undefined)
                     clearos_dialog_box('invalid_eula', '" . lang('base_warning') . "', '" . lang('marketplace_no_eula') . "');
-                } else {
+                else
                     clearos_eula(basename, 'eula_display', data.en_US.eula);
-                }
             }
         },
         error: function(xhr, text, err) {
@@ -377,7 +358,7 @@ function get_apps(realtime, offset) {
             $('#app-search-load').hide();
             clearos_marketplace_app_list($('#display_format').val(), data.list, $('#number_of_apps_to_display').val(), data.total);
             $('.theme-placeholder').each(function( index ) {
-                // Yank of prefix (app-logo-)
+                // Yank off prefix (app-logo-)
                 clearos_get_app_logo(this.id.substr(9), this.id);
                 console.log( index + ': ' + this.id.substr(9) );
             });
@@ -392,6 +373,7 @@ function get_apps(realtime, offset) {
 
 $(document).on('click', '.marketplace-app-event', function(e) {
     e.preventDefault();
+    // Undefined select means app is for Pro only
     if ($('#select-' + this.id).val() == undefined) {
         var id = this.id + '-na';
         var original = $('#' + this.id + '-na').css('color');
@@ -685,7 +667,7 @@ function get_app_details(basename) {
                 $('#app_cost').html(data.pricing.currency + ' '
                     + data.pricing.unit_price.toFixed(2) + ' ' + UNIT[data.pricing.unit]);
 
-            get_image('app-logo', data.basename, 'detail_img');
+            clearos_get_app_logo(data.basename, 'detail_img');
             $('#app_rating').html(get_rating(data.rating, data.rating_count, true, true));
             $('#app_category').html(data.category);
             var tags = data.tags.split(' ');
@@ -983,8 +965,6 @@ $(document).ready(function() {
         $('#theme_wizard_nav_next').hide();
     } else if ($(location).attr('href').match('.*marketplace\/install') != null && $('#num_of_apps').val() == 0) {
         $('#free_checkout').hide();
-        var t = get_table_install_apps();
-        t.fnClearTable();
     }
 
     if ($(location).attr('href').match('.*marketplace\/progress') != null) {
