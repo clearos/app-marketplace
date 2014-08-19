@@ -63,8 +63,15 @@ class Select extends ClearOS_Controller
         $data['mode'] = 'feature-wizard';
         $data['os_name'] = $this->session->userdata('os_name');
 
+        // Add setting link to breadcrumb trail
+        $breadcrumb_links = array(
+            'checkout' => array('url' => '/app/marketplace/install', 'tag' => lang('marketplace_install')),
+            'cancel' => array('url' => '/app/marketplace/install/delete/all', 'tag' => lang('base_cancel'))
+        );
+
         $this->page->view_form(
-            'marketplace/novice', $data, lang('marketplace_marketplace') . ' - ' . lang('marketplace_feature_wizard'), array('type' => MY_Page::TYPE_SPOTLIGHT)
+            'marketplace/novice', $data, lang('marketplace_marketplace') . ' - ' . lang('marketplace_feature_wizard'),
+            array('type' => MY_Page::TYPE_SPOTLIGHT, 'breadcrumb_links' => $breadcrumb_links)
         );
     }
 

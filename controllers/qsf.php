@@ -106,8 +106,15 @@ class Qsf extends ClearOS_Controller
             }
         }
 
+        // Add setting link to breadcrumb trail
+        $breadcrumb_links = array(
+            'checkout' => array('url' => '/app/marketplace/install', 'tag' => lang('marketplace_install')),
+            'cancel' => array('url' => '/app/marketplace/install/delete/all', 'tag' => lang('base_cancel'))
+        );
+
         $this->page->view_form(
-            'marketplace/quick_select', $data, lang('marketplace_marketplace'), array('type' => MY_Page::TYPE_SPOTLIGHT)
+            'marketplace/quick_select', $data, lang('marketplace_marketplace'),
+            array('type' => MY_Page::TYPE_SPOTLIGHT, 'breadcrumb_links' => $breadcrumb_links)
         );
     }
 }

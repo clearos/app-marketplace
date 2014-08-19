@@ -73,9 +73,7 @@ echo "  });\n";
 echo "</script>\n";
 if ($qsf_ready)
     echo "<div id='marketplace-app-container'></div>";
-echo "<div style='text-align: center; padding: 10px 10px 0px 10px;'>";
-echo "<div id='marketplace-loading' style='padding: 10px 0px 0px 0px;'>" . loading('normal', lang('marketplace_searching_marketplace'), array('icon-below' => TRUE)) . "</div>";
+echo loading('2em', lang('marketplace_loading'), array('icon-below' => TRUE, 'center' => TRUE, 'id' => 'app-search-load', 'class' => 'marketplace-app-loading'));
 echo "<div id='app_list_overview'></div>";
-echo "</div>";
 echo "<input id='display_format' type='hidden' value='$display_format'>";
 echo "<input type='hidden' value='mode3' id='wizard_marketplace_mode' name='wizard_marketplace_mode' />\n";
