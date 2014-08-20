@@ -36,7 +36,8 @@ echo form_header(lang('marketplace_quick_select'));
 
 if ($qsf_ready)
     $buttons = array(
-        form_submit_custom('reset', lang('base_reset'), 'high')
+        anchor_custom('install', lang('marketplace_download_and_install'), 'high'),
+        form_submit_custom('reset', lang('base_reset'), 'low')
     );
 else
     $buttons = array(

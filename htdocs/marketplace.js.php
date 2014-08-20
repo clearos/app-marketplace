@@ -392,6 +392,8 @@ function get_apps(realtime, offset) {
             var options = new Object();
             if ($('#wizard_marketplace_mode').val() == 'mode1')
                 options.mode = 'feature';
+            else if ($('#wizard_marketplace_mode').val() == 'mode3')
+                options.mode = 'qsf';
             if (toggle_state == 'all') {
                 $('#toggle_select').html('" . lang('marketplace_select_all') . "');
                 $('#toggle_select').attr('href', '/app/marketplace/all');
@@ -405,7 +407,7 @@ function get_apps(realtime, offset) {
             if ($('#wizard_marketplace_mode').val() == 'mode1')
                 to_display = 0;
             
-            clearos_marketplace_app_list($('#display_format').val(), applist, to_display, applist.length, options);
+            clearos_marketplace_app_list($('#display_format').val(), applist, to_display, data.total, options);
 
             if ($('#wizard_marketplace_mode').val() == 'mode1' && exclusive_app_selected)
                 add_optional_apps(exclusive_app_selected);
@@ -442,17 +444,20 @@ $(document).on('click', '.marketplace-app-event', function(e) {
         $('#select-' + this.id).prop('checked', true);
         marketplace_select_app(this.id);
     }
-    clicked_app = this.id
+    var clicked_app = new Object();
+    clicked_app.id = this.id;
+    clicked_app.name = $('#' + this.id).attr('data-appname'); 
     // Mode one hidden field is novice mode/select by feature
     if ($('#wizard_marketplace_mode').val() == 'mode1' && novice_set[novice_index].exclusive && $('#' + this.id,'#optional-apps').length != 1) {
         // Need to unset all other apps before selecting this one
         var apps = Array();
         $.each($('#form_app_list input[type=\'checkbox\']'), function (index, value) {
-            if (clicked_app == value.id.replace('select-', '') && $('#' + value.id).prop('checked')) {
+            if (clicked_app.id == value.id.replace('select-', '') && $('#' + value.id).prop('checked')) {
                 apps[index] = {state: '1', id: this.id.replace('select-', '')};
             } else {
+                $('#active-' + value.id).addClass('theme-hidden');
                 $('#' + value.id).prop('checked', false);
-                $('#' + value.id.replace('select-', '')).removeClass('marketplace-selected');
+                marketplace_unselect_app(value.id.replace('select-', ''));
                 apps[index] = {state: '0', id: this.id.replace('select-', '')};
             }
         });
@@ -467,16 +472,18 @@ $(document).on('click', '.marketplace-app-event', function(e) {
     }
 });
 
-function add_optional_apps(app_focus) {
+function add_optional_apps(app) {
     // Add Novice Optional apps
     var content = '';
     var options = new Object();
+    options.optional_apps = true;
     var applist = [];
     $.each(novice_optional_apps, function(index, myapp) { 
-        if (myapp.app_parent == app_focus)
+        if (myapp.app_parent == app.id)
             applist.push(myapp.app_child);
     });
     $('#optional-apps').remove();
+    $('#marketplace-app-container').append('<div id=\'optional-apps\'><h2>" . lang('marketplace_optional_apps') . " - ' + app.name + ' </h2></div>');
     clearos_marketplace_app_list($('#display_format').val(), applist, 0, applist.length, options);
 }
 
@@ -1028,7 +1035,7 @@ $(document).ready(function() {
 
     if ($(location).attr('href').match('.*progress$|.*progress\/busy') != null) {
         get_progress();
-    } else if ($(location).attr('href').match('.*install') != null || $(location).attr('href').match('.*install\/delete\/.*') != null) {
+    } else if ($(location).attr('href').match('.*install$|.*install\/.*') != null) {
         if ($('#total').val() == 0) {
             allow_noauth_mods();
             $('#account-information-container').remove();
