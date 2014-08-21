@@ -101,6 +101,8 @@ class Ajax extends ClearOS_Controller
                     $details->no_uninstall = TRUE;
                 else
                     $details->no_uninstall = FALSE;
+            } else {
+                $details->up2date = TRUE;
             }
 
             // Re-encode to JSON and return
@@ -830,7 +832,7 @@ class Ajax extends ClearOS_Controller
 
     private function _is_up2date($current, $compare)
     {
-        clearos_profile(__METHOD__, __LINE__);
+        clearos_profile(__METHOD__, __LINE__, 'WATCH ' . $current . ' vs ' . $compare);
 
         // May not need to go through any regex if strings are identical
         if ($current == $compare)

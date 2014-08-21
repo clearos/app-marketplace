@@ -616,6 +616,9 @@ function get_app_details(basename) {
                 return;
             }
 
+            // Add title to review form
+            $('#review-app-name').html(data.name);
+
             // Hide the loading page
             $('#app-loading').remove();
             $('#app-details-container').show(600);
@@ -1067,11 +1070,6 @@ $(document).ready(function() {
             }
         });
         bulk_cart_update(JSON.stringify(apps), toggle);
-    });
-
-    $('#comment').keyup(function() {
-        var charLength = $(this).val().length;
-        $('#char-remaining').html(1000 - charLength + ' " . lang('marketplace_remaining') . "');
     });
 
     $('#novice-learn-more-action').on('click', function(event) {
