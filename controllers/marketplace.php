@@ -228,7 +228,7 @@ class Marketplace extends ClearOS_Controller
             return;
         }
 
-        $this->page->view_form('marketplace/uninstall', $data, lang('marketplace_uninstall'));
+        $this->page->view_form('marketplace/uninstall', $data, lang('marketplace_uninstall'), array('type' => MY_Page::TYPE_SPOTLIGHT));
     }
 
     /**

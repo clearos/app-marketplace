@@ -24,6 +24,7 @@ $this->lang->load('marketplace');
 ///////////////////////////////////////////////////////////////////////////////
 
 $buttons = array(
+    form_submit_custom('eval_checkout', lang('marketplace_eval_and_install'), 'high', array('id' => 'eval_checkout', 'hide' => TRUE)),
     form_submit_custom('buy_checkout', lang('marketplace_buy_and_install'), 'high', array('id' => 'buy_checkout'))
 );
 

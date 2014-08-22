@@ -111,11 +111,8 @@ function get_account_info(userinit) {
 function update_install_form(data) {
 
     // If no apps are selected, no need to continue
-    if ($('#noapps').val() != undefined) {
-        $('#r_fee_install').hide();
-        $('#r_eval_install').hide();
+    if ($('#noapps').val() != undefined)
         return;
-    }
     if (data.code == 0) {
         if ($('#total').val() > 0) {
             $('.cos-account-loading').remove();
@@ -189,9 +186,11 @@ function update_install_form(data) {
             } else {
                 if (data.evaluation) {
                     $('#payment_method').html('" . lang('marketplace_not_applicable') . "');
-                    $('#r_eval_install').show();
+                    $('#buy_checkout').remove();
+                    $('#eval_checkout').show();
                 } else {
-                    $('#r_fee_install').show();
+                    $('#eval_checkout').remove();
+                    $('#buy_checkout').show();
                 }
             }
         }
@@ -256,7 +255,6 @@ function bulk_cart_update(apps, toggle) {
                     $('#toggle_select').html('<span class=\'ui-button-text\'>" . lang('marketplace_select_none') . "</span>');
                 // Which apps to reset - this is coming back from our JSON data
                 $.each(data.apps, function (id, app) {
-                    //if ($('#select-' + app.id).prop('checked')) {
 					if (app.state == 1) {
                         $('#active-select-' + app.id).addClass('theme-hidden');
                         $('#select-' + app.id).prop('checked', false);
@@ -798,13 +796,16 @@ function get_app_details(basename) {
     });
 }
 
-function checkout(type) {
+function checkout(event, type) {
+    event.preventDefault();
+    console.log($('input[name=payment_method]:checked').val());
     $('#free_checkout').hide();
-    if ($('#po').prop('checked') && $('#po_number').val() == '') {
-        clearos_dialog_box('invalid_po_err', '" . lang('base_warning') . "', '" . lang('marketplace_invalid_po') . "');
+    var modal_feedback = null;
+    if ($('#po').prop('checked') && $('#mi-po_number').val() == '') {
+        modal_feedback = clearos_dialog_box('invalid_po_err', '" . lang('base_warning') . "', '" . lang('marketplace_invalid_po') . "');
         return;
-    } else if (type == 'paid' && !$('input[name=payment_method]').prop('checked')) {
-        clearos_dialog_box('invalid_method_err', '" . lang('base_warning') . "', '" . lang('marketplace_select_payment_method') . "');
+    } else if (type == 'paid' && !$('input[name=payment_method]').is(':checked')) {
+        modal_feedback = clearos_dialog_box('invalid_method_err', '" . lang('base_warning') . "', '" . lang('marketplace_select_payment_method') . "');
         return;
     } else {
         // Display 'processing' indication
@@ -822,21 +823,24 @@ function checkout(type) {
             else if ($('#debit').prop('checked'))
                 whirlyText += ' " . strtolower(lang('marketplace_debit')) . "...';
         }
-        processingText += '<div style=\\'width:100%; text-align: center;\\'><div class=\\'theme-loading-normal\\' style=\\'margin: 0 auto;\\'>' + whirlyText + '</div></div>';
-        clearos_dialog_box('processing_info', '" . lang('marketplace_processing_order') . "...', processingText);
-        $('#notes').html('<div class=\\'theme-loading-normal\\'>' + whirlyText + '</div>');
+        var w_options = new Object();
+        w_options.text = whirlyText;
+        w_options.center = true;
+        processingText += clearos_loading(w_options);
+        modal_feedback = clearos_dialog_box('processing_info', '" . lang('marketplace_processing_order') . "...', processingText);
+        $('#notes').html(clearos_loading(w_options));
         // Hide buttons and show loading...
-        $('#r_fee_install').hide();
-        $('#r_eval_install').hide();
+        $('#buy_checkout').hide();
+        $('#eval_checkout').remove();
     }
     $.ajax({
         type: 'POST',
         dataType: 'json',
         url: '/app/marketplace/ajax/checkout',
-        data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&payment=' + $('input[name=payment_method]').prop('checked') + '&po=' + $('#po_number').val(),
+        data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&payment=' + $('input[name=payment_method]:checked').val() + '&po=' + $('#mi-po_number').val(),
         success: function(data) {
             if (data.code != 0) {
-                $('#processing_info').dialog('close');
+                clearos_dialog_close(modal_feedback);
                 var options = new Object();
                 options.reload_on_close = true;
                 clearos_dialog_box('checkout_err', '" . lang('base_warning') . "', data.errmsg, options);
@@ -854,10 +858,12 @@ function checkout(type) {
 }
 
 function toggle_payment_display() {
-    if ($('#po').prop('checked'))
+    if ($('#po').prop('checked')) {
         $('#po_number').show();
-    else
+    } else {
         $('#po_number').hide();
+        $('#display_po').html('');
+    }
 }
 
 function get_novice_set() {
@@ -1053,6 +1059,10 @@ $(document).ready(function() {
         }
     }
 
+    $('input[name=payment_method]').on('change', function(e) {
+        toggle_payment_display();
+    });
+
     $('#toggle_select').on('click', function(e) {
         e.preventDefault();
         var options = new Object();
@@ -1090,7 +1100,7 @@ $(document).ready(function() {
         e.preventDefault();
         $('.marketplace-search-bar').closest('form').submit();
     });
-    $('input').click(function() {
+    $('input').click(function (e) {
         if (this.id == 'add_review')
             clearos_add_review($('#app_name_title').html());
         else if (this.id == 'prevent_review')
@@ -1104,11 +1114,11 @@ $(document).ready(function() {
         else if (this.id == 'indiv_install')
             update_cart($('#basename').val(), this.id, true, true);
         else if (this.id == 'free_checkout')
-            checkout('free');
+            checkout(e, 'free');
         else if (this.id == 'buy_checkout')
-            checkout('paid');
+            checkout(e, 'paid');
         else if (this.id == 'eval_checkout')
-            checkout('eval');
+            checkout(e, 'eval');
         else if (this.id.match('^delete-'))
             remove_from_checkout(this.id.substr(7, this.id.length));
     });
@@ -1230,7 +1240,6 @@ function clearos_sdn_account_setup(landing_url, username, device_id) {
 function update_po() {
     $('#po').prop('checked', true);
     $('#display_po').html(' (' + $('#po_number').val() + ')');
-    $('#mi-po_number').val('');
 }
 ";
 
