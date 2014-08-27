@@ -47,6 +47,7 @@ use \clearos\apps\accounts\Accounts_Configuration as Accounts_Configuration;
 use \clearos\apps\mode\Mode_Engine as Mode_Engine;
 use \clearos\apps\mode\Mode_Factory as Mode_Factory;
 use \clearos\apps\clearcenter\Rest as Rest;
+use \clearos\apps\clearcenter\Static_Content as Static_Content;
 use \clearos\apps\clearcenter\Subscription_Engine as Subscription_Engine;
 use \clearos\apps\marketplace\Cart as Cart;
 use \clearos\apps\marketplace\Cart_Item as Cart_Item;
@@ -61,6 +62,7 @@ clearos_load_library('accounts/Accounts_Configuration');
 clearos_load_library('mode/Mode_Engine');
 clearos_load_library('mode/Mode_Factory');
 clearos_load_library('clearcenter/Rest');
+clearos_load_library('clearcenter/Static_Content');
 clearos_load_library('clearcenter/Subscription_Engine');
 clearos_load_library('marketplace/Cart');
 clearos_load_library('marketplace/Cart_Item');
@@ -961,7 +963,8 @@ class Marketplace extends Rest
                 );
             }
             
-            $result = $this->static_content('marketplace/logos/', $basename . ".svg");
+            $satic = new Static_Content();
+            $result = $static->get('marketplace/logos', $basename . ".svg");
 
             file_put_contents($filename, $result);
         
@@ -1003,7 +1006,8 @@ class Marketplace extends Rest
                 );
             }
             
-            $result = $this->static_content('marketplace/screenshots', $filename);
+            $satic = new Static_Content();
+            $result = $static->get('marketplace/screenshots', $filename);
 
             file_put_contents($cache_file, $result);
         
