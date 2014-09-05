@@ -963,7 +963,7 @@ class Marketplace extends Rest
                 );
             }
             
-            $satic = new Static_Content();
+            $static = new Static_Content();
             $result = $static->get('marketplace/logos', $basename . ".svg");
 
             file_put_contents($filename, $result);
@@ -1006,7 +1006,7 @@ class Marketplace extends Rest
                 );
             }
             
-            $satic = new Static_Content();
+            $static = new Static_Content();
             $result = $static->get('marketplace/screenshots', $filename);
 
             file_put_contents($cache_file, $result);
