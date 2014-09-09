@@ -29,7 +29,7 @@ $radios = array(
 );
 // Home/media type apps not suitable for display in Professional Edition
 if (!preg_match('/Professional/', $os_name))
-    $radios[] = radio_set_item('7', 'radio', "7", FALSE, array('label_id' => 'novice-6', 'class' => ('novice-select')));
+    $radios[] = radio_set_item('7', 'radio', "7", FALSE, array('label_id' => 'novice-6', 'class' => 'novice-select'));
 
 $buttons = array(
     anchor_custom('#', lang('marketplace_select_all'), 'high', array ('id' => 'toggle_select', 'hide' => TRUE)),
@@ -43,7 +43,7 @@ echo anchor_custom('#', lang('marketplace_learn_more'), 'high', array('id' => 'n
 echo column_close();
 echo row_close();
 
-echo box_footer('marketplace-novice-options', radio_set('feature', $radios));
+echo box_footer('marketplace-novice-options', radio_set(NULL, $radios, 'feature', array('buttons' => TRUE)));
 
 echo box_close();
 echo modal_info('novice-learn-more-modal', 'Title', 'Help'); 
