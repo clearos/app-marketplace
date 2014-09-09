@@ -357,7 +357,7 @@ class Cart extends Engine
         clearos_profile(__METHOD__, __LINE__);
 
         try {
-            $file = new File(CLEAROS_CACHE_DIR . "/cart." . $this->CI->session->userdata['sdn_rest_id']);
+            $file = new File(CLEAROS_CACHE_DIR . "/mp-cart." . $this->CI->session->userdata['sdn_rest_id']);
 
             if ($file->exists())
                 $file->delete();
@@ -380,7 +380,7 @@ class Cart extends Engine
         clearos_profile(__METHOD__, __LINE__);
 
         try {
-            $file = new File(CLEAROS_CACHE_DIR . "/cart." . $this->CI->session->userdata['sdn_rest_id']);
+            $file = new File(CLEAROS_CACHE_DIR . "/mp-cart." . $this->CI->session->userdata['sdn_rest_id']);
 
             if (!$file->exists())
                 $file->create('webconfig', 'webconfig', 600);
@@ -411,7 +411,7 @@ class Cart extends Engine
         clearos_profile(__METHOD__, __LINE__);
 
         try {
-            $file = new File(CLEAROS_CACHE_DIR . "/cart." . $this->CI->session->userdata['sdn_rest_id']);
+            $file = new File(CLEAROS_CACHE_DIR . "/mp-cart." . $this->CI->session->userdata['sdn_rest_id']);
 
             if (!$file->exists()) {
                 $this->is_loaded = TRUE;

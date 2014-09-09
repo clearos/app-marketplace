@@ -47,9 +47,11 @@ use \clearos\apps\accounts\Accounts_Configuration as Accounts_Configuration;
 use \clearos\apps\mode\Mode_Engine as Mode_Engine;
 use \clearos\apps\mode\Mode_Factory as Mode_Factory;
 use \clearos\apps\clearcenter\Rest as Rest;
+use \clearos\apps\clearcenter\Static_Content as Static_Content;
 use \clearos\apps\clearcenter\Subscription_Engine as Subscription_Engine;
-use \clearos\apps\Marketplace\Cart as Cart;
-use \clearos\apps\Marketplace\Cart_Item as Cart_Item;
+use \clearos\apps\marketplace\Cart as Cart;
+use \clearos\apps\marketplace\Cart_Item as Cart_Item;
+use \clearos\apps\tasks\Cron as Cron;
 
 clearos_load_library('base/Configuration_File');
 clearos_load_library('base/File');
@@ -60,9 +62,11 @@ clearos_load_library('accounts/Accounts_Configuration');
 clearos_load_library('mode/Mode_Engine');
 clearos_load_library('mode/Mode_Factory');
 clearos_load_library('clearcenter/Rest');
+clearos_load_library('clearcenter/Static_Content');
 clearos_load_library('clearcenter/Subscription_Engine');
 clearos_load_library('marketplace/Cart');
 clearos_load_library('marketplace/Cart_Item');
+clearos_load_library('tasks/Cron');
 
 // Exceptions
 //-----------
@@ -73,6 +77,7 @@ use \clearos\apps\base\Yum_Busy_Exception as Yum_Busy_Exception;
 
 clearos_load_library('base/Engine_Exception');
 clearos_load_library('base/Validation_Exception');
+clearos_load_library('base/Yum_Busy_Exception');
 
 ///////////////////////////////////////////////////////////////////////////////
 // C L A S S
@@ -104,6 +109,7 @@ class Marketplace extends Rest
     const COMMAND_RPM = '/bin/rpm';
     const FOLDER_MARKETPLACE = '/var/clearos/marketplace';
     const MAX_RECORDS = 10;
+    const PREFIX = 'mp-';
     const APP_PREFIX = 'app-';
     const PID_MASK_DEVICE_ASSIGN = 1;
     const PID_MASK_FUTURE_2 = 2;
@@ -286,6 +292,47 @@ class Marketplace extends Rest
         } catch (Exception $e) {
             throw new Engine_Exception(clearos_exception_message($e), CLEAROS_ERROR);
         }
+    }
+
+    /**
+     * Get filter options.
+     *
+     * @return array
+     * @throws Engine_Exception
+     */
+
+    function get_filter_options()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+        return array(
+            'category' => array(
+                'all' => lang('marketplace_filter_by_category'),
+                'cloud' => lang('base_category_cloud'),
+                'server' => lang('base_category_server'),
+                'network' => lang('base_category_network'),
+                'gateway' => lang('base_category_gateway'),
+                'system' => lang('base_category_system'),
+                'reports' => lang('base_category_reports')
+            ),
+            'price' => array(
+                'all' => lang('marketplace_filter_by_price'),
+                'free' => lang('marketplace_free'),
+                'paid' => lang('marketplace_paid')
+            ),
+            'intro' => array(
+                'all' => lang('marketplace_filter_by_intro'),
+                '7' => lang('marketplace_added_7_day'),
+                '30' => lang('marketplace_added_30_day'),
+                '180' => lang('marketplace_added_6_month'),
+                '365' => lang('marketplace_added_1_year'),
+            ),
+            'status' => array(
+                'all' => lang('marketplace_filter_by_install'),
+                'installed' => lang('marketplace_installed_apps'),
+                'upgrade_available' => lang('marketplace_upgrade_apps'),
+                'new' => lang('marketplace_new_apps')
+            ),
+        );
     }
 
     /**
@@ -600,7 +647,7 @@ class Marketplace extends Rest
         try {
             $cachekey = __CLASS__ . '-' . __FUNCTION__ . '-' . $max . '-' . $offset; 
 
-            if (!$realtime && $this->_check_cache($cachekey))
+            if (!$realtime && $this->_check_cache($cachekey, self::PREFIX))
                 return $this->cache;
     
             // Tell caller that we had no cache, had to use realtime
@@ -612,7 +659,7 @@ class Marketplace extends Rest
 
             $result = $this->request('marketplace', 'get_apps', $extras);
 
-            $this->_save_to_cache($cachekey, $result);
+            $this->_save_to_cache($cachekey, $result, self::PREFIX);
         
             return $result;
         } catch (Exception $e) {
@@ -638,7 +685,7 @@ class Marketplace extends Rest
         try {
             $cachekey = __CLASS__ . '-' . __FUNCTION__ . '-' . $basename; 
 
-            if (!$realtime && $this->_check_cache($cachekey))
+            if (!$realtime && $this->_check_cache($cachekey, self::PREFIX))
                 return $this->cache;
     
             $extras = array('basename' => $basename);
@@ -647,7 +694,7 @@ class Marketplace extends Rest
 
             $result = $this->request('marketplace', 'get_app_details', $extras);
 
-            $this->_save_to_cache($cachekey, $result);
+            $this->_save_to_cache($cachekey, $result, self::PREFIX);
 
             $response = json_decode($result);
         
@@ -742,8 +789,7 @@ class Marketplace extends Rest
             // Delete the cached file for this app
             // FIXME...this will work, but its ugly.
             $cachekey = __CLASS__ . '-get_app_details-' . $basename; 
-            $filename = md5($cachekey) . "." . $this->CI->session->userdata['sdn_rest_id']; 
-            $this->delete_cache($filename);
+            $this->delete_cache(self::PREFIX . md5($cachekey));
 
             return $result;
         } catch (Exception $e) {
@@ -796,7 +842,7 @@ class Marketplace extends Rest
 
             $cachekey = __CLASS__ . '-' . __FUNCTION__ . '-' . $id; 
 
-            if (!$realtime && $this->_check_cache($cachekey))
+            if (!$realtime && $this->_check_cache($cachekey, self::PREFIX))
                 return $this->cache;
 
             $extras = array("id" => $id);
@@ -884,6 +930,90 @@ class Marketplace extends Rest
             return $file->get_contents_as_array();
         } catch (Exception $e) {
             throw new Engine_Exception(clearos_exception_message($e), CLEAROS_ERROR);
+        }
+    }
+
+    /**
+     * Fetches app logo.
+     *
+     * @param String $basename app basename
+     *
+     * @return Object  JSON-encoded response
+     *
+     * @throws Webservice_Exception
+     */
+
+    public function get_app_logo($basename)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        try {
+
+            $cache_time = 2592000; // 30 days
+            $filename = CLEAROS_CACHE_DIR . "/mp-logo-" . $basename;
+            $lastmod = @filemtime($filename);
+            if ($lastmod && (time() - $lastmod < $cache_time)) {
+                // Use cached file.
+                return json_encode(
+                    array(  
+                        "code" => 0,
+                        "location" => "/cache/mp-logo-$basename",
+                        "base64" => base64_encode(file_get_contents($filename))
+                    )
+                );
+            }
+            
+            $static = new Static_Content();
+            $result = $static->get('marketplace/logos', $basename . ".svg");
+
+            file_put_contents($filename, $result);
+        
+            return json_encode(array("code" => 0, "location" => "/cache/mp-logo-" . $basename, "base64" => base64_encode($result)));
+        } catch (Exception $e) {
+            throw new Webservice_Exception(clearos_exception_message($e), CLEAROS_ERROR);
+        }
+    }
+
+    /**
+     * Fetches app screenshot.
+     *
+     * @param String $basename app basename
+     * @param int    $index    index of screenshot
+     *
+     * @return Object  JSON-encoded response
+     *
+     * @throws Webservice_Exception
+     */
+
+    public function get_app_screenshot($basename, $index)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        try {
+
+            // SDN servers do not have ss- prefix
+            $cache_time = 2592000; // 30 days
+            $filename = $basename . "_" . $index . ".png";
+            $cache_file = CLEAROS_CACHE_DIR . "/ss-" . $filename;
+            $lastmod = @filemtime($cache_file);
+            if ($lastmod && (time() - $lastmod < $cache_time)) {
+                // Use cached file.
+                return json_encode(
+                    array(  
+                        "code" => 0,
+                        "location" => "/cache/ss-$filename"
+                    )
+                );
+            }
+            
+            $static = new Static_Content();
+            $result = $static->get('marketplace/screenshots', $filename);
+
+            file_put_contents($cache_file, $result);
+        
+            return json_encode(array("code" => 0, "location" => "/cache/ss-$filename"));
+        } catch (Exception $e) {
+            throw new Webservice_Exception(clearos_exception_message($e), CLEAROS_ERROR);
         }
     }
 
@@ -989,6 +1119,17 @@ class Marketplace extends Rest
 
         try {
             $dependencies = $this->get_app_deletion_dependancies($basename);
+
+            // Delete any cron configlets
+            try {
+                $cron = new Cron();
+                foreach ($dependencies as $pkg)
+                    $cron->delete_configlet($pkg); 
+            } catch (\Exception $e) {
+                // Ignore
+            } 
+            // Stop any services
+
             $apps = implode(' ', array_keys($dependencies));
             $options = array('validate_exit_code' => FALSE);
             $shell = new Shell();

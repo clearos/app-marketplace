@@ -34,7 +34,7 @@ echo form_header(lang('base_settings'));
 $read_only = FALSE;
 $buttons = array(
     form_submit_update('submit'),
-    form_submit_custom('delete_cache', lang('marketplace_clear_cache')),
+    form_submit_custom('delete_cache', lang('marketplace_clear_cache'), 'low'),
     anchor_cancel('/app/marketplace')
 );
 

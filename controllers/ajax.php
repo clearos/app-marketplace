@@ -72,8 +72,8 @@ class Ajax extends ClearOS_Controller
             if ($this->input->post('realtime'))
                 $realtime = TRUE;
 
-            if ($this->input->post('id'))
-                $basename = $this->input->post('id');
+            if ($this->input->post('basename'))
+                $basename = $this->input->post('basename');
 
             // Load dependencies
             $this->load->library('marketplace/Marketplace');
@@ -101,6 +101,8 @@ class Ajax extends ClearOS_Controller
                     $details->no_uninstall = TRUE;
                 else
                     $details->no_uninstall = FALSE;
+            } else {
+                $details->up2date = TRUE;
             }
 
             // Re-encode to JSON and return
@@ -137,9 +139,8 @@ class Ajax extends ClearOS_Controller
             // Get installed apps
             $installed_apps = $this->marketplace->get_installed_apps(); 
 
-            $max = $this->input->post('max');
-            $offset = $this->input->post('offset');
-            $search_reset = $this->input->post('search_reset');
+            $max = $this->input->post('max') ? $this->input->post('max') : 0;
+            $offset = $this->input->post('offset') ? $this->input->post('offset') : 0;
 
             // On searches or filtering, we grab all apps, so override max, offset will be ignored 
             $filter = $this->marketplace->get_search_criteria();
@@ -161,12 +162,13 @@ class Ajax extends ClearOS_Controller
             $search_counter = 0;
             $applist = $response->list;
             foreach ($applist as $app) {
-
                 $cart_item = new \clearos\apps\marketplace\Cart_Item(Marketplace::APP_PREFIX . preg_replace("/_/", "-", $app->basename)); 
-                $cart_item->set(get_object_vars($app->pricing));
-                // Whether an item has an EULA or not is not in the pricing object
-                $cart_item->set_eula($app->eula);
-                $cart_item->serialize($this->session->userdata('sdn_rest_id'));
+                if ($cart_item->cache_expired()) {
+                    $cart_item->set(get_object_vars($app->pricing));
+                    // Whether an item has an EULA or not is not in the pricing object
+                    $cart_item->set_eula($app->eula);
+                    $cart_item->serialize($this->session->userdata('sdn_rest_id'));
+                }
 
                 // Save some installation and version info - replace underscore with hyphen for RPM name
                 $rpm = Marketplace::APP_PREFIX . preg_replace("/_/", "-", $app->basename);
@@ -311,6 +313,48 @@ class Ajax extends ClearOS_Controller
     }
 
     /**
+     * Ajax get app logo controller
+     * @param String  $basename app basename
+     *
+     * @return JSON
+     */
+
+    function get_app_logo($basename)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        header('Cache-Control: no-cache, must-revalidate');
+        header('Content-type: application/json');
+        try {
+            $this->load->library('marketplace/Marketplace');
+            echo $this->marketplace->get_app_logo($basename);
+        } catch (Exception $e) {
+            echo json_encode(Array('code' => clearos_exception_code($e), 'errmsg' => clearos_exception_message($e)));
+        }
+    }
+
+    /**
+     * Ajax get app screenshot controller
+     * @param String  $basename app basename
+     *
+     * @return JSON
+     */
+
+    function get_app_screenshot($basename, $index)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        header('Cache-Control: no-cache, must-revalidate');
+        header('Content-type: application/json');
+        try {
+            $this->load->library('marketplace/Marketplace');
+            echo $this->marketplace->get_app_screenshot($basename, $index);
+        } catch (Exception $e) {
+            echo json_encode(Array('code' => clearos_exception_code($e), 'errmsg' => clearos_exception_message($e)));
+        }
+    }
+
+    /**
      * Ajax get image controller
      *
      * @return JSON
@@ -440,8 +484,12 @@ class Ajax extends ClearOS_Controller
                 throw new Engine_Exception(lang('marketplace_no_install_no_review'), CLEAROS_WARNING);
 
             $this->load->library('marketplace/Marketplace');
+
+            // Auto submit 'Anonymous' if pseudonym is not provided.
             echo $this->marketplace->add_review(
-                $this->input->post('basename'), $this->input->post('rating'), $this->input->post('comment'), $this->input->post('pseudonym'), $this->input->post('update')
+                $this->input->post('basename'), $this->input->post('rating'), $this->input->post('comment'),
+                (!$this->input->post('pseudonym') ? lang('marketplace_anonymous') : $this->input->post('pseudonym')),
+                $this->input->post('update')
             );
         } catch (Exception $e) {
             echo json_encode(Array('code' => clearos_exception_code($e), 'errmsg' => clearos_exception_message($e)));
@@ -566,7 +614,7 @@ class Ajax extends ClearOS_Controller
             $this->cart->clear();
 
             // Clear cache to force fetching new status
-            $this->marketplace->delete_cache();
+            $this->marketplace->delete_cache(NULL, Marketplace::PREFIX);
 
             // Clear app cache install list
             $this->marketplace->delete_cached_app_install_list();
@@ -784,7 +832,7 @@ class Ajax extends ClearOS_Controller
 
     private function _is_up2date($current, $compare)
     {
-        clearos_profile(__METHOD__, __LINE__);
+        clearos_profile(__METHOD__, __LINE__, 'WATCH ' . $current . ' vs ' . $compare);
 
         // May not need to go through any regex if strings are identical
         if ($current == $compare)
