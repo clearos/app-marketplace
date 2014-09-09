@@ -1,7 +1,7 @@
 
 Name: app-marketplace
 Epoch: 1
-Version: 1.6.5
+Version: 2.0.0
 Release: 1%{dist}
 Summary: Marketplace
 License: Proprietary
@@ -27,7 +27,6 @@ Requires: app-clearcenter-core => 1:1.5.11
 Requires: app-registration-core => 1:1.2.4
 Requires: app-base-core => 1:1.4.38
 Requires: yum-marketplace-plugin >= 1.5
-Requires: theme-default >= 6.4.26
 Requires: clearos-framework >= 6.4.27
 Requires: clearos-release-jws >= 1.1
 
