@@ -43,7 +43,7 @@ echo anchor_custom('#', lang('marketplace_learn_more'), 'high', array('id' => 'n
 echo column_close();
 echo row_close();
 
-echo box_footer('marketplace-novice-options', radio_set(NULL, $radios, 'feature', array('buttons' => TRUE)));
+echo box_footer('marketplace-novice-options', radio_set($radios, 'feature', array('buttons' => TRUE)));
 
 echo box_close();
 echo modal_info('novice-learn-more-modal', 'Title', 'Help'); 

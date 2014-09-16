@@ -30,6 +30,12 @@ $app['controllers']['selection']['inline_help'] = array(
 $app['controllers']['install']['wizard_name'] = lang('marketplace_app_review');
 $app['controllers']['install']['wizard_description'] = lang('marketplace_app_review_description');
 
+$app['controllers']['wizard']['inline_help'] = array(
+    lang('marketplace_install_by_function') => lang('marketplace_install_by_function_description'),
+    lang('marketplace_install_by_category') => lang('marketplace_install_by_category_description'),
+    lang('marketplace_install_by_qsf') => lang('marketplace_install_by_qsf_description'),
+    lang('marketplace_skip_wizard') => lang('marketplace_skip_wizard_description')
+);
 /////////////////////////////////////////////////////////////////////////////
 // Packaging
 /////////////////////////////////////////////////////////////////////////////

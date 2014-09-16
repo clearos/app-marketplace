@@ -19,48 +19,22 @@
 $this->lang->load('base');
 $this->lang->load('marketplace');
 
-///////////////////////////////////////////////////////////////////////////////
-// Content 
-///////////////////////////////////////////////////////////////////////////////
+$radios = array(
+    radio_set_item('function', 'radio', lang('marketplace_install_by_function'), TRUE, array('label_id' => 'wizard-function', 'class' => 'function-select active', 'orientation' => 'horizontal', 'buttons' => TRUE)),
+    radio_set_item('category', 'radio', lang('marketplace_install_by_category'), FALSE, array('label_id' => 'wizard-category', 'class' => 'novice-select', 'orientation' => 'horizontal', 'buttons' => TRUE)),
+    radio_set_item('qsf', 'radio', lang('marketplace_install_by_qsf'), FALSE, array('label_id' => 'wizard-qsf', 'class' => 'novice-select', 'orientation' => 'horizontal', 'buttons' => TRUE)),
+    radio_set_item('skip', 'radio', lang('marketplace_skip_wizard'), FALSE, array('label_id' => 'skip', 'class' => 'wizard-skip', 'orientation' => 'horizontal', 'buttons' => TRUE)),
+);
 
-// TODO: move style elements to theme
-
-$banner = "<img style='float: right; padding-left: 20px;' src='" . clearos_app_htdocs('marketplace') . "/marketplace.png' alt=''>";
-$banner .= "<h2 style='font-size: 1.8em; color: #909090; width: 687px;'>" . lang('marketplace_getting_started') . "</h2>";
-$banner .= "<p style='font-size: 1.2em; line-height: 20px;'>" . lang('marketplace_wizard_congrats') . "</p>";
-
-$banner .= "<div class='marketplace-wizard-option-container'>";
-$banner .= "  <div class='mode marketplace-wizard-options' id='mode1'>";
-$banner .= "    <div style='font-size: 1.4em; font-weight: bold;'>" . lang('marketplace_install_by_function') . "</div>";
-$banner .= "<img style='float: right; padding: 10px 0px 5px 10px;' src='" . clearos_app_htdocs('marketplace') . "/marketplace_feature_50x50.png' alt=''>";
-$banner .= "    <div style='text-align: left; padding-top: 10px;'>" . lang('marketplace_install_by_function_description') . "</div>";
-$banner .= "  </div>";
-$banner .= "  <div  class='mode marketplace-wizard-options' id='mode2'>";
-$banner .= "    <div style='font-size: 1.4em; font-weight: bold;'>" . lang('marketplace_install_by_category') . "</div>";
-$banner .= "<img style='float: right; padding: 10px 0px 5px 10px;' src='" . clearos_app_htdocs('marketplace') . "/marketplace_category_50x50.png' alt=''>";
-$banner .= "    <div style='text-align: left; padding-top: 10px;'>" . lang('marketplace_install_by_category_description') . "</div>";
-$banner .= "  </div>";
-$banner .= "  <div class='mode marketplace-wizard-options' id='mode3'>";
-$banner .= "    <div style='font-size: 1.4em; font-weight: bold;'>" . lang('marketplace_install_by_qsf') . "</div>";
-$banner .= "<img style='float: right; padding: 10px 0px 5px 10px;' src='" . clearos_app_htdocs('marketplace') . "/marketplace_qsf_50x50.png' alt=''>";
-$banner .= "    <div style='text-align: left; padding-top: 10px;'>" . lang('marketplace_install_by_qsf_description') . "</div>";
-$banner .= "  </div>";
-$banner .= "  <div class='mode marketplace-wizard-options' id='mode4'>";
-$banner .= "    <div style='font-size: 1.4em; font-weight: bold;'>" . lang('marketplace_skip_wizard') . "</div>";
-$banner .= "<img style='float: right; padding: 10px 0px 5px 10px;' src='" . clearos_app_htdocs('marketplace') . "/marketplace_exit_50x50.png' alt=''>";
-$banner .= "    <div style='text-align: left; padding-top: 10px;'>" . lang('marketplace_skip_wizard_description') . "</div>";
-$banner .= "  </div>";
-$banner .= "</div>";
-
-///////////////////////////////////////////////////////////////////////////////
-// Form
-///////////////////////////////////////////////////////////////////////////////
-
-echo form_open('marketplace/wizard/intro', array('id' => 'marketplace_intro'));
-echo form_header(lang('marketplace_welcome_to_marketplace'));
-
-echo form_banner($banner);
+echo box_open(lang('marketplace_getting_started'));
+echo row_open();
+echo column_open(2);
+echo app_logo('marketplace');
+echo column_close();
+echo column_open(10);
+echo lang('marketplace_wizard_congrats');
+echo column_close();
+echo row_close();
+echo box_footer('marketplace-feature-select', radio_set($radios, 'feature', array('buttons' => TRUE)));
+echo box_close();
 echo "<input type='hidden' value='$mode' id='wizard_marketplace_mode' name='wizard_marketplace_mode' />";
-
-echo form_footer();
-echo form_close();
