@@ -292,6 +292,7 @@ $lang['marketplace_getting_started'] = 'Getting Started';
 $lang['marketplace_wizard_congrats'] = 'Congratulations!  You are now ready to install apps and integrated cloud services through the ClearOS Marketplace.  You will find a large selection of both free and paid apps that can be installed in just a few short steps.';
 $lang['marketplace_install_by_function'] = 'By Function';
 $lang['marketplace_install_by_function_description'] = 'If you are new to ClearOS or prefer to configure the system by specific tasks (eg. prevent users from accessing certain websites, share files between users etc.), select this option.';
+$lang['marketplace_install_by_function_help'] = 'Selecting apps to install by function (or feature) allows admins new to ClearOS to quickly learn the core capabilities available.  To select an app for install, click on the "Select for Install" button.  Change/view new feature summaries by clicking through the numbered selector buttons.  When you have finished going through the features, click "Next".';
 $lang['marketplace_install_by_category'] = 'By Category';
 $lang['marketplace_install_by_category_description'] = 'Displays groups of apps based on a category classification system used in the main menu.  If you are familiar with basic networking/server terms and familiar with the ClearOS Marketplace, select this option.';
 $lang['marketplace_install_by_qsf'] = 'Quick Select File';

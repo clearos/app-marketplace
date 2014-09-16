@@ -20,10 +20,54 @@ $this->lang->load('base');
 $this->lang->load('marketplace');
 
 $radios = array(
-    radio_set_item('function', 'radio', lang('marketplace_install_by_function'), TRUE, array('label_id' => 'wizard-function', 'class' => 'function-select active', 'orientation' => 'horizontal', 'buttons' => TRUE)),
-    radio_set_item('category', 'radio', lang('marketplace_install_by_category'), FALSE, array('label_id' => 'wizard-category', 'class' => 'novice-select', 'orientation' => 'horizontal', 'buttons' => TRUE)),
-    radio_set_item('qsf', 'radio', lang('marketplace_install_by_qsf'), FALSE, array('label_id' => 'wizard-qsf', 'class' => 'novice-select', 'orientation' => 'horizontal', 'buttons' => TRUE)),
-    radio_set_item('skip', 'radio', lang('marketplace_skip_wizard'), FALSE, array('label_id' => 'skip', 'class' => 'wizard-skip', 'orientation' => 'horizontal', 'buttons' => TRUE)),
+    radio_set_item(
+        'function',
+        'radio',
+        lang('marketplace_install_by_function'),
+        TRUE,
+        array(
+            'label_id' => 'mode1',
+            'class' => 'marketplace_wizard_mode active',
+            'orientation' => 'horizontal',
+            'buttons' => TRUE
+        )
+    ),
+    radio_set_item(
+        'category',
+        'radio',
+        lang('marketplace_install_by_category'),
+        FALSE,
+        array(
+            'label_id' => 'mode2',
+            'class' => 'marketplace_wizard_mode',
+            'orientation' => 'horizontal',
+            'buttons' => TRUE
+        )
+    ),
+    radio_set_item(
+        'qsf',
+        'radio',
+        lang('marketplace_install_by_qsf'),
+        FALSE,
+        array(
+            'label_id' => 'mode3',
+            'class' => 'marketplace_wizard_mode',
+            'orientation' => 'horizontal',
+            'buttons' => TRUE
+        )
+    ),
+    radio_set_item(
+        'skip',
+        'radio',
+        lang('marketplace_skip_wizard'),
+        FALSE,
+        array(
+            'label_id' => 'mode4',
+            'class' => 'marketplace_wizard_mode',
+            'orientation' => 'horizontal',
+            'buttons' => TRUE
+        )
+    ),
 );
 
 echo box_open(lang('marketplace_getting_started'));

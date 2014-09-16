@@ -20,16 +20,16 @@ $this->lang->load('base');
 $this->lang->load('marketplace');
 
 $radios = array(
-    radio_set_item('1', 'radio', "1", TRUE, array('label_id' => 'novice-0', 'class' => 'novice-select active')),
-    radio_set_item('2', 'radio', "2", FALSE, array('label_id' => 'novice-1', 'class' => 'novice-select')),
-    radio_set_item('3', 'radio', "3", FALSE, array('label_id' => 'novice-2', 'class' => 'novice-select')),
-    radio_set_item('4', 'radio', "4", FALSE, array('label_id' => 'novice-3', 'class' => 'novice-select')),
-    radio_set_item('5', 'radio', "5", FALSE, array('label_id' => 'novice-4', 'class' => 'novice-select')),
-    radio_set_item('6', 'radio', "6", FALSE, array('label_id' => 'novice-5', 'class' => 'novice-select'))
+    radio_set_item('1', 'radio', "1", TRUE, array('label_id' => 'novice-0', 'class' => 'novice-select active', 'orientation' => 'horizontal', 'buttons' => TRUE)),
+    radio_set_item('2', 'radio', "2", FALSE, array('label_id' => 'novice-1', 'class' => 'novice-select', 'orientation' => 'horizontal', 'buttons' => TRUE)),
+    radio_set_item('3', 'radio', "3", FALSE, array('label_id' => 'novice-2', 'class' => 'novice-select', 'orientation' => 'horizontal', 'buttons' => TRUE)),
+    radio_set_item('4', 'radio', "4", FALSE, array('label_id' => 'novice-3', 'class' => 'novice-select', 'orientation' => 'horizontal', 'buttons' => TRUE)),
+    radio_set_item('5', 'radio', "5", FALSE, array('label_id' => 'novice-4', 'class' => 'novice-select', 'orientation' => 'horizontal', 'buttons' => TRUE)),
+    radio_set_item('6', 'radio', "6", FALSE, array('label_id' => 'novice-5', 'class' => 'novice-select', 'orientation' => 'horizontal', 'buttons' => TRUE))
 );
 // Home/media type apps not suitable for display in Professional Edition
 if (!preg_match('/Professional/', $os_name))
-    $radios[] = radio_set_item('7', 'radio', "7", FALSE, array('label_id' => 'novice-6', 'class' => 'novice-select'));
+    $radios[] = radio_set_item('7', 'radio', "7", FALSE, array('label_id' => 'novice-6', 'class' => 'novice-select', 'orientation' => 'horizontal', 'buttons' => TRUE));
 
 $buttons = array(
     anchor_custom('#', lang('marketplace_select_all'), 'high', array ('id' => 'toggle_select', 'hide' => TRUE)),

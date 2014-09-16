@@ -20,15 +20,87 @@ $this->lang->load('base');
 $this->lang->load('base_category');
 $this->lang->load('marketplace');
 
-echo "<div style='text-align: center; padding: 10px 10px 0px 10px;'>";
-echo "<div id='marketplace-loading' style='padding: 10px 0px 0px 0px;'>" . loading('normal', lang('marketplace_searching_marketplace'), array('icon-below' => TRUE)) . "</div>";
-echo "<div id='app_list_overview'></div>";
-echo "</div>";
-
-$headers = array(
-    'Name',
-    lang('marketplace_description')
+$radios = array(
+    radio_set_item(
+        'cloud',
+        'radio',
+        lang('base_category_cloud'),
+        TRUE,
+        array(
+            'label_id' => 'category-cloud',
+            'class' => 'category-select active',
+            'orientation' => 'horizontal',
+            'buttons' => TRUE
+        )
+    ),
+    radio_set_item(
+        'gateway',
+        'radio',
+        lang('base_category_gateway'),
+        FALSE,
+        array(
+            'label_id' => 'category-gateway',
+            'class' => 'category-select',
+            'orientation' => 'horizontal',
+            'buttons' => TRUE
+        )
+    ),
+    radio_set_item(
+        'network',
+        'radio',
+        lang('base_category_network'),
+        FALSE,
+        array(
+            'label_id' => 'category-network',
+            'class' => 'category-select',
+            'orientation' => 'horizontal',
+            'buttons' => TRUE
+        )
+    ),
+    radio_set_item(
+        'server',
+        'radio',
+        lang('base_category_server'),
+        FALSE,
+        array(
+            'label_id' => 'category-server',
+            'class' => 'category-select',
+            'orientation' => 'horizontal',
+            'buttons' => TRUE
+        )
+    ),
+    radio_set_item(
+        'system',
+        'radio',
+        lang('base_category_system'),
+        FALSE,
+        array(
+            'label_id' => 'category-system',
+            'class' => 'category-select',
+            'orientation' => 'horizontal',
+            'buttons' => TRUE
+        )
+    ),
+    radio_set_item(
+        'reports',
+        'radio',
+        lang('base_category_reports'),
+        FALSE,
+        array(
+            'label_id' => 'category-reports',
+            'class' => 'category-select',
+            'orientation' => 'horizontal',
+            'buttons' => TRUE
+        )
+    ),
 );
+
+$buttons = array(
+    anchor_custom('#', lang('marketplace_select_all'), 'high', array ('id' => 'toggle_select', 'hide' => TRUE)),
+);
+echo box_open(lang('marketplace_app_selection'), array('id' => 'marketplace-category', 'anchors' => button_set($buttons)));
+echo box_footer('marketplace-category-options', radio_set($radios, 'category', array('buttons' => TRUE)));
+echo box_close();
 
 echo form_open('marketplace/settings', array('method' => 'GET', 'name' => 'form_app_list', 'id' => 'form_app_list'));
 echo "<div id='marketplace-app-container'></div>";
@@ -36,25 +108,9 @@ echo form_close();
 echo "<script type='text/javascript'>\n";
 echo "  $(document).ready(function() {\n";
 echo "    get_apps(false, 0);\n";
-echo "    $(function() {
-            $('#radio').buttonset();
-          });
-";
 echo "  });\n";
 echo "</script>\n";
-echo "<div id='app-selector-header'>
-        <div id='category-container'>
-          <div id='radio' class='ui-buttonset'>
-            <input type='radio' id='category-cloud' name='radio' class='marketplace-category' checked='checked' /><label for='category-cloud'>" . lang('base_category_cloud') . "</label>
-            <input type='radio' id='category-gateway' name='radio' class='marketplace-category' /><label for='category-gateway'>" . lang('base_category_gateway') . "</label>
-            <input type='radio' id='category-server' name='radio' class='marketplace-category' /><label for='category-server'>" . lang('base_category_server') . "</label>
-            <input type='radio' id='category-network' name='radio' class='marketplace-category' /><label for='category-network'>" . lang('base_category_network') . "</label>
-            <input type='radio' id='category-system' name='radio' class='marketplace-category' /><label for='category-system'>" . lang('base_category_system') . "</label>
-            <input type='radio' id='category-reports' name='radio' class='marketplace-category' /><label for='category-reports'>" . lang('base_category_reports') . "</label>
-          </div>
-        </div>
-      </div>
-";
+
 echo "<input id='number_of_apps_to_display' type='hidden' value='$number_of_apps_to_display'>\n";
 echo "<input id='display_format' type='hidden' value='$display_format'>\n";
 echo "<input type='hidden' value='$mode' id='wizard_marketplace_mode' name='wizard_marketplace_mode' />\n";

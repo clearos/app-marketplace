@@ -82,6 +82,175 @@ UNIT[3000] = '" . lang('marketplace_3_year') . "';
 
 var realtime = false;
 
+$(document).ready(function() {
+    if ($(location).attr('href').match('.*marketplace\/wizard\/selection\/.*$') != null)
+        window.location = '/app/marketplace/wizard';
+
+    $('.marketplace_wizard_mode').on({
+        click: function() {
+            var mySelector = this;
+            $('#wizard_marketplace_mode').val(mySelector.id);
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                url: '/app/marketplace/wizard/set_mode',
+                data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&mode=' + $('#wizard_marketplace_mode').val()
+            });
+        }
+    });
+    if ($('#wizard_marketplace_mode').val() == 'mode1') {
+        $('.novice-select').on({
+            click: function() {
+                $('#app-search-load').show();
+                $('#marketplace-app-container').html('');
+                novice_index = this.id.replace('novice-', '');
+                get_novice_set();
+            }
+        });
+    }
+    if ($('#wizard_marketplace_mode').val() == 'mode2') {
+
+        // Add help content
+        $('#inline-help-title-0').html('" . lang('marketplace_categories') . "');
+        $('#inline-help-content-0').html(
+            '<p>" . lang('marketplace_mode_category_help') . "</p>' +
+            '<p>" . lang('marketplace_mode_category_best_practices_help') . "</p>'
+        );
+        $('.category-select').on({
+            click: function() {
+                $('#marketplace-loading').show();
+                $('#marketplace-app-container').html('');
+                $.ajax({
+                    type: 'POST',
+                    dataType: 'json',
+                    url: '/app/marketplace/ajax/set_search',
+                    data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&category=' + this.id.replace('category-', ''),
+                    success: function(data) {
+                        get_apps(false, 0);
+                    },
+                    error: function(xhr, text, err) {
+                        // Don't display any errors if ajax request was aborted due to page redirect/reload
+                        if (xhr['abort'] == undefined)
+                            clearos_dialog_box('error', '" . lang('base_warning') . "', xhr.responseText.toString());
+                    }
+                });
+            }
+        });
+    }
+    if ($('#wizard_marketplace_mode').val() == 'mode3') {
+        $('#theme-help-box-container').remove();
+        $('#inline-help-title-0').html('" . lang('marketplace_quick_select_file') . "');
+        $('#inline-help-content-0').html(
+            '<p>" . lang('marketplace_mode_qsf_help') . "</p>' +
+            '<p>" . lang('marketplace_mode_qsf_best_practices_help') . "</p>'
+        );
+    }
+
+    if ($('#search').val() != '' && $('#search').val() != '" . lang('marketplace_search_terms') . "') {
+        // Change search icon to cancel and add hidden input
+        $('.marketplace-search-bar').addClass('marketplace-search-bar-cancel');
+        $('.marketplace-search-bar').append('<input type=\'hidden\' name=\'search_cancel\' value=\'cancel\'>');
+    }
+
+    if ($(location).attr('href').match('.*marketplace\/install') != null && $('#total').val() > 0) {
+        $('#theme_wizard_nav_next').hide();
+    } else if ($(location).attr('href').match('.*marketplace\/install') != null && $('#num_of_apps').val() > 0) {
+        $('#theme_wizard_nav_next').hide();
+    } else if ($(location).attr('href').match('.*marketplace\/install') != null && $('#num_of_apps').val() == 0) {
+        $('#free_checkout').hide();
+    }
+
+    if ($(location).attr('href').match('.*marketplace\/progress') != null) {
+        $('#theme_wizard_nav').hide();
+        $('#theme_wizard_complete').show();
+    }
+    
+    if ($('#number_of_apps_to_display').length != 0)
+        apps_to_display_per_page = $('#number_of_apps_to_display').val();
+
+    if ($(location).attr('href').match('.*progress$|.*progress\/busy') != null) {
+        get_progress();
+    } else if ($(location).attr('href').match('.*install$|.*install\/.*') != null) {
+        if ($('#total').val() == 0) {
+            allow_noauth_mods();
+            $('#account-information-container').remove();
+        } else {
+            $('#infotable').show();
+            auth_options.reload_after_auth = true;
+            clearos_is_authenticated();
+            if ($('#total').val() > 0)
+                get_account_info(false);
+            else
+                $('#account-information-container').remove();
+        }
+    }
+
+    $('input[name=payment_method]').on('change', function(e) {
+        toggle_payment_display();
+    });
+
+    $('#toggle_select').on('click', function(e) {
+        e.preventDefault();
+        var options = new Object();
+        options.classes = 'theme-button-change';
+        $('#toggle_select').html(clearos_loading(options));
+        var toggle = 'all';
+        if (!$('#toggle_select').attr('href').match('.*all$'))
+            toggle = 'none';
+        var apps = Array();
+        $.each($('#form_app_list input[type=\'checkbox\']'), function (index, value) {
+            if (toggle == 'all') {
+                apps[index] = {state: '1', id: this.id.replace('select-', '')};
+            } else {
+                apps[index] = {state: '0', id: this.id.replace('select-', '')};
+            }
+        });
+        bulk_cart_update(JSON.stringify(apps), toggle);
+    });
+
+    $('#novice-learn-more-action').on('click', function(event) {
+        $('#novice-learn-more-modal').modal({show: true, backdrop: 'static'});
+    });
+    $('.filter-event').on('change', function(event) {
+        this.form.submit();
+    });
+
+    $('.eula-link').click(function(e) {
+        e.preventDefault();
+        // chop off eula- (5 characters) to get EULA ID
+        // chop off basename- (9 characters) to get basename
+        get_eula($('#' + this.id).parent().attr('id').substr(9, $('#' + this.id).parent().attr('id').length), this.id.substr(5, this.id.length));
+    });
+
+    $('.marketplace-search-bar').click(function (e) {
+        e.preventDefault();
+        $('.marketplace-search-bar').closest('form').submit();
+    });
+    $('input').click(function (e) {
+        if (this.id == 'add_review')
+            clearos_add_review($('#app_name_title').html());
+        else if (this.id == 'prevent_review')
+            clearos_prevent_review();
+        else if (this.id == 'cancel_review')
+            $('#review-form').modal({show: true, backdrop: 'static'});
+        else if (this.id == 'indiv_upgrade')
+            update_cart($('#basename').val(), this.id, true, true);
+        else if (this.id == 'indiv_buy')
+            update_cart($('#basename').val(), this.id, true, true);
+        else if (this.id == 'indiv_install')
+            update_cart($('#basename').val(), this.id, true, true);
+        else if (this.id == 'free_checkout')
+            checkout(e, 'free');
+        else if (this.id == 'buy_checkout')
+            checkout(e, 'paid');
+        else if (this.id == 'eval_checkout')
+            checkout(e, 'eval');
+        else if (this.id.match('^delete-'))
+            remove_from_checkout(this.id.substr(7, this.id.length));
+    });
+
+});
+
 function clear_entry() {
     if ($('#search').val() == '" . lang('marketplace_search_terms') . "')
         $('#search').val('');
@@ -267,7 +436,6 @@ function bulk_cart_update(apps, toggle) {
                 });
                 clearos_dialog_box('invalid_bulk_cart', '" . lang('base_warning') . "', data.errmsg);
             } else {
-                $('.marketplace-category').removeClass('marketplace-hover');
                 if (toggle == 'all') {
                     $('#toggle_select').html('<span class=\'ui-button-text\'>" . lang('marketplace_select_none') . "</span>');
                     $('#toggle_select').attr('href', '/app/marketplace/none');
@@ -892,238 +1060,6 @@ function get_novice_set() {
         }
     });
 }
-
-$(document).ready(function() {
-    if ($(location).attr('href').match('.*marketplace\/wizard\/selection\/.*$') != null)
-        window.location = '/app/marketplace/wizard';
-
-    $('#theme-left-menu a').css('min-width', '105px');
-    $('#display_options a').css('min-width', '');
-    $('#tabs-overview a').css('min-width', '85px');
-    // Wizard previous/next button handling
-    $('#wizard_nav_next').click(function() {
-        if ($(location).attr('href').match('.*marketplace\/wizard$') != null) {
-            // Hack...ajax is required to override session value on 'next hop'
-            $.ajax({
-                type: 'POST',
-                dataType: 'json',
-                url: '/app/marketplace/wizard/set_mode',
-                data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&mode=' + $('#wizard_marketplace_mode').val(),
-                success: function(data) {
-                    window.location = '/app/base/wizard/next_step';
-                },
-                error: function(xhr, text, err) {
-                    window.location = '/app/base/wizard/next_step';
-                }
-            });
-        } else {
-            window.location = '/app/base/wizard/next_step';
-        }
-    });
-    if ($(location).attr('href').match('.*marketplace\/wizard$') != null) {
-        $('.mode').mouseover(function() {
-            if (this.id != $('#wizard_marketplace_mode').val())
-                $(this).addClass('marketplace-category-hover');
-        }).mouseout(function() {
-            if (this.id != $('#wizard_marketplace_mode').val())
-                $(this).removeClass('marketplace-category-hover');
-        }).click(function() {
-            $('.mode').removeClass('marketplace-category-selected');
-            $('.mode').removeClass('marketplace-category-hover');
-            var mySelector = this;
-            $('#wizard_marketplace_mode').val(mySelector.id);
-            $('#' + mySelector.id).addClass('marketplace-category-selected');
-            $.ajax({
-                type: 'POST',
-                dataType: 'json',
-                url: '/app/marketplace/wizard/set_mode',
-                data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&mode=' + $('#wizard_marketplace_mode').val()
-            });
-        });
-        $('#' + $('#wizard_marketplace_mode').val()).addClass('marketplace-category-selected');
-    }
-    if ($('#wizard_marketplace_mode').val() == 'mode1') {
-        $('.novice-select').on({
-            click: function() {
-                $('#app-search-load').show();
-                $('#marketplace-app-container').html('');
-                novice_index = this.id.replace('novice-', '');
-                get_novice_set();
-            }
-        });
-    }
-    if ($('#wizard_marketplace_mode').val() == 'mode2') {
-// TODO FIXME
-        // Ugly...but we move the div contents up to the help box
-        $('div.theme-help-box-content').html($('#app-selector-header').html());
-        // Then delete div completely
-        $('#app-selector-header').remove();
-
-        // Add help content
-        $('#inline-help-title-0').html('" . lang('marketplace_categories') . "');
-        $('#inline-help-content-0').html(
-            '<p>" . lang('marketplace_mode_category_help') . "</p>' +
-            '<p>" . lang('marketplace_mode_category_best_practices_help') . "</p>'
-        );
-        $('.marketplace-category').on({
-            mouseover: function() {
-                if ($(this).hasClass('marketplace-category-selected')) {
-                    category_class = 'marketplace-category-selected';
-                } else {
-                    $(this).addClass('marketplace-hover');
-                    category_class = '';
-                }
-            },
-            mouseout: function() {
-                $(this).removeClass('marketplace-hover');
-                if (category_class !== '')
-                    $(this).addClass(category_class);
-            },
-            click: function() {
-                $('.marketplace-category').removeClass('marketplace-category-selected');
-                $('.marketplace-category').removeClass('marketplace-hover');
-                if ($('#select-' + this.id).prop('checked')) {
-                    $('#select-' + this.id).prop('checked', false);
-                    $(this).removeClass('marketplace-category-selected');
-                    category_class = '';
-                } else {
-                    $('#select-' + this.id).prop('checked', true);
-                    $(this).removeClass('marketplace-hover');
-                    $(this).addClass('marketplace-category-selected');
-                    category_class = 'marketplace-category-selected';
-                }
-                $('#marketplace-loading').show();
-                $('#marketplace-app-container').html('');
-                $.ajax({
-                    type: 'POST',
-                    dataType: 'json',
-                    url: '/app/marketplace/ajax/set_search',
-                    data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&category=' + this.id.replace('category-', ''),
-                    success: function(data) {
-                        get_apps(false, 0);
-                    },
-                    error: function(xhr, text, err) {
-                        // Don't display any errors if ajax request was aborted due to page redirect/reload
-                        if (xhr['abort'] == undefined)
-                            clearos_dialog_box('error', '" . lang('base_warning') . "', xhr.responseText.toString());
-                    }
-                });
-            }
-        });
-    }
-    if ($('#wizard_marketplace_mode').val() == 'mode3') {
-        $('#theme-help-box-container').remove();
-        $('#inline-help-title-0').html('" . lang('marketplace_quick_select_file') . "');
-        $('#inline-help-content-0').html(
-            '<p>" . lang('marketplace_mode_qsf_help') . "</p>' +
-            '<p>" . lang('marketplace_mode_qsf_best_practices_help') . "</p>'
-        );
-    }
-
-    if ($('#search').val() != '' && $('#search').val() != '" . lang('marketplace_search_terms') . "') {
-        // Change search icon to cancel and add hidden input
-        $('.marketplace-search-bar').addClass('marketplace-search-bar-cancel');
-        $('.marketplace-search-bar').append('<input type=\'hidden\' name=\'search_cancel\' value=\'cancel\'>');
-    }
-
-    if ($(location).attr('href').match('.*marketplace\/install') != null && $('#total').val() > 0) {
-        $('#theme_wizard_nav_next').hide();
-    } else if ($(location).attr('href').match('.*marketplace\/install') != null && $('#num_of_apps').val() > 0) {
-        $('#theme_wizard_nav_next').hide();
-    } else if ($(location).attr('href').match('.*marketplace\/install') != null && $('#num_of_apps').val() == 0) {
-        $('#free_checkout').hide();
-    }
-
-    if ($(location).attr('href').match('.*marketplace\/progress') != null) {
-        $('#theme_wizard_nav').hide();
-        $('#theme_wizard_complete').show();
-    }
-    
-    if ($('#number_of_apps_to_display').length != 0)
-        apps_to_display_per_page = $('#number_of_apps_to_display').val();
-
-    if ($(location).attr('href').match('.*progress$|.*progress\/busy') != null) {
-        get_progress();
-    } else if ($(location).attr('href').match('.*install$|.*install\/.*') != null) {
-        if ($('#total').val() == 0) {
-            allow_noauth_mods();
-            $('#account-information-container').remove();
-        } else {
-            $('#infotable').show();
-            auth_options.reload_after_auth = true;
-            clearos_is_authenticated();
-            if ($('#total').val() > 0)
-                get_account_info(false);
-            else
-                $('#account-information-container').remove();
-        }
-    }
-
-    $('input[name=payment_method]').on('change', function(e) {
-        toggle_payment_display();
-    });
-
-    $('#toggle_select').on('click', function(e) {
-        e.preventDefault();
-        var options = new Object();
-        options.classes = 'theme-button-change';
-        $('#toggle_select').html(clearos_loading(options));
-        var toggle = 'all';
-        if (!$('#toggle_select').attr('href').match('.*all$'))
-            toggle = 'none';
-        var apps = Array();
-        $.each($('#form_app_list input[type=\'checkbox\']'), function (index, value) {
-            if (toggle == 'all') {
-                apps[index] = {state: '1', id: this.id.replace('select-', '')};
-            } else {
-                apps[index] = {state: '0', id: this.id.replace('select-', '')};
-            }
-        });
-        bulk_cart_update(JSON.stringify(apps), toggle);
-    });
-
-    $('#novice-learn-more-action').on('click', function(event) {
-        $('#novice-learn-more-modal').modal({show: true, backdrop: 'static'});
-    });
-    $('.filter-event').on('change', function(event) {
-        this.form.submit();
-    });
-
-    $('.eula-link').click(function(e) {
-        e.preventDefault();
-        // chop off eula- (5 characters) to get EULA ID
-        // chop off basename- (9 characters) to get basename
-        get_eula($('#' + this.id).parent().attr('id').substr(9, $('#' + this.id).parent().attr('id').length), this.id.substr(5, this.id.length));
-    });
-
-    $('.marketplace-search-bar').click(function (e) {
-        e.preventDefault();
-        $('.marketplace-search-bar').closest('form').submit();
-    });
-    $('input').click(function (e) {
-        if (this.id == 'add_review')
-            clearos_add_review($('#app_name_title').html());
-        else if (this.id == 'prevent_review')
-            clearos_prevent_review();
-        else if (this.id == 'cancel_review')
-            $('#review-form').modal({show: true, backdrop: 'static'});
-        else if (this.id == 'indiv_upgrade')
-            update_cart($('#basename').val(), this.id, true, true);
-        else if (this.id == 'indiv_buy')
-            update_cart($('#basename').val(), this.id, true, true);
-        else if (this.id == 'indiv_install')
-            update_cart($('#basename').val(), this.id, true, true);
-        else if (this.id == 'free_checkout')
-            checkout(e, 'free');
-        else if (this.id == 'buy_checkout')
-            checkout(e, 'paid');
-        else if (this.id == 'eval_checkout')
-            checkout(e, 'eval');
-        else if (this.id.match('^delete-'))
-            remove_from_checkout(this.id.substr(7, this.id.length));
-    });
-
-});
 
 function get_configure(app) {
     var button_html = '<div class=\'theme-button-set\'>';
