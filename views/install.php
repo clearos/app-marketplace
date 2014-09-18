@@ -201,3 +201,11 @@ echo modal_input(
     "modal-input-po",
     array("callback" => "update_po();")
 );
+echo modal_confirm(
+    lang('base_confirmation_required'),
+    lang('marketplace_wizard_skip_install'),
+    "/app/marketplace/wizard/stop",
+    NULL,
+    NULL,
+    "wizard_next_showstopper"
+);

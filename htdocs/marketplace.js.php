@@ -86,6 +86,17 @@ $(document).ready(function() {
     if ($(location).attr('href').match('.*marketplace\/wizard\/selection\/.*$') != null)
         window.location = '/app/marketplace/wizard';
 
+    // Wizard next button handling
+    //----------------------------
+
+    $('#wizard_nav_next').on('click', function(e) {
+            e.preventDefault();
+        if ($('#wizard_next_showstopper').length != 0) {
+            e.preventDefault();
+            clearos_modal_infobox_open('wizard_next_showstopper');
+        }
+    });
+
     $('.marketplace_wizard_mode').on({
         click: function() {
             var mySelector = this;
@@ -118,7 +129,7 @@ $(document).ready(function() {
         );
         $('.category-select').on({
             click: function() {
-                $('#marketplace-loading').show();
+                $('#app-search-load').show();
                 $('#marketplace-app-container').html('');
                 $.ajax({
                     type: 'POST',
@@ -556,6 +567,9 @@ function get_apps(realtime, offset) {
             });
 
             var options = new Object();
+            if ($('#wizard_marketplace_mode').length != 0) {
+                options.wizard = true;
+            }
             if ($('#wizard_marketplace_mode').val() == 'mode1')
                 options.mode = 'feature';
             else if ($('#wizard_marketplace_mode').val() == 'mode3')

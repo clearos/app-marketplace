@@ -290,6 +290,7 @@ $lang['marketplace_quick_select_file'] = 'Quick Select File';
 $lang['marketplace_optional_apps'] = 'Optional Apps';
 $lang['marketplace_getting_started'] = 'Getting Started';
 $lang['marketplace_wizard_congrats'] = 'Congratulations!  You are now ready to install apps and integrated cloud services through the ClearOS Marketplace.  You will find a large selection of both free and paid apps that can be installed in just a few short steps.';
+$lang['marketplace_wizard_skip_install'] = 'You can return to the Marketplace at any time to browse and install apps.  Click "Confirm" to complete the install wizard.  If you would like to go back and select apps, click "Cancel".';
 $lang['marketplace_install_by_function'] = 'By Function';
 $lang['marketplace_install_by_function_description'] = 'If you are new to ClearOS or prefer to configure the system by specific tasks (eg. prevent users from accessing certain websites, share files between users etc.), select this option.';
 $lang['marketplace_install_by_function_help'] = 'Selecting apps to install by function (or feature) allows admins new to ClearOS to quickly learn the core capabilities available.  To select an app for install, click on the "Select for Install" button.  Change/view new feature summaries by clicking through the numbered selector buttons.  When you have finished going through the features, click "Next".';

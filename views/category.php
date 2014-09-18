@@ -102,8 +102,9 @@ echo box_open(lang('marketplace_app_selection'), array('id' => 'marketplace-cate
 echo box_footer('marketplace-category-options', radio_set($radios, 'category', array('buttons' => TRUE)));
 echo box_close();
 
+echo loading('1.2em', lang('marketplace_searching_marketplace'), array('icon-below' => TRUE, 'center' => TRUE, 'id' => 'app-search-load', 'class' => 'marketplace-app-loading'));
 echo form_open('marketplace/settings', array('method' => 'GET', 'name' => 'form_app_list', 'id' => 'form_app_list'));
-echo "<div id='marketplace-app-container'></div>";
+echo marketplace_layout();
 echo form_close();
 echo "<script type='text/javascript'>\n";
 echo "  $(document).ready(function() {\n";

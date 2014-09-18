@@ -48,7 +48,7 @@ echo box_footer('marketplace-novice-options', radio_set($radios, 'feature', arra
 echo box_close();
 echo modal_info('novice-learn-more-modal', 'Title', 'Help'); 
 
-echo loading('1.5em', lang('marketplace_searching_marketplace'), array('icon-below' => TRUE, 'center' => TRUE, 'id' => 'app-search-load', 'class' => 'marketplace-app-loading'));
+echo loading('1.2em', lang('marketplace_searching_marketplace'), array('icon-below' => TRUE, 'center' => TRUE, 'id' => 'app-search-load', 'class' => 'marketplace-app-loading'));
 
 echo form_open('marketplace', array('method' => 'GET', 'name' => 'form_app_list', 'id' => 'form_app_list'));
 echo marketplace_layout();

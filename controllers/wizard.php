@@ -203,6 +203,7 @@ class Wizard extends ClearOS_Controller
         // Reset our Marketplace search so the last category is not displayed by default
         $this->marketplace->reset_search_criteria();
 
+        $this->page->set_message(lang('base_install_wizard_complete'), 'info', lang('base_status'));
         redirect('base/wizard/stop');
         return;
 

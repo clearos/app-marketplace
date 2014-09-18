@@ -49,8 +49,7 @@ $apps_per_page_options = array(
 );
 $display_format_options = array(
     'tile' => lang('marketplace_tile'),
-    'list' => lang('marketplace_list'),
-    'table' => lang('marketplace_table')
+    'list' => lang('marketplace_list')
 );
 echo field_dropdown('number_of_apps_to_display', $apps_per_page_options, $number_of_apps_to_display, lang('marketplace_apps_per_page'), $read_only);
 echo field_dropdown('display_format', $display_format_options, $display_format, lang('marketplace_layout'), $read_only);

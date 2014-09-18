@@ -1611,7 +1611,7 @@ class Marketplace extends Rest
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        if (! preg_match("/^(list|tile|table)$/", $display_format))
+        if (! preg_match("/^(list|tile)$/", $display_format))
             return lang('marketplace_invalid_display_type');
     }
 
