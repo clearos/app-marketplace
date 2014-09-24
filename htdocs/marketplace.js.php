@@ -526,9 +526,10 @@ function get_apps(realtime, offset) {
         success: function(data) {
             if (data.code != undefined && data.code != 0) {
                 // Code 3 is 'Device Not Registered'
+                var options = new Object();
+                options.type = 'warning';
                 if (data.code == 3) {
                     $('#app_list_overview').remove();
-                    var options = new Object();
                     options.redirect_on_close = '/app/registration/register';
                     clearos_dialog_box('error', '" . lang('base_warning') . "', data.errmsg, options);
                     return;
