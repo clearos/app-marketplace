@@ -18,8 +18,8 @@ $app['description'] = lang('marketplace_app_description');
 /////////////////////////////////////////////////////////////////////////////
 
 $app['name'] = lang('marketplace_app_name');
-$app['category'] = lang('base_category_spotlight');
-$app['subcategory'] = lang('base_subcategory_overview');
+$app['category'] = lang('base_category_system');
+$app['subcategory'] = lang('base_subcategory_marketplace');
 
 // Wizard extras
 $app['controllers']['selection']['inline_help'] = array(
