@@ -23,6 +23,7 @@ echo loading('2em', lang('marketplace_loading'), array('icon-below' => TRUE, 'ce
 
 echo "<div id='app-details-container' class='theme-hidden'>";
 echo box_open($basename, array('id' => 'app_name', 'class' => 'marketplace-app-info-container'));
+echo box_content_open();
 echo row_open();
 echo column_open(2);
 echo app_logo($basename);
@@ -85,6 +86,7 @@ echo column_close();
 echo row_close();
 echo column_close();
 echo row_close();
+echo box_content_close();
 echo box_close();
 
 echo "<div id='availability_warning_box' class='theme-hidden'>" .

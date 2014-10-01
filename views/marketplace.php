@@ -22,6 +22,7 @@ $this->lang->load('marketplace');
 
 echo form_open('marketplace/search');
 echo box_open();
+echo box_content_open();
 echo row_open(array('class' => 'marketplace-search-filter'));
 echo column_open(8, NULL, NULL, array('id' => 'marketplace_filter_container'));
 foreach ($filters as $name => $options)
@@ -44,6 +45,7 @@ echo column_open(4, NULL, NULL, array('id' => 'marketplace_paginate_container', 
 echo paginate('/app/marketplace/search/index');
 echo column_close();
 echo row_close();
+echo box_content_close();
 echo box_close();
 echo form_close();
 

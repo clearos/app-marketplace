@@ -71,6 +71,7 @@ $radios = array(
 );
 
 echo box_open(lang('marketplace_getting_started'));
+echo box_content_open();
 echo row_open();
 echo column_open(2);
 echo app_logo('marketplace');
@@ -79,6 +80,7 @@ echo column_open(10);
 echo lang('marketplace_wizard_congrats');
 echo column_close();
 echo row_close();
+echo box_content_close();
 echo box_footer('marketplace-feature-select', radio_set($radios, 'feature', array('buttons' => TRUE)));
 echo box_close();
 echo "<input type='hidden' value='$mode' id='wizard_marketplace_mode' name='wizard_marketplace_mode' />";
