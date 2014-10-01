@@ -910,7 +910,7 @@ function get_app_details(basename) {
                     + data.pricing.unit_price.toFixed(2) + ' ' + UNIT[data.pricing.unit]);
 
             clearos_get_app_logo(data.basename, 'detail_img');
-            $('#app_rating').html(get_rating(data.rating, data.rating_count, true, true));
+            //$('#app_rating').html(get_rating(data.rating, data.rating_count, true, true));
             $('#app_category').html(data.category);
             var tags = data.tags.split(' ');
             var my_tags = '';
@@ -972,6 +972,12 @@ function get_app_details(basename) {
                     '<div>' + locales[index].locale + '</div>' + clearos_progress_bar(locales[index].completion, null)
                 );
             }
+
+            $('.theme-placeholder').each(function( index ) {
+                // Yank off prefix (app-logo-)
+                clearos_get_app_logo(this.id.substr(9), this.id);
+            });
+
         },
         error: function(xhr, text, err) {
             clearos_dialog_box('error', '" . lang('base_warning') . "', xhr.responseText.toString());

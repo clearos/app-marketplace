@@ -25,11 +25,9 @@ echo infobox_warning(
     lang('marketplace_uninstall') . ' - ' . $prefix . preg_replace("/_/", "-", $basename),
     lang('marketplace_delete_dependencies'), 
     array ('buttons' =>
-        button_set(
-            array (
-                anchor_custom('/app/marketplace/uninstall/' . $basename . '/' . $app_delete_key, lang('marketplace_confirm_uninstall'), 'high'),
-                anchor_cancel('/app/marketplace/view/' . $basename)
-            )
+        array (
+            anchor_custom('/app/marketplace/uninstall/' . $basename . '/' . $app_delete_key, lang('marketplace_confirm_uninstall'), 'high'),
+            anchor_cancel('/app/marketplace/view/' . $basename)
         )
     )
 );

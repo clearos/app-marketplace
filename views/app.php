@@ -148,7 +148,7 @@ echo row_open(array('id' => 'marketplace-review'));
 echo "<h3>" . lang('marketplace_reviews') . "</h3>";
 echo form_submit_custom('review', lang('marketplace_submit_review'), 'high', array ('id' => ($is_installed ? 'add_review' : 'prevent_review')));
 echo marketplace_review($basename, $pseudonym);
-echo "<div id='app_ratings'></div>";
+echo "<div id='app_ratings' class='marketplace-ratings clearfix'></div>";
 echo row_close();
 
 /* Complimentary */

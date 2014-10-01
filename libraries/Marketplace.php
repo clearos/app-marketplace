@@ -937,38 +937,40 @@ class Marketplace extends Rest
      * Fetches app logo.
      *
      * @param String $basename app basename
+     * @param format $format   file format
      *
      * @return Object  JSON-encoded response
      *
      * @throws Webservice_Exception
      */
 
-    public function get_app_logo($basename)
+    public function get_app_logo($basename, $format = 'svg')
     {
         clearos_profile(__METHOD__, __LINE__);
 
+        $file = $basename . '.' . strtolower($format);
         try {
 
             $cache_time = 2592000; // 30 days
-            $filename = CLEAROS_CACHE_DIR . "/mp-logo-" . $basename;
+            $filename = CLEAROS_CACHE_DIR . "/mp-logo-" . $file;
             $lastmod = @filemtime($filename);
             if ($lastmod && (time() - $lastmod < $cache_time)) {
                 // Use cached file.
                 return json_encode(
                     array(  
                         "code" => 0,
-                        "location" => "/cache/mp-logo-$basename",
+                        "location" => "/cache/mp-logo-$file",
                         "base64" => base64_encode(file_get_contents($filename))
                     )
                 );
             }
             
             $static = new Static_Content();
-            $result = $static->get('marketplace/logos', $basename . ".svg");
+            $result = $static->get('marketplace/logos', $file);
 
             file_put_contents($filename, $result);
         
-            return json_encode(array("code" => 0, "location" => "/cache/mp-logo-" . $basename, "base64" => base64_encode($result)));
+            return json_encode(array("code" => 0, "location" => "/cache/mp-logo-" . $file, "base64" => base64_encode($result)));
         } catch (Exception $e) {
             throw new Webservice_Exception(clearos_exception_message($e), CLEAROS_ERROR);
         }
