@@ -185,7 +185,7 @@ class Marketplace extends Rest
      * @throws Engine_Exception
      */
 
-    function set_search_criteria($search, $category, $price, $intro, $status, $active = TRUE)
+    function set_search_criteria($search, $category = 'all', $price = 'all', $intro = 'all', $status = 'all', $active = TRUE)
     {
         clearos_profile(__METHOD__, __LINE__);
 

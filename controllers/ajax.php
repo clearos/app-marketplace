@@ -131,6 +131,13 @@ class Ajax extends ClearOS_Controller
             $this->load->library('marketplace/Marketplace');
             $this->load->library('marketplace/Cart');
 
+            if ($this->input->post('search')) {
+                if ($this->input->post('search') === 'RESET_SEARCH')
+                    $this->marketplace->reset_search_criteria();
+                else
+                    $this->marketplace->set_search_criteria($this->input->post('search'));
+            }
+
             $cart_items = $this->cart->get_items();
             $realtime = FALSE;
             if ($this->input->post('realtime'))

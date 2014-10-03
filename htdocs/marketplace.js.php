@@ -34,7 +34,6 @@ header('Content-Type: application/x-javascript');
 
 echo "
 var apps_to_display_per_page = 10;
-var UNIT = [];
 var reg_info_ok = false;
 var installation_complete = '" . lang('marketplace_installation_complete') . "';
 var my_systems = new Array();
@@ -73,12 +72,6 @@ var novice_set = [
         description:'ClearOS makes a perfect home networking gateway or server.  The apps below have been selected based on their suitability for the home environment.', helptitle: 'Home Environment - An Important Market', helpcontent: '<p>You\'d be surprised how many referrals we get from users who have installed ClearOS in their home and then advise friends or colleagues about running ClearOS in their place of business.</p><p>If ClearOS has found a place in your home networking environment, please help spread awareness and keep the development and community going strong by spreading the word.</p>'
     }
 ];
-UNIT[0] = '';
-UNIT[9] = '';
-UNIT[100] = '" . lang('marketplace_monthly') . "';
-UNIT[1000] = '" . lang('marketplace_1_year') . "';
-UNIT[2000] = '" . lang('marketplace_2_year') . "';
-UNIT[3000] = '" . lang('marketplace_3_year') . "';
 
 var realtime = false;
 
