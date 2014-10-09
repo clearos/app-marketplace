@@ -232,9 +232,9 @@ $(document).ready(function() {
     });
     $('input').click(function (e) {
         if (this.id == 'add_review')
-            clearos_add_review($('#app_name_title').html());
+            add_review($('#app_name_title').html());
         else if (this.id == 'prevent_review')
-            clearos_prevent_review();
+            prevent_review();
         else if (this.id == 'cancel_review')
             $('#review-form').modal({show: true, backdrop: 'static'});
         else if (this.id == 'indiv_upgrade')
@@ -588,7 +588,7 @@ function get_apps(realtime, offset) {
 
             $('.theme-placeholder').each(function( index ) {
                 // Yank off prefix (app-logo-)
-                clearos_get_app_logo(this.id.substr(9), this.id);
+                get_app_logo(this.id.substr(9), this.id);
             });
         },
         error: function(xhr, text, err) {
@@ -598,6 +598,11 @@ function get_apps(realtime, offset) {
         }
     });
 }
+
+$(document).on('click', '.sidebar-review-app', function(e) {
+    e.preventDefault();
+    add_review();
+});
 
 $(document).on('click', '.marketplace-app-event', function(e) {
     e.preventDefault();
@@ -902,7 +907,7 @@ function get_app_details(basename) {
                 $('#app_cost').html(data.pricing.currency + ' '
                     + data.pricing.unit_price.toFixed(2) + ' ' + UNIT[data.pricing.unit]);
 
-            clearos_get_app_logo(data.basename, 'detail_img');
+            get_app_logo(data.basename, 'detail_img');
             //$('#app_rating').html(get_rating(data.rating, data.rating_count, true, true));
             $('#app_category').html(data.category);
             var tags = data.tags.split(' ');
@@ -949,7 +954,7 @@ function get_app_details(basename) {
             if (ratings.length == 0)
                 $('#app_ratings').append('<div style=\'margin-top: 10px;\'>" . lang('marketplace_no_reviews') . "</div>');
             else
-                $('#app_ratings').append(clearos_app_rating(basename, ratings));
+                $('#app_ratings').append(app_rating(basename, ratings));
 
             var locales = data.locales;
             var contributors = data.locales_contributors;
@@ -968,7 +973,7 @@ function get_app_details(basename) {
 
             $('.theme-placeholder').each(function( index ) {
                 // Yank off prefix (app-logo-)
-                clearos_get_app_logo(this.id.substr(9), this.id);
+                get_app_logo(this.id.substr(9), this.id);
             });
 
         },
@@ -1191,6 +1196,175 @@ function update_po() {
     $('#po').prop('checked', true);
     $('#display_po').html(' (' + $('#po_number').val() + ')');
 }
+
+/**
+ * Peer review.
+ */
+
+function peer_review(basename, dbid, approve) {
+console.log('peer_review');
+    $.ajax({
+        type: 'POST',
+        dataType: 'json',
+        url: '/app/marketplace/ajax/peer_review',
+        data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&basename=' + basename + '&approve=' + approve + '&dbid=' + dbid,
+        success: function(data) {
+            if (data.code == 1) {
+                clearos_is_authenticated();
+            } else if (data.code != 0) {
+                clearos_dialog_box('peer_review_error', '" . lang('base_warning') . "', data.errmsg);
+            } else {
+                if (approve > 0) {
+                    // Already rated
+                    if (data.updated_review != undefined) {
+                        $('#agree_' + dbid).html(parseInt($('#agree_' + dbid).text()) + 1);
+                        if (parseInt($('#disagree_' + dbid).text()) > 0)
+                            $('#disagree_' + dbid).html(parseInt($('#disagree_' + dbid).text()) - 1);
+                    } else if (data.new_review != undefined) {
+                        $('#agree_' + dbid).html(parseInt($('#agree_' + dbid).text()) + 1);
+                    }
+                } else {
+                    // New rating
+                    if (data.updated_review != undefined) {
+                        $('#disagree_' + dbid).html(parseInt($('#disagree_' + dbid).text()) + 1);
+                        if (parseInt($('#agree_' + dbid).text()) > 0)
+                            $('#agree_' + dbid).html(parseInt($('#agree_' + dbid).text()) - 1);
+                    } else if (data.new_review != undefined) {
+                        $('#disagree_' + dbid).html(parseInt($('#disagree_' + dbid).text()) + 1);
+                    }
+                }
+            }
+        },
+        error: function(xhr, text, err) {
+            clearos_dialog_box('error', '" . lang('base_warning') . "', xhr.responseText.toString());
+        }
+    });
+}
+
+/**
+ * App rating.
+ */
+
+function app_rating(basename, ratings) {
+    var html = '';
+    for (index = 0 ; index < ratings.length; index++) {
+        ar = ratings[index];
+        var title = ar.comment;
+        if (title.indexOf('.') > 0) {
+            title = title.substring(0, title.indexOf('.'));
+        } else if (title.indexOf('\\n') > 0) {
+            title = title.substring(0, title.indexOf('\\n'));
+        }
+
+        if (title == ar.comment)
+            html += theme_rating_review(basename, ar.id, title, null, ar.rating, ar.pseudonym, ar.timestamp, ar.agree, ar.disagree);
+        else
+            html += theme_rating_review(basename, ar.id, title, ar.comment, ar.rating, ar.pseudonym, ar.timestamp, ar.agree, ar.disagree);
+    }
+    html += '<script type=\'text/javascript\'>' +
+            '  $(\'a.review-action\').on(\'click\', function (e) {' +
+            '    e.preventDefault();' +
+            '    var parts = this.id.split(\'-\');' +
+            '    clearos_is_authenticated();' +
+            '    peer_review(parts[0], parts[1], (parts[2].match(/up/) ? 1 : 0));' +
+            '  });' +
+            '</script>'
+    ;
+    return html;
+}
+
+/**
+ * Prevent review.
+ */
+
+function prevent_review() {
+    clearos_dialog_box('review_error', '" . lang('base_warning') . "', '" . lang('marketplace_no_install_no_review') . "');
+}
+
+/**
+ * Add review.
+ */
+
+function add_review() {
+    auth_options.no_redirect_on_cancel = true;
+    auth_options.callback = 'display_review_form';
+    clearos_is_authenticated();
+}
+
+/**
+ * Dispaly review form.
+ */
+
+function display_review_form() {
+    clearos_modal_infobox_open('review-form');
+    // Sometimes browser autocompletes this field
+    $('#review-comment').val('');
+}
+
+/**
+ * Returns app screenshot via ajax.
+ *
+ * @param string $basename basename of app
+ * @param string $index    screenshot number
+ */
+
+function clearos_get_app_screenshot(basename, index) {
+    $.ajax({
+        type: 'GET',
+        dataType: 'json',
+        url: '/app/marketplace/ajax/get_app_screenshot/' + basename + '/' + index,
+        success: function(data) {
+            // Success..pass data to theme to update HTML.
+            if (data.code == 0)
+                $('#ss-' + basename + '_' + index).attr('src', data.location);
+        },
+        error: function(xhr, text, err) {
+            console.log(xhr.responseText.toString());
+        }
+    });
+}
+
+/**
+ * Returns app logo via ajax.
+ *
+ * @param string $basename basename of app
+ * @param string $domid    DOM ID
+ */
+
+function get_app_logo(basename, domid) {
+    $.ajax({
+        type: 'GET',
+        dataType: 'json',
+        url: '/app/marketplace/ajax/get_app_logo/' + basename,
+        success: function(data) {
+            // Success..pass data to theme to update HTML.
+            if (data.code == 0)
+                $('#' + domid).html($.base64.decode(data.base64));
+        },
+        error: function(xhr, text, err) {
+            console.log(xhr.responseText.toString());
+        }
+    });
+}
+
+/**
+ * Select app action.
+ */
+
+function marketplace_select_app(id) {
+    $('#' + id).val(lang_marketplace_remove);
+    $('#active-select-' + id).removeClass('theme-hidden');
+}
+
+/**
+ * Unselect app action.
+ */
+
+function marketplace_unselect_app(id) {
+    $('#' + id).val(lang_marketplace_select_for_install);
+    $('#active-select-' + id).addClass('theme-hidden');
+}
+
 ";
 
 // vim: syntax=javascript ts=4
