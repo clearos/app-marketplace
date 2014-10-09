@@ -164,6 +164,10 @@ class Ajax extends ClearOS_Controller
                 throw new Engine_Exception($response->errmsg, $response->code);
             }
 
+            // Reset Marketplace if global search widget was used
+            if ($this->input->post('search'))
+                $this->marketplace->reset_search_criteria();
+
             $app_counter = 0;
             $total_apps = 0;
             $search_counter = 0;
