@@ -288,7 +288,7 @@ function update_install_form(data) {
         return;
     if (data.code == 0) {
         if ($('#total').val() > 0) {
-            $('.cos-account-loading').remove();
+            clearos_loaded('account-information-container');
             // Use _text here since control is hidden
             $('#username_text').html(data.sdn_username);
             $('#billing_cycle_field').show();
@@ -305,6 +305,11 @@ function update_install_form(data) {
             if ($('#has_prorated').val() > 0) {
                 $('#notes_field').show();
                 $('#notes_text').append('<div>" . lang('marketplace_prorated_discount_included') . "</div>');
+            }
+
+            if ($('.eula-link').length != 0) {
+                $('#notes_field').show();
+                $('#notes_text').append('<div>" . lang('marketplace_agree_to_eula') . "</div>');
             }
                 
             $('#payment_method_field').show();
@@ -383,7 +388,7 @@ function get_eula(basename, id) {
                 if (data.noeula != undefined)
                     clearos_dialog_box('invalid_eula', '" . lang('base_warning') . "', '" . lang('marketplace_no_eula') . "');
                 else
-                    clearos_eula(basename, 'eula_display', data.en_US.eula);
+                    clearos_dialog_box('eula-' + basename,'" . lang('marketplace_eula') . "', data.en_US.eula);
             }
         },
         error: function(xhr, text, err) {
@@ -1163,33 +1168,9 @@ function get_progress() {
     });
 }
 
-function clearos_eula(basename, id, message) {
-  $('#theme-page-container').append('<div id=\"' + id + '\" title=\"" . lang('marketplace_eula') . "\">' +
-      '<div style=\"text-align: left\">' + message + '</div>' +
-    '</div>'
-  );
-  $('#' + id).dialog({
-    modal: true,
-    width: 600,
-    height: 400,
-    resizeable: false,
-    draggable: false,
-    closeOnEscape: false,
-    buttons: {
-      '" . lang('marketplace_read_and_understand') . "': function() {
-        $(this).dialog('close');
-      },
-      '" . lang('marketplace_do_not_agree') . "': function() {
-        window.location = '/app/marketplace/install/delete/' + basename;
-      }
-    }
-  });
-  $('.ui-dialog-titlebar-close').hide();
-}
-
 function clearos_sdn_account_setup(landing_url, username, device_id) {
-  $('#payment_method').append(theme_sdn_account_setup(landing_url, username, device_id));
-  $('#sdn-account-setup-dialog').modal({show: true, backdrop: 'static'});
+    $('#payment_method').append(theme_sdn_account_setup(landing_url, username, device_id));
+    $('#sdn-account-setup-dialog').modal({show: true, backdrop: 'static'});
 }
 
 function update_po() {

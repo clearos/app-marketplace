@@ -68,6 +68,7 @@ $lang['marketplace_loading'] = 'Loading...';
 $lang['marketplace_no_modding_review'] = 'You cannot mod a review unless you have installed this app.';
 $lang['marketplace_eula'] = 'EULA';
 $lang['marketplace_no_eula'] = 'There is no EULA associated with this app.';
+$lang['marketplace_agree_to_eula'] = 'By clicking on the install button below, you are agreeing to individual End User License Agreements that may be associated with an app.';
 $lang['marketplace_agree'] = 'Agree';
 $lang['marketplace_disagree'] = 'Disagree';
 $lang['marketplace_installed_version'] = 'Installed Version';

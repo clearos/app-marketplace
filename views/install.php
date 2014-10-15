@@ -45,7 +45,7 @@ echo field_radio_set(
 );
 echo field_input('notes', $notes, lang('marketplace_notes'), TRUE);
 echo field_button_set($buttons);
-echo form_footer(array('loading' => 'cos-account-loading'));
+echo form_footer(array('loading' => TRUE));
 echo form_close();
 
 if ($itemnotfound)
