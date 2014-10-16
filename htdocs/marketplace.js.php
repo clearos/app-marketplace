@@ -604,11 +604,6 @@ function get_apps(realtime, offset) {
     });
 }
 
-$(document).on('click', '.sidebar-review-app', function(e) {
-    e.preventDefault();
-    add_review();
-});
-
 $(document).on('click', '.marketplace-app-event', function(e) {
     e.preventDefault();
     // Undefined select means app is for Pro only
@@ -1252,34 +1247,6 @@ function app_rating(basename, ratings) {
             '</script>'
     ;
     return html;
-}
-
-/**
- * Prevent review.
- */
-
-function prevent_review() {
-    clearos_dialog_box('review_error', '" . lang('base_warning') . "', '" . lang('marketplace_no_install_no_review') . "');
-}
-
-/**
- * Add review.
- */
-
-function add_review() {
-    auth_options.no_redirect_on_cancel = true;
-    auth_options.callback = 'display_review_form';
-    clearos_is_authenticated();
-}
-
-/**
- * Dispaly review form.
- */
-
-function display_review_form() {
-    clearos_modal_infobox_open('review-form');
-    // Sometimes browser autocompletes this field
-    $('#review-comment').val('');
 }
 
 /**
