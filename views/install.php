@@ -185,8 +185,14 @@ echo summary_table(
     $options
 );
 
-if (count($rows) == 0)
-    echo infobox_and_redirect(lang('marketplace_select_apps'), lang('marketplace_app_select_help'), '/app/marketplace', lang('marketplace_search_marketplace'));
+if (count($rows) == 0) {
+    echo infobox_and_redirect(
+        lang('marketplace_select_apps'),
+        lang('marketplace_app_select_help'),
+        '/app/marketplace',
+        lang('marketplace_search_marketplace')
+    );
+}
     
 // Need these value in JS
 echo "<input type='hidden' name='total' id='total' value='$total' />";
