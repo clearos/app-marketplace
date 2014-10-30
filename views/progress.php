@@ -20,7 +20,10 @@ $this->lang->load('base');
 $this->lang->load('marketplace');
 
 if ($alt_in_use) {
-    echo infobox_highlight(lang('marketplace_unavailable'), lang('marketplace_package_manager_in_use'));
+    echo infobox_highlight(
+        lang('marketplace_unavailable'),
+        lang('marketplace_package_manager_in_use')
+    );
     return;
 }
 //echo "<div id='info'></div>";
