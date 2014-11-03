@@ -1463,11 +1463,11 @@ class Marketplace extends Rest
             }
             $repos = $yum->get_repo_list();
             $list = array();
-            foreach ($repos as $repo) {
-                if ($repo['enabled'] == 1 && ($type & Yum::REPO_ACTIVE) == Yum::REPO_ACTIVE)
-                    $list[] = $repo['id'];
-                else if ($repo['enabled'] == 0 && ($type & Yum::REPO_DISABLED) == Yum::REPO_DISABLED)
-                    $list[] = $repo['id'];
+            foreach ($repos as $id => $repo) {
+                if ($repo['enabled'] && ($type & Yum::REPO_ACTIVE) == Yum::REPO_ACTIVE)
+                    $list[] = $id;
+                else if (!$repo['enabled'] && ($type & Yum::REPO_DISABLED) == Yum::REPO_DISABLED)
+                    $list[] = $id;
             }
             return $list;
         } catch (Exception $e) {
