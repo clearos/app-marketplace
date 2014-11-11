@@ -907,7 +907,7 @@ function get_app_details(basename) {
                 $('#app_cost').html(data.pricing.currency + ' '
                     + data.pricing.unit_price.toFixed(2) + ' ' + UNIT[data.pricing.unit]);
 
-            get_app_logo(data.basename, 'detail_img');
+            get_app_logo(data.basename, 'app-logo-' + basename);
             //$('#app_rating').html(get_rating(data.rating, data.rating_count, true, true));
             $('#app_category').html(data.category);
             var tags = data.tags.split(' ');
