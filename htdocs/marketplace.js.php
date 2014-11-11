@@ -299,7 +299,7 @@ function update_install_form(data) {
                 $('#notes_field').show();
                 $('#notes_text').html('<div>" . lang('marketplace_note_evaluation_and_payment') . "</div>');
             } else {
-                $('#billing_cycle_text').html($.datepicker.formatDate('MM d, yy', new Date(data.billing_cycle)));
+                $('#billing_cycle_text').html(clearos_format_date(data.billing_cycle, 'MMMM d, yyyy'));
             }
             
             if ($('#has_prorated').val() > 0) {
@@ -808,7 +808,7 @@ function get_app_details(basename) {
             else
                 $('#app_installed_version').html(data.installed_version);
             $('#app_latest_version').html(data.latest_version);
-            $('#app_latest_release_date').html($.datepicker.formatDate('MM d, yy', new Date(data.latest_release_date)));
+            $('#app_latest_release_date').html(clearos_format_date(data.latest_release_date, 'MMMM d, yyyy'));
   
             $('.actions').hide();
 
@@ -919,7 +919,7 @@ function get_app_details(basename) {
             $('#app_tags').html(my_tags);
             $('#app_license').html(data.license);
             $('#app_license_library').html(data.license_library);
-            $('#app_introduced').html($.datepicker.formatDate('MM d, yy', new Date(data.introduced)));
+            $('#app_introduced').html(clearos_format_date(data.introduced, 'MMMM d, yyyy'));
             $('#app_devel_org').html(data.devel_org);
             $('#app_devel_contact').html(data.devel_contact);
             $('#app_devel_email').html(data.devel_email);

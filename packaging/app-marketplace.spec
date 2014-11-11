@@ -1,7 +1,7 @@
 
 Name: app-marketplace
 Epoch: 1
-Version: 2.0.1
+Version: 2.0.2
 Release: 1%{dist}
 Summary: Marketplace
 License: Proprietary
