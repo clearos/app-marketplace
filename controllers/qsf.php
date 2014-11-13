@@ -59,7 +59,6 @@ class Qsf extends ClearOS_Controller
 
         $this->marketplace->reset_search_criteria();
         $data['number_of_apps_to_display'] = '0';
-        $data['hide_banner'] = TRUE;
         $data['display_format'] = $this->marketplace->get_display_format();
         $data['mode'] = 'qsf-tool';
 

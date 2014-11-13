@@ -74,8 +74,6 @@ class Wizard extends ClearOS_Controller
         else
             $data['mode'] = 'mode1';
 
-        $data['hide_banner'] = TRUE;
-
         // Load view
         //----------
 
@@ -129,7 +127,6 @@ class Wizard extends ClearOS_Controller
             'new'
         );
         $data['number_of_apps_to_display'] = '0';
-        $data['hide_banner'] = TRUE;
         $data['display_format'] = 'tile';
         $data['wizard'] = TRUE;
         $data['mode'] = $mode;
