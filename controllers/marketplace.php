@@ -187,7 +187,7 @@ class Marketplace extends ClearOS_Controller
     }
 
     /**
-     * Marketplace install controller
+     * Marketplace uninstall controller
      *
      * @param String $basename    app basename
      * @param String $confirm_key confirmation key
