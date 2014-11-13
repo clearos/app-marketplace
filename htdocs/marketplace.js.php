@@ -985,7 +985,6 @@ function get_app_details(basename) {
 
 function checkout(event, type) {
     event.preventDefault();
-    console.log($('input[name=payment_method]:checked').val());
     $('#free_checkout').hide();
     var modal_feedback = null;
     if ($('#po').prop('checked') && $('#mi-po_number').val() == '') {
@@ -1164,8 +1163,8 @@ function get_progress() {
 }
 
 function clearos_sdn_account_setup(landing_url, username, device_id) {
-    $('#payment_method').append(theme_sdn_account_setup(landing_url, username, device_id));
-    $('#sdn-account-setup-dialog').modal({show: true, backdrop: 'static'});
+    $('#payment_method_field').append(theme_sdn_account_setup(landing_url, username, device_id));
+    clearos_modal_infobox_open('sdn-account-setup-dialog');
 }
 
 function update_po() {
@@ -1178,7 +1177,6 @@ function update_po() {
  */
 
 function peer_review(basename, dbid, approve) {
-console.log('peer_review');
     $.ajax({
         type: 'POST',
         dataType: 'json',
