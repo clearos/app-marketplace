@@ -25,8 +25,11 @@ echo box_open();
 echo box_content_open();
 echo row_open(array('class' => 'marketplace-search-filter'));
 echo column_open(8, NULL, NULL, array('id' => 'marketplace_filter_container'));
+echo row_open();
+// Marketplace filter function returns columns...need row for spacing
 foreach ($filters as $name => $options)
     echo marketplace_filter($name, $options, $selected[$name]);
+echo row_close();
 echo column_close();
 echo column_open(4, NULL, NULL, array('id' => 'marketplace_search_container', 'class' => 'search-form'));
 echo marketplace_search($search);
