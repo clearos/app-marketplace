@@ -29,11 +29,11 @@ if ($alt_in_use) {
 //echo "<div id='info'></div>";
 
 echo row_open();
-echo column_open(4, array('class' => 'marketplace-progress-spash'));
+echo column_open(5, array('class' => 'marketplace-progress-spash'));
 echo "<h3>" . lang('marketplace_thankyou') . "</h3>\n";
 echo "<p>" . lang('marketplace_progress_help') . "</p>\n";
 echo column_close();
-echo column_open(8, array('class' => 'summary-info'));
+echo column_open(7, array('class' => 'summary-info'));
 echo "<h3>" . lang('marketplace_overall_progress') . "</h3>\n";
 echo progress_bar('overall', array('input' => 'overall'));
 echo "<h3 style='clear: both;'>" . lang('marketplace_operation_progress') . "</h3>\n";
