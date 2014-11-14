@@ -156,11 +156,9 @@ $(document).ready(function() {
         $('.marketplace-search-bar').append('<input type=\'hidden\' name=\'search_cancel\' value=\'cancel\'>');
     }
 
-    if ($(location).attr('href').match('.*marketplace\/install') != null && $('#total').val() > 0) {
+    if ($(location).attr('href').match(/.*\/install($|\/.*|\#$)/) != null && $('#total').val() > 0) {
         $('#theme_wizard_nav_next').hide();
-    } else if ($(location).attr('href').match('.*marketplace\/install') != null && $('#num_of_apps').val() > 0) {
-        $('#theme_wizard_nav_next').hide();
-    } else if ($(location).attr('href').match('.*marketplace\/install') != null && $('#num_of_apps').val() == 0) {
+    } else if ($(location).attr('href').match(/.*\/install($|\/.*|\#$)/) != null && $('#total').val() == 0) {
         $('#free_checkout').hide();
     }
 
@@ -172,9 +170,9 @@ $(document).ready(function() {
     if ($('#number_of_apps_to_display').length != 0)
         apps_to_display_per_page = $('#number_of_apps_to_display').val();
 
-    if ($(location).attr('href').match('.*progress$|.*progress\/busy') != null) {
+    if ($(location).attr('href').match(/.*\/progress($|\/.*|\#$)/) != null) {
         get_progress();
-    } else if ($(location).attr('href').match('.*install$|.*install\/.*') != null) {
+    } else if ($(location).attr('href').match(/.*\/install($|\/.*|\#$)/) != null) {
         if ($('#total').val() == 0) {
             allow_noauth_mods();
             $('#account-information-container').remove();
