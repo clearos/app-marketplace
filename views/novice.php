@@ -37,9 +37,9 @@ $buttons = array(
 echo box_open("---", array('id' => 'marketplace-novice', 'anchors' => button_set($buttons)));
 echo box_content_open();
 echo row_open();
-echo column_open(12, NULL, NULL, array('id' => 'marketplace-novice-description'));
+echo column_open(10, NULL, NULL, array('id' => 'marketplace-novice-description'));
 echo column_close();
-echo column_open(12, NULL, NULL, array('id' => 'marketplace-novice-description-more'));
+echo column_open(2, NULL, NULL, array('id' => 'marketplace-novice-description-more'));
 echo anchor_custom('#', lang('marketplace_learn_more'), 'high', array('id' => 'novice-learn-more-action'));
 echo column_close();
 echo row_close();
