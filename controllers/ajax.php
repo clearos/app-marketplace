@@ -324,6 +324,26 @@ class Ajax extends ClearOS_Controller
     }
 
     /**
+     * Ajax get app logos controller
+     *
+     * @return JSON
+     */
+
+    function get_app_logos()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        header('Cache-Control: no-cache, must-revalidate');
+        header('Content-type: application/json');
+        try {
+            $this->load->library('marketplace/Marketplace');
+            echo $this->marketplace->get_app_logos();
+        } catch (Exception $e) {
+            echo json_encode(Array('code' => clearos_exception_code($e), 'errmsg' => clearos_exception_message($e)));
+        }
+    }
+
+    /**
      * Ajax get app logo controller
      * @param String  $basename app basename
      *

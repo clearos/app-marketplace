@@ -107,6 +107,7 @@ class Marketplace extends Rest
     const FILE_CUSTOM_REPOS = '/var/clearos/marketplace/customs_repos';
     const FILE_QSF = 'qsf.txt';
     const COMMAND_RPM = '/bin/rpm';
+    const COMMAND_FIND = '/bin/find';
     const FOLDER_MARKETPLACE = '/var/clearos/marketplace';
     const MAX_RECORDS = 10;
     const PREFIX = 'mp-';
@@ -930,6 +931,52 @@ class Marketplace extends Rest
             return $file->get_contents_as_array();
         } catch (Exception $e) {
             throw new Engine_Exception(clearos_exception_message($e), CLEAROS_ERROR);
+        }
+    }
+
+    /**
+     * Fetches app logos.
+     *
+     * @param format $format   file format
+     *
+     * @return Object  JSON-encoded response
+     *
+     * @throws Webservice_Exception
+     */
+
+    public function get_app_logos($format = 'svg')
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        try {
+
+            $list = array();
+            $cache_time = 2592000; // 30 days
+            $shell = new Shell();
+            $exitcode = $shell->execute(
+                self::COMMAND_FIND,
+                CLEAROS_CACHE_DIR . " -type f -regex '.*\/mp-logo.*\.$format'",
+                FALSE
+            );
+
+            if ($exitcode != 0)
+                return $list;
+
+            $folder = $shell->get_output();
+            foreach ($folder as $filename) {
+                $lastmod = @filemtime($filename);
+                if ($lastmod && (time() - $lastmod > $cache_time))
+                    continue;
+                if (preg_match("/.*\/cache\/mp-logo-(.*)\.$format/", $filename, $match)) {
+                    $list[$match[1]] = array(
+                        "location" => "/cache/mp-logo-" . $match[1] . "." . $format,
+                        "base64" => base64_encode(file_get_contents($filename))
+                    );
+                }
+            }
+            return json_encode(array("code" => 0, "list" => $list));
+        } catch (Exception $e) {
+            throw new Webservice_Exception(clearos_exception_message($e), CLEAROS_ERROR);
         }
     }
 

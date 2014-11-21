@@ -179,11 +179,9 @@ $(document).ready(function() {
         } else {
             $('#infotable').show();
             auth_options.reload_after_auth = true;
+            auth_options.use_full_path_on_redirect = true;
             clearos_is_authenticated();
-            if ($('#total').val() > 0)
-                get_account_info(false);
-            else
-                $('#account-information-container').remove();
+            get_account_info(false);
         }
     }
 
@@ -589,10 +587,11 @@ function get_apps(realtime, offset) {
             if ($('#wizard_marketplace_mode').val() == 'mode1' && exclusive_app_selected)
                 add_optional_apps(exclusive_app_selected);
 
+            logo_list = [];
             $('.theme-placeholder').each(function( index ) {
-                // Yank off prefix (app-logo-)
-                get_app_logo(this.id.substr(9), this.id);
+                logo_list.push($(this).data('basename'));
             });
+            get_app_logos(logo_list);
         },
         error: function(xhr, text, err) {
             // Don't display any errors if ajax request was aborted due to page redirect/reload
@@ -906,7 +905,7 @@ function get_app_details(basename) {
                     + data.pricing.unit_price.toFixed(2) + ' ' + UNIT[data.pricing.unit]);
 
             get_app_logo(data.basename, 'app-logo-' + basename);
-            //$('#app_rating').html(get_rating(data.rating, data.rating_count, true, true));
+            $('#app_rating').html(get_rating(data.rating, data.rating_count, false, false));
             $('#app_category').html(data.category);
             var tags = data.tags.split(' ');
             var my_tags = '';
@@ -969,10 +968,11 @@ function get_app_details(basename) {
                 );
             }
 
+            logo_list = [];
             $('.theme-placeholder').each(function( index ) {
-                // Yank off prefix (app-logo-)
-                get_app_logo(this.id.substr(9), this.id);
+                logo_list.push($(this).data('basename'));
             });
+            get_app_logos(logo_list);
 
         },
         error: function(xhr, text, err) {
@@ -1264,6 +1264,36 @@ function clearos_get_app_screenshot(basename, index) {
         },
         error: function(xhr, text, err) {
             console.log(xhr.responseText.toString());
+        }
+    });
+}
+
+/**
+ * Returns app logos via ajax.
+ *
+ */
+
+function get_app_logos(basenames) {
+    $.ajax({
+        type: 'GET',
+        dataType: 'json',
+        url: '/app/marketplace/ajax/get_app_logos',
+        success: function(data) {
+            // Success..pass data to theme to update HTML.
+            if (data.code == 0) {
+                $.each(basenames, function(index, basename) {
+                    if (data.list[basename] != undefined) {
+                        $('#app-logo-' + basename).html($.base64.decode(data.list[basename].base64));
+                    } else {
+                        get_app_logo(basename, 'app-logo-' + basename);
+                    }
+                });
+                return;
+            }
+        },
+        error: function(xhr, text, err) {
+            get_app_logo(basename, 'app-logo-' + basename);
+            return;
         }
     });
 }
