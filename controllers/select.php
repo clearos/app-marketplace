@@ -70,7 +70,7 @@ class Select extends ClearOS_Controller
         );
 
         $this->page->view_form(
-            'marketplace/novice', $data, lang('marketplace_marketplace') . ' - ' . lang('marketplace_feature_wizard'),
+            'marketplace/novice', $data, lang('marketplace_feature_wizard'),
             array('type' => MY_Page::TYPE_SPOTLIGHT, 'breadcrumb_links' => $breadcrumb_links)
         );
     }

@@ -112,7 +112,7 @@ class Qsf extends ClearOS_Controller
         );
 
         $this->page->view_form(
-            'marketplace/quick_select', $data, lang('marketplace_marketplace') . ' - ' . lang('marketplace_quick_select_file'),
+            'marketplace/quick_select', $data, lang('marketplace_quick_select_file'),
             array('type' => MY_Page::TYPE_SPOTLIGHT, 'breadcrumb_links' => $breadcrumb_links)
         );
     }
