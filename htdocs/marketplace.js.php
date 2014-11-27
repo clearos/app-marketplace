@@ -83,7 +83,6 @@ $(document).ready(function() {
     //----------------------------
 
     $('#wizard_nav_next').on('click', function(e) {
-            e.preventDefault();
         if ($('#wizard_next_showstopper').length != 0) {
             e.preventDefault();
             clearos_modal_infobox_open('wizard_next_showstopper');
@@ -158,7 +157,7 @@ $(document).ready(function() {
 
     if ($(location).attr('href').match(/.*\/install($|\/.*|\#$)/) != null && $('#total').val() > 0) {
         $('#theme_wizard_nav_next').hide();
-    } else if ($(location).attr('href').match(/.*\/install($|\/.*|\#$)/) != null && $('#total').val() == 0) {
+    } else if ($(location).attr('href').match(/.*\/install($|\/.*|\#$)/) != null && $('#num_of_apps').val() == 0) {
         $('#free_checkout').hide();
     }
 
@@ -663,117 +662,6 @@ function add_optional_apps(app) {
     clearos_marketplace_app_list($('#display_format').val(), applist, 0, applist.length, options);
 }
 
-function get_app_as_column(app) {
-    var content = '';
-    content += '<div class=\'marketplace-app-event marketplace-app marketplace-list' + (app.incart ? ' marketplace-selected' : '') + '\' id=\'' + app.basename + '\'>';
-    if (app.installed)
-        content += '<span class=\'marketplace-installed-list\'>INSTALLED</span>';
-    content += '  <div style=\'float:left; width:80px; text-align: center; padding: 0px 2px 5px 2px;\'>';
-    // App logo
-    content += '    <img src=\'" . clearos_app_htdocs('marketplace') . "/market_default.png\' '
-        + 'id=\'app-logo-' + app.basename + '\' style=\'padding-bottom: 8px;\' ' + (app.repo_enabled && app.display_mask == 0 ? '' : 'class=\'marketplace-unavailable\'') + '>';
-    // App rating
-    content += '<div style=\'padding: 5px 0px;\'>' + get_rating(app.rating, app.rating_count, false, false) + '</div>';
-    // If software is installed and latest version, don't show selector checkbox
-    if (app.display_mask != 0)
-        content += '<div id=\'' + app.basename + '-na\' style=\'padding-top: 5px;\'>" . lang('marketplace_not_available') . "</div>';
-    else if (app.up2date)
-        content += '<div style=\'padding-top: 5px;\'><div>" . lang('base_version') . "</div> ' + app.latest_version + '</div>';
-    else if (!app.repo_enabled)
-        content += '<div></div>';
-    else
-        content += '<input class=\'theme-hidden marketplace-select\' type=\'checkbox\' id=\'select-' + app.basename + '\' name=\'' + app.basename + '\' ' + (app.incart ? 'CHECKED ' : '') + '/>';
-    if (app.up2date || app.display_mask != 0) {
-        // Don't show pricing information if its installed
-    } else if (app.pricing.unit_price > 0 && app.pricing.exempt) {
-        content += '<div>';
-        content += '  <div style=\'text-decoration: line-through;\'>';
-        content += '' + app.pricing.currency + app.pricing.unit_price + ' ' + UNIT[app.pricing.unit];
-        content += '  </div>" . lang('marketplace_credit_available') . "';
-        content += '</div>';
-    } else if (app.pricing.unit_price > 0) {
-        content += '<div>' + app.pricing.currency + app.pricing.unit_price
-            + ' ' + UNIT[app.pricing.unit] + '</div>';
-    } else {
-        content += ' <div>" . lang('marketplace_free') . "</div>';
-    }
-    content += '  </div>';
-    content += '  <div style=\'margin-left: 80px; width: 75%; padding: 0px 2px 5px 2px;\'>';
-    content += '    <h2 style=\'padding:0px 0px 5px 0px; margin: 0px 0px 0px 0px;\'>';
-    if (in_wizard_or_novice)
-        content += app.name;
-    else
-        content += '<a class=\'marketplace\' href=\'/app/marketplace/view/' + app.basename + '\'>' + app.name + '</a>';
-    content += '</h2>';
-    content += '    <div style=\'font-size: 8pt;\'>';
-    content += '      <div style=\'padding: 3px 0px;\'>' + app.description.substr(0, 100).replace(/\\n/g, '</p><p>') + '...</div>';
-    content += '      <div style=\'padding: 3px 0px;\'>' + app.vendor.toUpperCase() + '</div>';
-    content += '      <div style=\'padding:5px 0px 0px 0px;\'>';
-    content += get_configure(app);
-    content += '      </div>';
-    content += '    </div>';
-    content += '  </div>';
-    content += '</div>';
-
-    return content;
-}
-
-function get_app_as_tile(app) {
-    var content = '';
-    content += '<div class=\'box box-solid bg-light-blue marketplace-app-event marketplace-app' + (app.incart ? ' marketplace-selected' : '') + '\' id=\'' + app.basename + '\'>';
-    if (app.installed)
-        content += '<span class=\'marketplace-installed\'>INSTALLED</span>';
-    content += '<img src=\'" . clearos_app_htdocs('marketplace') . "/market_default.png\' '
-        + 'id=\'app-logo-' + app.basename + '\' style=\'padding: 2px 2px 5px 2px; float: left;\'>';
-    if (app.pricing.unit_price > 0 && app.pricing.exempt) {
-        content += '<div style=\'text-decoration: line-through; height: 20px; padding-top: 18px\'>' + app.pricing.currency + app.pricing.unit_price + ' ' + UNIT[app.pricing.unit] + '</div>';
-    } else if (app.pricing.unit_price > 0) {
-        content += '<div style=\'padding-top: 18px;\'>' + app.pricing.currency + app.pricing.unit_price + ' ' + UNIT[app.pricing.unit] + '</div>';
-    } else {
-        content += '<div style=\'padding-top: 18px;\'>" . strtoupper(lang('marketplace_free')) . "</div>';
-    }
-    if ((app.display_mask & 1) == 1)
-        content += '<div id=\'' + app.basename + '-na\'>" . lang('marketplace_pro_exclusive') . "</div>';
-    content += '<div style=\'clear: both;\'>' + (app.name.length < 50 ? app.name : app.name.substr(0, 25) + '...' + app.name.substr(app.name.length-10, app.name.length)) + '</div>';
-    if (app.display_mask == 0 && !app.up2date && app.repo_enabled)
-        content += '<input class=\'theme-hidden marketplace-select\' type=\'checkbox\' id=\'select-' + app.basename + '\' name=\'' + app.basename + '\' ' + (app.incart ? 'CHECKED ' : '') + '/>';
-    content += '</div>';
-    content += '<div class=\'marketplace-description-tooltip\'>';
-    content += '<div class=\'marketplace-description-tooltip-content\'>';
-    content += '<div style=\'padding: 5px; float: right;\'><img src=\'/cache/app-logo-' + app.basename.replace('/_/g', '-') + '.png\' alt=\'\'></div>';
-    content += '<h2>' + app.name + '</h2>';
-    content += '<p>' + app.description.replace(/\\n/g, '</p><p>') + '</p>';
-    if (in_wizard_or_novice)
-        content += '<p style=\'text-align: right;\'><a href=\'http://www.clearcenter.com/marketplace/type/?basename=' + app.basename + '\' target=\'_blank\'>' + lang_marketplace_learn_more + '</a></p></div></div>';
-    else
-        content += '<p style=\'text-align: right;\'><a href=\'/app/marketplace/view/' + app.basename + '\'>' + lang_marketplace_learn_more + '</a></p></div></div>';
-    return content;
-}
-
-function get_rating(rating, num_of_ratings, show_avg, show_total) {
-    // Rating system (< 0 means no rating yet)
-    var rounded_rating = Math.round(rating);
-    if (rating < 0) {
-        return '" . lang('marketplace_not_rated') . "';
-    } else {
-        var content = '<span style=\'padding-bottom: 5px;\'>';
-        for (var index = 0 ; index < rounded_rating; index++)
-            content += '<img style=\'padding-left: 1px;\' '
-                + 'src=\'" . clearos_app_htdocs('marketplace') . "/star_on.png\' alt=\'*\'>';
-        for (var index = 5 ; index > rounded_rating; index--)
-            content += '<img style=\'padding-left: 1px;\' '
-                + 'src=\'" . clearos_app_htdocs('marketplace') . "/star_off.png\' alt=\'-\'>';
-        if (show_avg && rating > 0)
-            content += '&#160;&#160;(' + rating.toFixed(1) + ')';
-        if (show_total && num_of_ratings > 0) {
-            content += '<div>' + num_of_ratings + ' " . lang('marketplace_reviews') . "'.toLowerCase() + '</div></span>';
-        } else {
-            content += '</span>';
-        }
-    }
-    return content;
-}
-
 function get_app_details(basename) {
     $.ajax({
         type: 'POST',
@@ -905,7 +793,7 @@ function get_app_details(basename) {
                     + data.pricing.unit_price.toFixed(2) + ' ' + UNIT[data.pricing.unit]);
 
             get_app_logo(data.basename, 'app-logo-' + basename);
-            $('#app_rating').html(get_rating(data.rating, data.rating_count, false, false));
+            $('#app_rating').html(clearos_star_rating(data.rating));
             $('#app_category').html(data.category);
             var tags = data.tags.split(' ');
             var my_tags = '';

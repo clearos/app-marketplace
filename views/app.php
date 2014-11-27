@@ -172,3 +172,4 @@ echo "$(document).ready(function() {";
 echo "    get_app_details('" . $basename . "'); $('.btn-group').button('refresh');";
 echo "});";
 echo "</script>";
+echo "<input type='hidden' name='basename' id='basename' value='" . $basename . "' />";
