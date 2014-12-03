@@ -83,6 +83,17 @@ $(document).ready(function() {
     //----------------------------
 
     $('#wizard_nav_next').on('click', function(e) {
+        if ($('#mode1').length > 0 
+            && (
+                !$('#mode1').hasClass('btn-primary')
+                || !$('#mode2').hasClass('btn-primary')
+                || !$('#mode3').hasClass('btn-primary')
+                || !$('#mode4').hasClass('btn-primary')
+            )
+        ) {
+            // At least one mode button does not have primary meahave primary class means none selected
+            $('#wizard_next_showstopper').remove();
+        }
         if ($('#wizard_next_showstopper').length != 0) {
             e.preventDefault();
             clearos_modal_infobox_open('wizard_next_showstopper');
@@ -90,7 +101,8 @@ $(document).ready(function() {
     });
 
     $('.marketplace_wizard_mode').on({
-        click: function() {
+        click: function(e) {
+            e.preventDefault();
             var mySelector = this;
             $('#wizard_marketplace_mode').val(mySelector.id);
             $.ajax({
@@ -99,6 +111,17 @@ $(document).ready(function() {
                 url: '/app/marketplace/wizard/set_mode',
                 data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&mode=' + $('#wizard_marketplace_mode').val()
             });
+            for (index = 1; index <=4; index++) {
+                if (this.id == 'mode' + index) {
+                    $('#mode' + index).html('" . lang('marketplace_selected') . "');
+                    $('#mode' + index).removeClass('btn-primary');
+                    $('#mode' + index).addClass('btn-secondary');
+                } else {
+                    $('#mode' + index).html('" . lang('base_select') . "');
+                    $('#mode' + index).addClass('btn-primary');
+                    $('#mode' + index).removeClass('btn-secondary');
+                }
+            }
         }
     });
     if ($('#wizard_marketplace_mode').val() == 'mode1') {
@@ -563,6 +586,7 @@ function get_apps(realtime, offset) {
             var options = new Object();
             if ($('#wizard_marketplace_mode').length != 0) {
                 options.wizard = true;
+                options.columns = 2;
             }
             if ($('#wizard_marketplace_mode').val() == 'mode1')
                 options.mode = 'feature';

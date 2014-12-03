@@ -19,68 +19,40 @@
 $this->lang->load('base');
 $this->lang->load('marketplace');
 
-$radios = array(
-    radio_set_item(
-        'function',
-        'radio',
-        lang('marketplace_install_by_function'),
-        TRUE,
-        array(
-            'label_id' => 'mode1',
-            'class' => 'marketplace_wizard_mode active',
-            'orientation' => 'horizontal',
-            'buttons' => TRUE
-        )
-    ),
-    radio_set_item(
-        'category',
-        'radio',
-        lang('marketplace_install_by_category'),
-        FALSE,
-        array(
-            'label_id' => 'mode2',
-            'class' => 'marketplace_wizard_mode',
-            'orientation' => 'horizontal',
-            'buttons' => TRUE
-        )
-    ),
-    radio_set_item(
-        'qsf',
-        'radio',
-        lang('marketplace_install_by_qsf'),
-        FALSE,
-        array(
-            'label_id' => 'mode3',
-            'class' => 'marketplace_wizard_mode',
-            'orientation' => 'horizontal',
-            'buttons' => TRUE
-        )
-    ),
-    radio_set_item(
-        'skip',
-        'radio',
-        lang('marketplace_skip_wizard'),
-        FALSE,
-        array(
-            'label_id' => 'mode4',
-            'class' => 'marketplace_wizard_mode',
-            'orientation' => 'horizontal',
-            'buttons' => TRUE
-        )
-    ),
-);
-
-echo box_open(lang('marketplace_getting_started'));
-echo box_content_open();
 echo row_open();
-echo column_open(2);
-echo app_logo('marketplace');
-echo column_close();
-echo column_open(10);
-echo lang('marketplace_wizard_congrats');
-echo column_close();
-echo row_close();
-echo box_content_close();
-echo box_footer('marketplace-feature-select', radio_set($radios, 'feature', array('buttons' => TRUE)));
+
+$link = anchor_select('#', 'high', array('id' => 'mode1', 'class' => 'marketplace_wizard_mode'));
+echo column_open(6);
+echo box_open(lang('marketplace_install_by_function'), array('class' => 'marketplace-wizard-select theme-clear'));
+echo box_content("<div>" . lang('marketplace_install_by_function_description') . "</div>");
+echo box_footer('footer-mode1', $link, array('class' => 'pull-right'));
 echo box_close();
+echo column_close();
+
+$link = anchor_select('#', 'high', array('id' => 'mode2', 'class' => 'marketplace_wizard_mode'));
+echo column_open(6);
+echo box_open(lang('marketplace_install_by_category'), array('class' => 'marketplace-wizard-select theme-clear'));
+echo box_content("<div>" . lang('marketplace_install_by_category_description') . "</div>");
+echo box_footer('footer-mode2', $link, array('class' => 'pull-right'));
+echo box_close();
+echo column_close();
+
+$link = anchor_select('#', 'high', array('id' => 'mode3', 'class' => 'marketplace_wizard_mode'));
+echo column_open(6);
+echo box_open(lang('marketplace_install_by_qsf'), array('class' => 'marketplace-wizard-select theme-clear'));
+echo box_content("<div>" . lang('marketplace_install_by_qsf_description') . "</div>");
+echo box_footer('footer-mode3', $link, array('class' => 'pull-right'));
+echo box_close();
+echo column_close();
+
+$link = anchor_select('#', 'high', array('id' => 'mode4', 'class' => 'marketplace_wizard_mode'));
+echo column_open(6);
+echo box_open(lang('marketplace_skip_wizard'), array('class' => 'marketplace-wizard-select theme-clear'));
+echo box_content("<div>" . lang('marketplace_skip_wizard_description') . "</div>");
+echo box_footer('footer-mode4', $link, array('class' => 'pull-right'));
+echo box_close();
+echo column_close();
+
+echo row_close();
 echo "<input type='hidden' value='$mode' id='wizard_marketplace_mode' name='wizard_marketplace_mode' />";
+echo modal_info("wizard_next_showstopper", lang('base_error'), lang('marketplace_no_mode_selected'), array('type' => 'warning'));

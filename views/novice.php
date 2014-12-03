@@ -36,13 +36,10 @@ $buttons = array(
 );
 echo box_open("---", array('id' => 'marketplace-novice', 'anchors' => button_set($buttons)));
 echo box_content_open();
-echo row_open();
-echo column_open(10, NULL, NULL, array('id' => 'marketplace-novice-description'));
-echo column_close();
-echo column_open(2, NULL, NULL, array('id' => 'marketplace-novice-description-more'));
-echo anchor_custom('#', lang('marketplace_learn_more'), 'high', array('id' => 'novice-learn-more-action'));
-echo column_close();
-echo row_close();
+echo "<div id='marketplace-novice-description'></div>";
+echo "<div class='theme-clear pull-right'>";
+echo anchor_custom('#', lang('marketplace_learn_more'), 'link-only', array('id' => 'novice-learn-more-action'));
+echo "</div>";
 echo box_content_close();
 echo box_footer('marketplace-novice-options', radio_set($radios, 'feature', array('buttons' => TRUE)));
 echo box_close();
