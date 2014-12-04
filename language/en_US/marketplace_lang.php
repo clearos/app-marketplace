@@ -123,7 +123,7 @@ $lang['marketplace_localization'] = 'Localization';
 $lang['marketplace_marketplace'] = 'Marketplace';
 $lang['marketplace_marketplace_options'] = 'Marketplace Options';
 $lang['marketplace_mode_category_best_practices_help'] = 'Security experts will agree providing separation (physical or virtual) between services providing perimiter security from those that provide userland infrastructure (eg. mail, file, print servers etc.) is always recommended.  For small environments or those where economics play a dominant role, ClearOS can be used to provide as few or as many services across the full Network, Gateway and Server spectrum.';
-$lang['marketplace_mode_category_help'] = 'Marketplace Categories separate apps into groupings based on how they interact and provide services to administrators and users.  Hover over an app to get a detailed description.';
+$lang['marketplace_mode_category_help'] = 'Marketplace Categories separate apps into groupings based on how they interact and provide services to administrators and users.';
 $lang['marketplace_mode_qsf_best_practices_help'] = 'Marketplace Quick Select Files are freely available from the <a href="http://www.clearcenter.com/qsf" target="_blank">ClearCenter website</a> or <a href="http://www.clearcenter.com/qsf-howto" target="_blank">create your own</a>.';
 $lang['marketplace_mode_qsf_help'] = 'Marketplace Quick Select Files allow you to quickly configure your system by providing pre-configured templates (QSF) around common tasks and policies.';
 $lang['marketplace_mode_slave_invalid'] = 'This app is not available to systems configured in Slave mode.  Please install the plugin on the system acting as the Master node.';
