@@ -1000,18 +1000,20 @@ class Marketplace extends Rest
 
             $cache_time = 2592000; // 30 days
             $filename = CLEAROS_CACHE_DIR . "/mp-logo-" . $file;
-            $lastmod = @filemtime($filename);
-            if ($lastmod && (time() - $lastmod < $cache_time)) {
-                // Use cached file.
-                return json_encode(
-                    array(  
-                        "code" => 0,
-                        "location" => "/cache/mp-logo-$file",
-                        "base64" => base64_encode(file_get_contents($filename))
-                    )
-                );
+            if (file_exists($filename)) {
+                $lastmod = @filemtime($filename);
+                if ($lastmod && (time() - $lastmod < $cache_time)) {
+                    // Use cached file.
+                    return json_encode(
+                        array(
+                            "code" => 0,
+                            "location" => "/cache/mp-logo-$file",
+                            "base64" => base64_encode(file_get_contents($filename))
+                        )
+                    );
+                }
             }
-            
+
             $static = new Static_Content();
             $result = $static->get('marketplace/logos', $file);
 

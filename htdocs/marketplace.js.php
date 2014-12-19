@@ -550,8 +550,7 @@ function get_apps(realtime, offset) {
                     clearos_dialog_box('error', '" . lang('base_warning') . "', data.errmsg, options);
                     return;
                 } else {
-                    $('#app-search-load').hide();
-                    clearos_dialog_box('error', '" . lang('base_warning') . "', data.errmsg, options);
+                    $('#app-search-load').html(clearos_infobox_warning(lang_warning, data.errmsg));
                     return;
                 }
             }
@@ -693,6 +692,7 @@ function get_app_details(basename) {
         url: '/app/marketplace/ajax/get_app_details',
         data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&basename=' + basename,
         success: function(data) {
+            // Hide the loading page
             if (data.code != undefined && data.code == 3) {
                 $('#app_overview').remove();
                 var options = new Object();
@@ -700,15 +700,14 @@ function get_app_details(basename) {
                 clearos_dialog_box('error', '" . lang('base_warning') . "', data.errmsg, options);
                 return;
             } else if (data.code != undefined && data.code != 0) {
-                $('#app_overview').html(data.errmsg);
+                $('#app-loading').html(clearos_infobox_warning(lang_warning, data.errmsg));
                 return;
             }
+            $('#app-loading').remove();
 
             // Add title to review form
             $('#review-app-name').html(data.name);
 
-            // Hide the loading page
-            $('#app-loading').remove();
             $('#app-details-container').show(600);
             $('#app_name_title').html(data.name);
             $('#app_description').html('<p>' + data.description.replace(/\\n/g, '</p><p>') + '</p>');

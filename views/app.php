@@ -19,7 +19,7 @@
 $this->lang->load('base');
 $this->lang->load('marketplace');
 
-echo loading('2em', lang('marketplace_loading'), array('icon-below' => TRUE, 'center' => TRUE, 'id' => 'app-loading', 'class' => 'marketplace-app-loading'));
+echo loading('1.4em', lang('marketplace_loading'), array('icon-below' => TRUE, 'center' => TRUE, 'id' => 'app-loading', 'class' => 'marketplace-app-loading'));
 
 echo "<div id='app-details-container' class='theme-hidden'>";
 echo box_open($basename, array('id' => 'app_name', 'class' => 'marketplace-app-info-container'));
