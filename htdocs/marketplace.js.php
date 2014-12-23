@@ -692,7 +692,6 @@ function get_app_details(basename) {
         url: '/app/marketplace/ajax/get_app_details',
         data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&basename=' + basename,
         success: function(data) {
-            // Hide the loading page
             if (data.code != undefined && data.code == 3) {
                 $('#app_overview').remove();
                 var options = new Object();
@@ -702,7 +701,11 @@ function get_app_details(basename) {
             } else if (data.code != undefined && data.code != 0) {
                 $('#app-loading').html(clearos_infobox_warning(lang_warning, data.errmsg));
                 return;
+            } else if (data.rnf != undefined) {
+                $('#app-loading').html(clearos_infobox_warning(lang_warning, '" . lang('marketplace_app_does_not_exist') . "'));
+                return;
             }
+            // Hide the loading page
             $('#app-loading').remove();
 
             // Add title to review form

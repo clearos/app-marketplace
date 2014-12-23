@@ -132,7 +132,16 @@ class Marketplace extends ClearOS_Controller
             'status' => 'all' 
         );
         $data['search'] = lang('marketplace_search');
-        $this->page->view_form('marketplace/app', $data, lang('marketplace_marketplace'), array('type' => MY_Page::TYPE_SPOTLIGHT));
+        // Add return to Marketplace breadcrumb trail
+        $breadcrumb_links = array(
+            'marketplace' => array('url' => '/app/marketplace', 'tag' => lang('marketplace_marketplace'))
+        );
+        $this->page->view_form(
+            'marketplace/app',
+            $data,
+            lang('marketplace_marketplace'),
+            array('type' => MY_Page::TYPE_SPOTLIGHT, 'breadcrumb_links' => $breadcrumb_links)
+        );
     }
 
     /**
@@ -175,7 +184,7 @@ class Marketplace extends ClearOS_Controller
         // Search and filter history
         $data['filter'] = $this->marketplace->get_search_history();
 
-        // Add return to MarketplaceP breadcrumb trail
+        // Add return to Marketplace breadcrumb trail
         $breadcrumb_links = array(
             'marketplace' => array('url' => '/app/marketplace', 'tag' => lang('marketplace_marketplace'))
         );
@@ -301,7 +310,7 @@ class Marketplace extends ClearOS_Controller
         // Load views
         //-----------
 
-        $this->page->view_form('marketplace/settings', $data, lang('base_settings'));//, array('type' => MY_Page::TYPE_SPOTLIGHT));
+        $this->page->view_form('marketplace/settings', $data, lang('base_settings'));
     }
 
     /**
