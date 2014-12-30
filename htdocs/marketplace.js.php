@@ -1038,11 +1038,12 @@ function get_progress() {
                 clearos_set_progress_bar('progress', 0, null);
                 clearos_set_progress_bar('overall', 0, null);
                 $('#details').html(json.errmsg);
+                return;
             }
 
             if ($(location).attr('href').match('.*progress\/busy$') != null) {
-                // We're on the busy page...let's check again in 5 seconds.
-                window.setTimeout(get_progress, 5000);
+                // We're on the busy page...let's check again in a few seconds.
+                window.setTimeout(get_progress, 2000);
             } else if (json.overall == 100) {
                 if ($('#theme_wizard_nav_next').length == 0) {
                     $('#reload_button').show();
@@ -1050,8 +1051,6 @@ function get_progress() {
                     clearos_set_progress_bar('overall', 100, null);
                     $('#details').html(installation_complete);
                 }
-                // TODO DELETE setTimeout
-                window.setTimeout(get_progress, 5000);
                 return;
             } else {
                 window.setTimeout(get_progress, 1000);
@@ -1067,8 +1066,6 @@ function get_progress() {
             }
         },
         error: function(xhr, text, err) {
-            // TODO: This seems problematic on my slow network connection (PB).  More digging required.
-            // clearos_dialog_box('error', '" . lang('base_warning') . "', xhr.responseText.toString());
             window.setTimeout(get_progress, 1000);
         }
     });
@@ -1178,36 +1175,6 @@ function clearos_get_app_screenshot(basename, index) {
         },
         error: function(xhr, text, err) {
             console.log(xhr.responseText.toString());
-        }
-    });
-}
-
-/**
- * Returns app logos via ajax.
- *
- */
-
-function get_app_logos(basenames) {
-    $.ajax({
-        type: 'GET',
-        dataType: 'json',
-        url: '/app/marketplace/ajax/get_app_logos',
-        success: function(data) {
-            // Success..pass data to theme to update HTML.
-            if (data.code == 0) {
-                $.each(basenames, function(index, basename) {
-                    if (data.list[basename] != undefined) {
-                        $('#app-logo-' + basename).html($.base64.decode(data.list[basename].base64));
-                    } else {
-                        get_app_logo(basename, 'app-logo-' + basename);
-                    }
-                });
-                return;
-            }
-        },
-        error: function(xhr, text, err) {
-            get_app_logo(basename, 'app-logo-' + basename);
-            return;
         }
     });
 }
