@@ -58,4 +58,5 @@ echo "<script type='text/javascript'>
 ";
 echo "<input id='display_format' type='hidden' value='$display_format'>";
 echo "<input id='number_of_apps_to_display' type='hidden' name='number_of_apps_to_display' value='$number_of_apps_to_display'>";
-echo "<input type='hidden' value='mode1' id='wizard_marketplace_mode' name='wizard_marketplace_mode' />";
+if ($wizard)
+    echo "<input type='hidden' value='mode1' id='wizard_marketplace_mode' name='wizard_marketplace_mode' />";

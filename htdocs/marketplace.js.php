@@ -124,7 +124,7 @@ $(document).ready(function() {
             }
         }
     });
-    if ($('#wizard_marketplace_mode').val() == 'mode1') {
+    if ($('#marketplace-novice').length > 0) {
         $('.novice-select').on({
             click: function() {
                 $('#app-search-load').show();
@@ -564,7 +564,7 @@ function get_apps(realtime, offset) {
                     toggle_state = 'all';
                 var tags = app.tags.split(' ');
                 var is_option = false;
-                if ($('#wizard_marketplace_mode').val() == 'mode1') {
+                if ($('#marketplace-novice').length > 0) {
                     $.each(tags, function(tagindex, tag) {
                         // An optional 'novice' or feature app, has a tag starting with 00_
                         // After prefix, it contains the basename of the core app.
@@ -587,7 +587,7 @@ function get_apps(realtime, offset) {
                 options.wizard = true;
                 options.columns = 2;
             }
-            if ($('#wizard_marketplace_mode').val() == 'mode1')
+            if ($('#marketplace-novice').length > 0)
                 options.mode = 'feature';
             else if ($('#wizard_marketplace_mode').val() == 'mode3')
                 options.mode = 'qsf';
@@ -601,12 +601,12 @@ function get_apps(realtime, offset) {
 
             // Display settings number of apps by default
             var to_display = $('#number_of_apps_to_display').val();
-            if ($('#wizard_marketplace_mode').val() == 'mode1')
+            if ($('#marketplace-novice').length > 0)
                 to_display = 0;
             
             clearos_marketplace_app_list($('#display_format').val(), applist, to_display, data.total, options);
 
-            if ($('#wizard_marketplace_mode').val() == 'mode1' && exclusive_app_selected)
+            if ($('#marketplace-novice').length > 0 && exclusive_app_selected)
                 add_optional_apps(exclusive_app_selected);
 
             logo_list = [];
@@ -646,7 +646,7 @@ $(document).on('click', '.marketplace-app-event', function(e) {
     clicked_app.id = this.id;
     clicked_app.name = $('#' + this.id).attr('data-appname'); 
     // Mode one hidden field is novice mode/select by feature
-    if ($('#wizard_marketplace_mode').val() == 'mode1' && novice_set[novice_index].exclusive && $('#' + this.id,'#optional-apps').length != 1) {
+    if ($('#marketplace-novice').length > 0 && novice_set[novice_index].exclusive && $('#' + this.id,'#optional-apps').length != 1) {
         // Need to unset all other apps before selecting this one
         var apps = Array();
         $.each($('#form_app_list input[type=\'checkbox\']'), function (index, value) {

@@ -61,6 +61,7 @@ class Select extends ClearOS_Controller
 
         $data['display_format'] = $this->marketplace->get_display_format();
         $data['mode'] = 'feature-wizard';
+        $data['wizard'] = $this->session->userdata('wizard');
         $data['os_name'] = $this->session->userdata('os_name');
 
         // Add setting link to breadcrumb trail

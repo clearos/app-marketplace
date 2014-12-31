@@ -173,7 +173,7 @@ class Wizard extends ClearOS_Controller
                 }
             }
 
-            $this->session->set_userdata(array('wizard_redirect' => 'marketplace/wizard/install'));
+            $this->session->set_userdata(array('wizard_redirect' => 'marketplace/install'));
         }
 
         if ($mode == 'mode3')

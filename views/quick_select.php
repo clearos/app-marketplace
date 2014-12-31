@@ -35,10 +35,15 @@ echo form_header(lang('marketplace_quick_select'));
 ///////////////////////////////////////////////////////////////////////////////
 
 if ($qsf_ready)
-    $buttons = array(
-        anchor_custom('install', lang('marketplace_download_and_install'), 'high'),
-        form_submit_custom('reset', lang('base_reset'), 'low')
-    );
+    if ($wizard)
+        $buttons = array(
+            form_submit_custom('reset', lang('base_reset'), 'low')
+        );
+    else
+        $buttons = array(
+            anchor_custom('install', lang('marketplace_download_and_install'), 'high'),
+            form_submit_custom('reset', lang('base_reset'), 'low')
+        );
 else
     $buttons = array(
         form_submit_custom('upload', lang('marketplace_upload_qsf'), 'high')
@@ -77,4 +82,5 @@ if ($qsf_ready)
 echo loading('1.2em', lang('marketplace_loading'), array('icon-below' => TRUE, 'center' => TRUE, 'id' => 'app-search-load', 'class' => 'marketplace-app-loading'));
 echo "<div id='app_list_overview'></div>";
 echo "<input id='display_format' type='hidden' value='$display_format'>";
-echo "<input type='hidden' value='mode3' id='wizard_marketplace_mode' name='wizard_marketplace_mode' />\n";
+if ($wizard)
+    echo "<input type='hidden' value='mode3' id='wizard_marketplace_mode' name='wizard_marketplace_mode' />\n";
