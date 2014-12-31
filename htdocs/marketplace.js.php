@@ -352,7 +352,7 @@ function update_install_form(data) {
                 }
                 // TODO Should use Jquery number formatter plugin
                 $('#po_available').html(data.po_currency + ' ' + data.po_available.toFixed(2)
-                    + ' " . lang('marketplace_limit') . "' + ($('#total').val() > data.po_available.toFixed(2).toLocaleString() ? ' - " .
+                    + ' " . lang('marketplace_limit') . "' + ($('#total').val() > data.po_available ? ' - " .
                     lang('marketplace_insufficient_funds') . "' : ''));
             } else {
                 $('#po_field').hide();
@@ -900,7 +900,9 @@ function checkout(event, type) {
     $('#free_checkout').hide();
     var modal_feedback = null;
     if ($('#po').prop('checked') && $('#mi-po_number').val() == '') {
-        modal_feedback = clearos_dialog_box('invalid_po_err', '" . lang('base_warning') . "', '" . lang('marketplace_invalid_po') . "');
+        //modal_feedback = clearos_dialog_box('invalid_po_err', '" . lang('base_warning') . "', '" . lang('marketplace_invalid_po') . "');
+        // FIXME - Direct reference to theme framework
+        $('#modal-input-po').modal({backdrop: 'static'});
         return;
     } else if (type == 'paid' && !$('input[name=payment_method]:checked').val()) {
         modal_feedback = clearos_dialog_box('invalid_method_err', '" . lang('base_warning') . "', '" . lang('marketplace_select_payment_method') . "');
@@ -1078,7 +1080,7 @@ function clearos_sdn_account_setup(landing_url, username, device_id) {
 
 function update_po() {
     $('#po').prop('checked', true);
-    $('#display_po').html(' (' + $('#po_number').val() + ')');
+    $('#po_available').html($('#po_number').val());
 }
 
 /**
