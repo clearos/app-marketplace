@@ -36,9 +36,9 @@ echo field_input('display_total', $display_total, lang('marketplace_total'), TRU
 echo field_radio_set(
     lang('marketplace_payment_method'),
     array(
-        field_radio_set_item('preauth', 'payment_method', lang('marketplace_credit_card') . " (<span id='card_number'></span>)", TRUE, FALSE),
-        field_radio_set_item('po', 'payment_method', lang('marketplace_purchase_order') . "<span id='display_po'></span>", FALSE, FALSE),
-        field_radio_set_item('debit', 'payment_method', lang('marketplace_debit') . " (<span id='debit_available'></span>)", FALSE, FALSE)
+        field_radio_set_item('preauth', 'payment_method', lang('marketplace_credit_card') . "  (<span id='card_number'></span>)", FALSE, FALSE),
+        field_radio_set_item('po', 'payment_method', lang('marketplace_purchase_order') . "  (<span id='po_available'></span>)", FALSE, FALSE),
+        field_radio_set_item('debit', 'payment_method', lang('marketplace_debit') . "  (<span id='debit_available'></span>)", FALSE, FALSE)
     ),
     'payment_method',
     array('orientation' => 'vertical')

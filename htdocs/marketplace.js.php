@@ -902,7 +902,7 @@ function checkout(event, type) {
     if ($('#po').prop('checked') && $('#mi-po_number').val() == '') {
         modal_feedback = clearos_dialog_box('invalid_po_err', '" . lang('base_warning') . "', '" . lang('marketplace_invalid_po') . "');
         return;
-    } else if (type == 'paid' && !$('input[name=payment_method]').is(':checked')) {
+    } else if (type == 'paid' && !$('input[name=payment_method]:checked').val()) {
         modal_feedback = clearos_dialog_box('invalid_method_err', '" . lang('base_warning') . "', '" . lang('marketplace_select_payment_method') . "');
         return;
     } else {
@@ -1209,6 +1209,7 @@ function get_app_logo(basename, domid) {
 function marketplace_select_app(id) {
     $('#' + id).val(lang_marketplace_remove);
     $('#active-select-' + id).removeClass('theme-hidden');
+    $('figure[data-basename=\"' + id + '\"]').addClass('theme-app-selected');
 }
 
 /**
@@ -1218,6 +1219,7 @@ function marketplace_select_app(id) {
 function marketplace_unselect_app(id) {
     $('#' + id).val(lang_marketplace_select_for_install);
     $('#active-select-' + id).addClass('theme-hidden');
+    $('figure[data-basename=\"' + id + '\"]').removeClass('theme-app-selected');
 }
 
 ";
