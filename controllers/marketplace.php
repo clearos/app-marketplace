@@ -101,7 +101,7 @@ class Marketplace extends ClearOS_Controller
         );
 
         $this->page->view_form(
-            'marketplace', $data, lang('marketplace_marketplace'),
+            'marketplace', $data, lang('marketplace_app_name'),
             array('type' => MY_Page::TYPE_SPOTLIGHT, 'breadcrumb_links' => $breadcrumb_links)
         );
     }

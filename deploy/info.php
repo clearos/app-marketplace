@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 $app['basename'] = 'marketplace';
-$app['version'] = '2.0.10';
+$app['version'] = '2.0.14';
 $app['release'] = '1';
 $app['vendor'] = 'ClearCenter';
 $app['packager'] = 'ClearCenter';
@@ -19,7 +19,7 @@ $app['description'] = lang('marketplace_app_description');
 
 $app['name'] = lang('marketplace_app_name');
 $app['category'] = lang('base_category_system');
-$app['subcategory'] = lang('base_subcategory_settings');
+$app['subcategory'] = lang('base_subcategory_base');
 
 // Wizard extras
 $app['controllers']['selection']['inline_help'] = array(
