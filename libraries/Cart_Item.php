@@ -818,7 +818,7 @@ class Cart_Item extends Engine
         clearos_profile(__METHOD__, __LINE__);
 
         if ($pid <= 0)
-            return lang('marketplace_pid_is_invalid');
+            return lang('marketplace_pid_invalid');
     }
 
     /**
@@ -834,7 +834,7 @@ class Cart_Item extends Engine
         clearos_profile(__METHOD__, __LINE__);
 
         if ($description === NULL || $description === '')
-            return lang('marketplace_description_is_invalid');
+            return lang('marketplace_description_invalid');
     }
 
     /**
@@ -850,7 +850,7 @@ class Cart_Item extends Engine
         clearos_profile(__METHOD__, __LINE__);
 
         if ($quantity < 0)
-            return lang('marketplace_quantity_is_invalid');
+            return lang('marketplace_quantity_invalid');
     }
 
     /**
@@ -866,7 +866,7 @@ class Cart_Item extends Engine
         clearos_profile(__METHOD__, __LINE__);
 
         if ($unit < 0)
-            return lang('marketplace_unit_is_invalid');
+            return lang('marketplace_unit_invalid');
     }
 
     /**
@@ -882,7 +882,7 @@ class Cart_Item extends Engine
         clearos_profile(__METHOD__, __LINE__);
 
         if ($unit_price < 0)
-            return lang('marketplace_unit_price_is_invalid');
+            return lang('marketplace_unit_price_invalid');
     }
 
     /**
@@ -898,7 +898,7 @@ class Cart_Item extends Engine
         clearos_profile(__METHOD__, __LINE__);
 
         if ($discount < 0 || $discount > 100)
-            return lang('marketplace_discount_is_invalid');
+            return lang('marketplace_discount_invalid');
     }
 
     /**
@@ -914,7 +914,7 @@ class Cart_Item extends Engine
         clearos_profile(__METHOD__, __LINE__);
 
         if (FALSE)
-            return lang('marketplace_currency_is_invalid');
+            return lang('marketplace_currency_invalid');
     }
 
     /**
@@ -930,7 +930,7 @@ class Cart_Item extends Engine
         clearos_profile(__METHOD__, __LINE__);
 
         if (FALSE)
-            return lang('marketplace_note_is_invalid');
+            return lang('marketplace_note_invalid');
     }
 
     /**
@@ -946,7 +946,7 @@ class Cart_Item extends Engine
         clearos_profile(__METHOD__, __LINE__);
 
         if (!is_bool($exempt))
-            return lang('marketplace_exempt_is_invalid');
+            return lang('marketplace_exempt_invalid');
     }
 
     /**
@@ -962,7 +962,7 @@ class Cart_Item extends Engine
         clearos_profile(__METHOD__, __LINE__);
 
         if (!is_bool($evaluation))
-            return lang('marketplace_evaluation_is_invalid');
+            return lang('marketplace_evaluation_invalid');
     }
 
     /**
@@ -978,7 +978,7 @@ class Cart_Item extends Engine
         clearos_profile(__METHOD__, __LINE__);
 
         if (!is_bool($prorated))
-            return lang('marketplace_prorated_is_invalid');
+            return lang('marketplace_prorated_discount_invalid');
     }
 
     /**
@@ -994,7 +994,7 @@ class Cart_Item extends Engine
         clearos_profile(__METHOD__, __LINE__);
 
         if ($pid_bitmask < 0)
-            return lang('marketplace_pid_bitmask_is_invalid');
+            return lang('marketplace_internal_error');
     }
 
     /**
@@ -1010,7 +1010,7 @@ class Cart_Item extends Engine
         clearos_profile(__METHOD__, __LINE__);
 
         if (FALSE)
-            return lang('marketplace_class_is_invalid');
+            return lang('marketplace_class_invalid');
     }
 
     /**
@@ -1026,7 +1026,7 @@ class Cart_Item extends Engine
         clearos_profile(__METHOD__, __LINE__);
 
         if (FALSE)
-            return lang('marketplace_group_is_invalid');
+            return lang('marketplace_group_invalid');
     }
 
     /**
@@ -1042,7 +1042,7 @@ class Cart_Item extends Engine
         clearos_profile(__METHOD__, __LINE__);
 
         if (!is_bool($upgrade))
-            return lang('marketplace_upgrade_is_invalid');
+            return lang('marketplace_upgrade_invalid');
     }
 
     /**
@@ -1058,7 +1058,7 @@ class Cart_Item extends Engine
         clearos_profile(__METHOD__, __LINE__);
 
         if (FALSE)
-            return lang('marketplace_eula_is_invalid');
+            return lang('marketplace_eula_invalid');
     }
 
 }

@@ -1597,7 +1597,7 @@ class Marketplace extends Rest
         if (! preg_match("/^[A-Za-z0-9\.\- ]+$/", $sdn_username))
             return lang('marketplace_sdn_username_is_invalid');
         if (strlen($sdn_username) < 4)
-            return lang('marketplace_sdn_username_min_length') . ' (4).';
+            return lang('marketplace_sdn_username_min_length');
     }
 
     /**
@@ -1615,7 +1615,7 @@ class Marketplace extends Rest
         if (! preg_match("/^[A-Za-z0-9\\!\\@\\#\\$\\%\\^\\*\\(\\)-_\\.\\?]+$/", $sdn_password))
             return lang('marketplace_sdn_password_is_invalid');
         if (strlen($sdn_password) < 4)
-            return lang('marketplace_sdn_password_min_length') . ' (4).';
+            return lang('marketplace_sdn_password_min_length');
     }
 
     /**
@@ -1631,7 +1631,7 @@ class Marketplace extends Rest
         clearos_profile(__METHOD__, __LINE__);
 
         if (! preg_match("/^[A-Za-z0-9\\ \\-\\_\\(\\)\\#\\.\\@]+$/", $system_name))
-            return lang('marketplace_system_name_is_invalid');
+            return lang('marketplace_system_name_invalid');
     }
 
     /**
@@ -1647,7 +1647,7 @@ class Marketplace extends Rest
         clearos_profile(__METHOD__, __LINE__);
 
         if (is_nan($number_of_apps) || $number_of_apps < 0)
-            return lang('marketplace_number_of_apps_is_invalid');
+            return lang('marketplace_number_of_apps_invalid');
     }
 
     /**
@@ -1679,7 +1679,7 @@ class Marketplace extends Rest
         clearos_profile(__METHOD__, __LINE__);
 
         if (! preg_match("/^[A-Za-z0-9\\ \\-\\_]+$/", $pseudonym))
-            return lang('marketplace_pseudonym_is_invalid');
+            return lang('marketplace_pseudonym_invalid');
     }
 
     /**
@@ -1721,7 +1721,7 @@ class Marketplace extends Rest
         clearos_profile(__METHOD__, __LINE__);
 
         if (! preg_match("/^[\w\W\s]*$/", $search))
-            return lang('marketplace_search_is_invalid');
+            return lang('marketplace_search_invalid');
     }
 
     /**
@@ -1737,7 +1737,7 @@ class Marketplace extends Rest
         clearos_profile(__METHOD__, __LINE__);
 
         if (! in_array($category, $this->filter_category))
-            return lang('marketplace_filter_category_is_invalid');
+            return lang('marketplace_filter_invalid');
     }
 
     /**
@@ -1753,7 +1753,7 @@ class Marketplace extends Rest
         clearos_profile(__METHOD__, __LINE__);
 
         if (! in_array($price, $this->filter_price))
-            return lang('marketplace_filter_price_is_invalid');
+            return lang('marketplace_filter_invalid');
     }
     /**
      * Validation routine for filter intro query.
@@ -1768,7 +1768,7 @@ class Marketplace extends Rest
         clearos_profile(__METHOD__, __LINE__);
 
         if (! in_array($intro, $this->filter_intro))
-            return lang('marketplace_filter_intro_is_invalid');
+            return lang('marketplace_filter_invalid');
     }
     /**
      * Validation routine for status query.
@@ -1783,6 +1783,6 @@ class Marketplace extends Rest
         clearos_profile(__METHOD__, __LINE__);
 
         if (! in_array($status, $this->filter_status))
-            return lang('marketplace_filter_status_is_invalid');
+            return lang('marketplace_filter_invalid');
     }
 }

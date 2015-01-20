@@ -57,7 +57,12 @@ foreach ($apps as $app => $info) {
 echo summary_table(
     lang('marketplace_uninstall_list'),
     NULL,
-    array(lang('marketplace_package_name'), lang('base_description'), lang('marketplace_version'), lang('base_size')),
+    array(
+        lang('marketplace_package_name'),
+        lang('base_description'),
+        lang('marketplace_version'),
+        lang('base_size')
+    ),
     $items,
     array('no_action' => TRUE)
 );
