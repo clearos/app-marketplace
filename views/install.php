@@ -56,7 +56,7 @@ if ($itemnotfound)
 ///////////////////////////////////////////////////////////////////////////////
 
 $headers = array(
-    lang('marketplace_description'),
+    lang('base_description'),
 //    lang('marketplace_quantity'),
     lang('marketplace_price'),
     lang('marketplace_unit'),
@@ -136,7 +136,7 @@ foreach ($items as $item) {
         ($item->get_eula() > 0 ? 
         "<div id='basename-" . $item->get_id() . "'>" .
         "<a class='eula-link highlight-link' href='/app/marketplace/install' id='eula-" . $item->get_eula() . "'>" . lang('marketplace_eula') . "</a>" .
-        "</div>" : lang('marketplace_none'))
+        "</div>" : lang('base_none'))
     );
     $rows['apps'][] = $row;
 

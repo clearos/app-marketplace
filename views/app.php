@@ -97,7 +97,7 @@ echo "<div id='availability_warning_box' class='theme-hidden'>" .
 
 /* Overview */
 echo row_open(array('id' => 'marketplace-overview'));
-echo "<h3>" . lang('marketplace_overview') . "</h3>";
+echo "<h3>" . lang('base_overview') . "</h3>";
 echo "<div id='app_description'></div>";
 echo row_close();
 
@@ -121,7 +121,7 @@ echo row_open(array('id' => 'marketplace-developer'));
 echo "<h3>" . lang('marketplace_developer') . "</h3>";
 echo marketplace_developer_field('app_devel_org', lang('marketplace_devel_org')); 
 echo marketplace_developer_field('app_devel_contact', lang('marketplace_devel_contact')); 
-echo marketplace_developer_field('app_devel_email', lang('marketplace_devel_email')); 
+echo marketplace_developer_field('app_devel_email', lang('base_email_address')); 
 echo marketplace_developer_field('app_devel_website', lang('marketplace_devel_website')); 
 echo row_close();
 

@@ -60,7 +60,7 @@ echo summary_table(
     array(
         lang('marketplace_package_name'),
         lang('base_description'),
-        lang('marketplace_version'),
+        lang('base_version'),
         lang('base_size')
     ),
     $items,

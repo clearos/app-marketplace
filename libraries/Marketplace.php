@@ -329,7 +329,7 @@ class Marketplace extends Rest
             ),
             'status' => array(
                 'all' => lang('marketplace_filter_by_install'),
-                'installed' => lang('marketplace_installed_apps'),
+                'installed' => lang('marketplace_installed'),
                 'upgrade_available' => lang('marketplace_upgrade_apps'),
                 'new' => lang('marketplace_new_apps')
             ),
