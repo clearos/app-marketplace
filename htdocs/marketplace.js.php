@@ -1031,7 +1031,7 @@ function get_progress() {
 
             clearos_set_progress_bar('overall', parseInt(json.overall), null);
 
-            if (!json.busy && !json.wc_busy)
+            if (!json.busy && !json.wc_busy && json.overall != 100)
                 window.location = '/app/marketplace';
 
             if (json.code === 0) {
