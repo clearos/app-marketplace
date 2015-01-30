@@ -61,8 +61,6 @@ class Wizard extends ClearOS_Controller
 
         try {
             $os_name = $this->os->get_name();
-
-            $data['is_professional'] = (preg_match('/ClearOS Professional/', $os_name)) ? TRUE : FALSE;
         } catch (Exception $e) {
             $this->page->view_exception($e);
             return;

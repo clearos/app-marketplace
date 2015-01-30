@@ -27,8 +27,8 @@ $radios = array(
     radio_set_item('5', 'radio', "5", FALSE, array('label_id' => 'novice-4', 'class' => 'novice-select', 'orientation' => 'horizontal', 'buttons' => TRUE)),
     radio_set_item('6', 'radio', "6", FALSE, array('label_id' => 'novice-5', 'class' => 'novice-select', 'orientation' => 'horizontal', 'buttons' => TRUE))
 );
-// Home/media type apps not suitable for display in Professional Edition
-if (!preg_match('/Professional/', $os_name))
+// Home/media type apps not suitable for display in Business Edition
+if (!preg_match('/Business/', $os_name))
     $radios[] = radio_set_item('7', 'radio', "7", FALSE, array('label_id' => 'novice-6', 'class' => 'novice-select', 'orientation' => 'horizontal', 'buttons' => TRUE));
 
 $buttons = array(

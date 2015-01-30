@@ -300,6 +300,7 @@ class Marketplace extends ClearOS_Controller
             $data['pseudonym'] = $this->marketplace->get_pseudonym();
             $data['display_format'] = $this->marketplace->get_display_format();
             $data['number_of_apps_to_display'] = $this->marketplace->get_number_of_apps_to_display();
+            $data['number_of_apps_to_display_options'] = $this->marketplace->get_number_of_apps_to_display_options($this->session->userdata('theme'));
             $data['cache_size'] = $this->marketplace->get_cache_size();
             $data['hide_support_policy'] = $this->marketplace->get_hide_support_policy();
             $data['hide_recommended_apps'] = $this->marketplace->get_hide_recommended_apps();

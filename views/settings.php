@@ -38,20 +38,11 @@ $buttons = array(
     anchor_cancel('/app/marketplace')
 );
 
-$apps_per_page_options = array(
-    6 => 6,
-    10 => 10,
-    20 => 20,
-    30 => 30,
-    40 => 40,
-    50 => 50,
-    0 => lang('base_all'),
-);
 $display_format_options = array(
     'tile' => lang('marketplace_tile'),
     'list' => lang('marketplace_list')
 );
-echo field_dropdown('number_of_apps_to_display', $apps_per_page_options, $number_of_apps_to_display, lang('marketplace_apps_per_page'), $read_only);
+echo field_dropdown('number_of_apps_to_display', $number_of_apps_to_display_options, $number_of_apps_to_display, lang('marketplace_apps_per_page'), $read_only);
 echo field_dropdown('display_format', $display_format_options, $display_format, lang('marketplace_layout'), $read_only);
 echo field_input('pseudonym', $pseudonym, lang('marketplace_pseudonym'), $read_only);
 echo field_checkbox('hide_support_policy', !$hide_support_policy, lang('marketplace_display_support_policy'), $read_only);

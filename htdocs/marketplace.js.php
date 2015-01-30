@@ -733,7 +733,6 @@ function get_app_details(basename) {
                 $('#app_license_library').html('" . lang('marketplace_not_applicable') . "');
             }
 
-            // A non-zero display_mask means the app is not available to install
             if (data.installed) {
                 $('#indiv_configure').show();
 
@@ -773,12 +772,24 @@ function get_app_details(basename) {
                 $('#indiv_repo').remove();
             }
 
+            // A non-zero display_mask means the app is not available to install
+            if (data.display_mask != 0) {
+                $('#indiv_buy').remove();
+                $('#indiv_install').remove();
+            }
             $('#app_support_policy').html(get_support_policy(data));
 
             $('#indiv_configure').attr('href', '/' + data.url_config);
 
             if ((data.display_mask & 1) == 1) {
-                $('#availability_warning').html('" . lang('marketplace_professional_only') . "');
+                var learn_more_options = {
+                    buttons: false,
+                    external: true
+                };
+                $('#availability_warning').html(
+                    '" . lang('marketplace_not_available_in_edition') . "&nbsp;&nbsp;' +
+                    clearos_anchor(data.edition_landing_page, lang_marketplace_learn_more, learn_more_options)
+                );
                 $('#availability_warning_box').show();
             } else if ((data.display_mask & 2) == 2) {
                 $('#availability_warning').html('" . lang('marketplace_mode_slave_invalid') . "');

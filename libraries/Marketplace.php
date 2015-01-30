@@ -542,6 +542,38 @@ class Marketplace extends Rest
     }
 
     /**
+     * Get the number of apps to display options.
+     *
+     * @return array
+     */
+
+    function get_number_of_apps_to_display_options($theme)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        // Default
+        $display_options = array(
+            6 => 6,
+            10 => 10,
+            20 => 20,
+            30 => 30,
+            40 => 40,
+            50 => 50,
+            0 => lang('base_all'),
+        );
+
+        // Check if theme overrides default
+        $theme_config = clearos_theme_path($theme) . "/deploy/info.php";
+        if (file_exists($theme_config)) {
+            include $theme_config;
+            if (isset($package['settings']['marketplace']['apps_per_page']))
+                $display_options = $package['settings']['marketplace']['apps_per_page'];
+        }
+
+        return $display_options;
+    }
+
+    /**
      * Get the default display format.
      *
      * @return String
