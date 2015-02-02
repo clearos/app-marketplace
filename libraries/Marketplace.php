@@ -1165,7 +1165,7 @@ class Marketplace extends Rest
             $shell = new Shell();
             $exitcode = $shell->execute(
                 self::COMMAND_RPM,
-                "-qa --queryformat \"%{NAME}|%{VERSION}|%{RELEASE}|%{SUMMARY}|%{SIZE}\\n\"| grep ^" . self::APP_PREFIX,
+                "-qa --queryformat \"%{NAME}|%{VERSION}|%{RELEASE}|%{SUMMARY}|%{SIZE}\\n\"",
                 FALSE
             );
             if ($exitcode != 0)
