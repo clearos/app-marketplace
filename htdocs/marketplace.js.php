@@ -156,8 +156,8 @@ function update_install_form(data) {
                         $('#po').attr('checked', true);
                 }
                 // TODO Should use Jquery number formatter plugin
-                $('#po_available').html(data.po_currency + ' ' + data.po_available.toFixed(2)
-                    + ' " . lang('marketplace_limit') . "' + ($('#total').val() > data.po_available.toFixed(2).toLocaleString() ? ' - " .
+                $('#po_available').html(data.po_currency + ' ' + data.po_available.toFixed(2).toLocaleString()
+                    + ' " . lang('marketplace_limit') . "' + ($('#total').val() > data.po_available ? ' - " .
                     lang('marketplace_insufficient_funds') . "' : ''));
             } else {
                 $('#option_po').hide();
