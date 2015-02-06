@@ -36,7 +36,7 @@ echo marketplace_search($search);
 echo column_close();
 echo row_close();
 echo row_open();
-echo column_open(8, NULL, NULL, array('id' => 'marketplace_tools_container'));
+echo column_open(6, NULL, NULL, array('id' => 'marketplace_tools_container'));
 $buttons = array(
     anchor_custom('/app/marketplace/install', lang('marketplace_install_selected_apps'), 'high'),
     anchor_custom('/app/marketplace/all', lang('marketplace_select_all'), 'low', array('id' => 'toggle_select')),
@@ -44,7 +44,7 @@ $buttons = array(
 );
 echo button_set($buttons);
 echo column_close();
-echo column_open(4, NULL, NULL, array('id' => 'marketplace_paginate_container', 'class' => 'theme-hidden'));
+echo column_open(6, NULL, NULL, array('id' => 'marketplace_paginate_container', 'class' => 'theme-hidden'));
 echo paginate('/app/marketplace/search/index');
 echo column_close();
 echo row_close();

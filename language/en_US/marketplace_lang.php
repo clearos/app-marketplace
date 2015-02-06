@@ -68,6 +68,7 @@ $lang['marketplace_discount'] = 'Discount';
 $lang['marketplace_discount_invalid'] = 'Discount is invalid.';
 $lang['marketplace_display_recommended_apps'] = 'Display Recommended Apps';
 $lang['marketplace_display_support_policy'] = 'Display Support Policy';
+$lang['marketplace_displaying'] = 'Displaying';
 $lang['marketplace_documentation'] = 'Documentation';
 $lang['marketplace_download_and_install'] = 'Download and Install';
 $lang['marketplace_each'] = 'Each';
