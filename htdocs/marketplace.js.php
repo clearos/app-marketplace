@@ -351,7 +351,7 @@ function update_install_form(data) {
                         $('#po').prop('checked', true);
                 }
                 // TODO Should use Jquery number formatter plugin
-                $('#po_available').html(data.po_currency + ' ' + data.po_available.toFixed(2)
+                $('#po_available').html(data.po_currency + ' ' + data.po_available.toFixed(2).toLocaleString()
                     + ' " . lang('marketplace_limit') . "' + ($('#total').val() > data.po_available ? ' - " .
                     lang('marketplace_insufficient_funds') . "' : ''));
             } else {
