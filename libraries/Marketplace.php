@@ -38,6 +38,7 @@ clearos_load_language('marketplace');
 // Classes
 //--------
 
+use \clearos\apps\base\App as App;
 use \clearos\apps\base\Configuration_File as Configuration_File;
 use \clearos\apps\base\File as File;
 use \clearos\apps\base\Folder as Folder;
@@ -53,6 +54,7 @@ use \clearos\apps\marketplace\Cart as Cart;
 use \clearos\apps\marketplace\Cart_Item as Cart_Item;
 use \clearos\apps\tasks\Cron as Cron;
 
+clearos_load_library('base/App');
 clearos_load_library('base/Configuration_File');
 clearos_load_library('base/File');
 clearos_load_library('base/Folder');
@@ -1194,6 +1196,7 @@ class Marketplace extends Rest
      * @param String $basename basename
      *
      * @return array
+     * @throws Engine_Exception
      */
 
     function delete_app($basename)
@@ -1201,27 +1204,8 @@ class Marketplace extends Rest
         clearos_profile(__METHOD__, __LINE__);
 
         try {
-            $dependencies = $this->get_app_deletion_dependancies($basename);
-
-            // Delete any cron configlets
-            try {
-                $cron = new Cron();
-                foreach ($dependencies as $pkg)
-                    $cron->delete_configlet($pkg); 
-            } catch (\Exception $e) {
-                // Ignore
-            } 
-            // Stop any services
-
-            $apps = implode(' ', array_keys($dependencies));
-            $options = array('validate_exit_code' => FALSE);
-            $shell = new Shell();
-            $exitcode = $shell->execute(self::COMMAND_RPM, "-e $apps", TRUE, $options);
-            if ($exitcode != 0) {
-                $err = $shell->get_last_output_line();
-                throw new Engine_Exception(lang('marketplace_unable_to_delete_app') . ': ' . $err . '.', CLEAROS_WARNING);
-            }
-            $this->delete_cached_app_install_list();
+            $app = new App($basename);
+            $app->remove();
         } catch (Engine_Exception $e) {
             throw new Engine_Exception(clearos_exception_message($e), CLEAROS_WARNING);
         }

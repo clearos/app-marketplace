@@ -248,6 +248,10 @@ $(document).ready(function() {
         e.preventDefault();
         $('.marketplace-search-bar').closest('form').submit();
     });
+//    $('#uninstall-app-confirm').click(function (e) {
+//        e.preventDefault();
+//        clearos_modal_infobox_open('confirm-app-uninstall');
+//    });
     $('input').click(function (e) {
         if (this.id == 'add_review')
             add_review($('#app_name_title').html());

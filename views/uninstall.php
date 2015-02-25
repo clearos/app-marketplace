@@ -26,7 +26,7 @@ echo infobox_warning(
     lang('marketplace_delete_dependencies'), 
     array ('buttons' =>
         array (
-            anchor_custom('/app/marketplace/uninstall/' . $basename . '/' . $app_delete_key, lang('marketplace_confirm_uninstall'), 'high'),
+            anchor_custom('#', lang('marketplace_confirm_uninstall'), 'high', array('id' => 'uninstall-app-confirm')),
             anchor_cancel('/app/marketplace/view/' . $basename)
         )
     )
@@ -65,4 +65,11 @@ echo summary_table(
     ),
     $items,
     array('no_action' => TRUE)
+);
+
+echo modal_confirm(
+    lang('base_warning'),
+    lang('marketplace_confirm_uninstall_last_chance'),
+    '/app/marketplace/uninstall/' . $basename . '/' . $app_delete_key,
+    array('id' => 'uninstall-app-confirm')
 );
