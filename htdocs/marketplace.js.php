@@ -41,6 +41,7 @@ var my_subscriptions = new Array();
 var novice_index = 0;
 var novice_optional_apps = [];
 var in_wizard_or_novice = false;
+var purchase_button_clicked = false;
 //TODO Translate
 var novice_set = [
     {
@@ -915,9 +916,8 @@ function checkout(event, type) {
     $('#free_checkout').hide();
     var modal_feedback = null;
     if ($('#po').prop('checked') && $('#mi-po_number').val() == '') {
-        //modal_feedback = clearos_dialog_box('invalid_po_err', '" . lang('base_warning') . "', '" . lang('marketplace_invalid_po') . "');
-        // FIXME - Direct reference to theme framework
-        $('#modal-input-po').modal({backdrop: 'static'});
+        purchase_button_clicked = true;
+        clearos_modal_infobox_open('modal-input-po');
         return;
     } else if (type == 'paid' && !$('input[name=payment_method]:checked').val()) {
         modal_feedback = clearos_dialog_box('invalid_method_err', '" . lang('base_warning') . "', '" . lang('marketplace_select_payment_method') . "');
@@ -1099,6 +1099,8 @@ function clearos_sdn_account_setup(landing_url, username, device_id) {
 function update_po() {
     $('#po').prop('checked', true);
     $('#po_available').html($('#po_number').val());
+    if (purchase_button_clicked)
+        checkout(document.createEvent('UIEvents'), 'paid');
 }
 
 /**
