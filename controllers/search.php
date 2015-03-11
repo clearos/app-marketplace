@@ -90,12 +90,9 @@ class Search extends ClearOS_Controller
         // Search and filter history
         $data['filter'] = $this->marketplace->get_search_history();
         $data['filters'] = $this->marketplace->get_filter_options();
-        $data['selected'] = array(
-            'category' => $this->input->post('filter_category'),
-            'price' => $this->input->post('filter_price'),
-            'intro' => $this->input->post('filter_intro'),
-            'status' => $this->input->post('filter_status')
-        );
+        $filter = $this->marketplace->get_search_criteria();
+        if ($filter !== FALSE)
+            $data['selected'] = $filter;
         if ($this->input->post('search') && !$this->input->post('search_cancel'))
             $data['search'] = $this->input->post('search');
         else

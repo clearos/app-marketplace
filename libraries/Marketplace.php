@@ -362,6 +362,7 @@ class Marketplace extends Rest
                 if ($keys['active'])
                     return $keys;
             }
+            return FALSE;
 
         } catch (Exception $e) {
             throw new Engine_Exception(clearos_exception_message($e), CLEAROS_ERROR);

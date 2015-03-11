@@ -151,10 +151,7 @@ class Ajax extends ClearOS_Controller
 
             // On searches or filtering, we grab all apps, so override max, offset will be ignored 
             $filter = $this->marketplace->get_search_criteria();
-            if (is_array($filter))
-                $response = json_decode($this->marketplace->get_apps($realtime, 0, 0)); 
-            else
-                $response = json_decode($this->marketplace->get_apps($realtime, $max, $offset)); 
+            $response = json_decode($this->marketplace->get_apps($realtime, 0, 0)); 
 
             if (!is_object($response)) {
                 throw new Engine_Exception(lang('marketplace_expecting_json_reply'), CLEAROS_WARNING);
@@ -168,9 +165,9 @@ class Ajax extends ClearOS_Controller
             if ($this->input->post('search'))
                 $this->marketplace->reset_search_criteria();
 
+            $search_counter = 0;
             $app_counter = 0;
             $total_apps = 0;
-            $search_counter = 0;
             $applist = $response->list;
             foreach ($applist as $app) {
                 $cart_item = new \clearos\apps\marketplace\Cart_Item(Marketplace::APP_PREFIX . preg_replace("/_/", "-", $app->basename)); 
@@ -188,16 +185,14 @@ class Ajax extends ClearOS_Controller
                     $app->up2date = $this->_is_up2date($installed_apps[$rpm]['version'] . '-' . $installed_apps[$rpm]['release'], $app->latest_version);
                 }
 
+                $app->can_uninstall = $this->_can_uninstall($app->basename);
+
                 if (is_array($filter)) {
-                    if (!$this->_search($filter['search'], $app)) {
-                        unset($applist[$app_counter]);
-                        $app_counter++;
-                        continue;
-                    } else if (!$this->_filter($filter['category'], $app->category_en_US)) {
-                        unset($applist[$app_counter]);
+                    if (!$this->_filter($filter['category'], $app->category_en_US)) {
                         $app_counter++;
                         continue;
                     } else if (!$this->_filter($filter['price'], $app->pricing->unit_price, $filter['price'])) {
+                        unset($applist[$app_counter]);
                         unset($applist[$app_counter]);
                         $app_counter++;
                         continue;
@@ -209,16 +204,28 @@ class Ajax extends ClearOS_Controller
                         unset($applist[$app_counter]);
                         $app_counter++;
                         continue;
-                    } else if ($search_counter < $offset || ($search_counter >= ($max + $offset) && $max != 0)) {
+                    } else if (!$this->_search($filter['search'], $app)) {
+                        unset($applist[$app_counter]);
+                        $app_counter++;
+                        continue;
+                    }
+                    if ($search_counter < $offset || ($search_counter >= ($max + $offset) && $max != 0)) {
                         unset($applist[$app_counter]);
                         $total_apps++;
                         $app_counter++;
                         $search_counter++;
                         continue;
-                    } else {
-                        $search_counter++;
+                    }
+                    $search_counter++;
+                } else {
+                    if ($app_counter < $offset || ($app_counter >= ($max + $offset) && $max != 0)) {
+                        unset($applist[$app_counter]);
+                        $total_apps++;
+                        $app_counter++;
+                        continue;
                     }
                 }
+
                 if (array_key_exists(Marketplace::APP_PREFIX . preg_replace("/_/", "-", $app->basename), $cart_items))
                     $app->incart = TRUE;
 
@@ -229,11 +236,7 @@ class Ajax extends ClearOS_Controller
 
             // Re-encode to JSON and return
 
-            // If we searched on a term, use total_apps...otherwise, use total_apps coming back from SDN
-            if (is_array($filter))
-                echo json_encode(array('list' => $applist, 'total' => $total_apps));
-            else
-                echo json_encode(array('list' => $applist, 'total' => $response->total));
+            echo json_encode(array('list' => $applist, 'total' => $total_apps));
             
         } catch (Exception $e) {
             echo json_encode(Array('code' => clearos_exception_code($e), 'errmsg' => clearos_exception_message($e)));
@@ -949,5 +952,33 @@ class Ajax extends ClearOS_Controller
             $metadata['modified'] = $stat['ctime'];
         }
         return $app;
+    }
+
+    /**
+     * Get boolean indicating whether user can un-install this app (eg. non-core)
+     *
+     * @param String $basename basename
+     *
+     * @access private
+     * @return array
+     */
+
+    function _can_uninstall($basename)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        $app_base = clearos_app_base($basename);
+
+        $info_file = $app_base . '/deploy/info.php';
+
+        if (file_exists($info_file)) {
+
+            // Load metadata file
+            include $info_file;
+
+            if (isset($app['delete_dependency']))
+                return TRUE;
+        }
+        return FALSE;
     }
 }

@@ -81,12 +81,16 @@ class Marketplace extends ClearOS_Controller
         }
 
         $data['filters'] = $this->marketplace->get_filter_options();
-        $data['selected'] = array(
-            'category' => 'all',
-            'price' => 'all',
-            'intro' => 'all',
-            'status' => 'all' 
-        );
+        $filter = $this->marketplace->get_search_criteria();
+        if ($filter === FALSE)
+            $data['selected'] = array(
+                'category' => 'all',
+                'price' => 'all',
+                'intro' => 'all',
+                'status' => 'all'
+            );
+        else
+            $data['selected'] = $filter;
 
         if ($first['active'] && $first['search'])
             $data['search'] = $first['search'];
@@ -124,14 +128,6 @@ class Marketplace extends ClearOS_Controller
         $data['basename'] = $basename;
         $data['is_installed'] = $this->software->is_installed();
         $data['pseudonym'] = $this->marketplace->get_pseudonym();
-        $data['filters'] = $this->marketplace->get_filter_options();
-        $data['selected'] = array(
-            'category' => 'all',
-            'price' => 'all',
-            'intro' => 'all',
-            'status' => 'all' 
-        );
-        $data['search'] = lang('marketplace_search');
         // Add return to Marketplace breadcrumb trail
         $breadcrumb_links = array(
             'marketplace' => array('url' => '/app/marketplace', 'tag' => lang('marketplace_marketplace'))

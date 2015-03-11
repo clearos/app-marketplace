@@ -42,6 +42,7 @@ var novice_index = 0;
 var novice_optional_apps = [];
 var in_wizard_or_novice = false;
 var purchase_button_clicked = false;
+var toggle = 'all';
 //TODO Translate
 var novice_set = [
     {
@@ -217,9 +218,10 @@ $(document).ready(function() {
         var options = new Object();
         options.classes = 'theme-button-change';
         $('#toggle_select').html(clearos_loading(options));
-        var toggle = 'all';
         if (!$('#toggle_select').attr('href').match('.*all$'))
             toggle = 'none';
+        else
+            toggle = 'all';
         var apps = Array();
         $.each($('#form_app_list input[type=\'checkbox\']'), function (index, value) {
             if (toggle == 'all') {
@@ -249,10 +251,6 @@ $(document).ready(function() {
         e.preventDefault();
         $('.marketplace-search-bar').closest('form').submit();
     });
-//    $('#uninstall-app-confirm').click(function (e) {
-//        e.preventDefault();
-//        clearos_modal_infobox_open('confirm-app-uninstall');
-//    });
     $('input').click(function (e) {
         if (this.id == 'add_review')
             add_review($('#app_name_title').html());
@@ -473,7 +471,7 @@ function bulk_cart_update(apps, toggle) {
                     $('#toggle_select').attr('href', '/app/marketplace/none');
                     // We use the JSON string to update page
                     $.each(JSON.parse(apps), function (id, app) {
-                        $('#' + app.id).addClass('marketplace-selected');
+                        marketplace_select_app(app.id);
                     });
                 } else if (toggle == 'none') {
                     $('#toggle_select').html('<span class=\'ui-button-text\'>" . lang('marketplace_select_all') . "</span>');
@@ -481,17 +479,8 @@ function bulk_cart_update(apps, toggle) {
                     $('.marketplace-app').removeClass('marketplace-selected');
                     // We use the JSON string to update page
                     $.each(JSON.parse(apps), function (id, app) {
-                        $('#' + id).removeClass('marketplace-selected');
+                        marketplace_unselect_app(app.id);
                     });
-                } else {
-                    if ($('#select-' + this.id).prop('checked')) {
-                        category_class = '';
-                    } else {
-                        $('#select-' + this.id).prop('checked', true);
-                        $(this).removeClass('marketplace-hover');
-                        $(this).addClass('marketplace-selected');
-                        category_class = 'marketplace-selected';
-                    }
                 }
             }
         },
@@ -1229,6 +1218,8 @@ function get_app_logo(basename, domid) {
  */
 
 function marketplace_select_app(id) {
+    if ($('#select-' + id).length == 0)
+        return;
     $('#' + id).val(lang_marketplace_remove);
     $('#active-select-' + id).removeClass('theme-hidden');
     $('figure[data-basename=\"' + id + '\"]').addClass('theme-app-selected');
@@ -1239,6 +1230,8 @@ function marketplace_select_app(id) {
  */
 
 function marketplace_unselect_app(id) {
+    if ($('#select-' + id).length == 0)
+        return;
     $('#' + id).val(lang_marketplace_select_for_install);
     $('#active-select-' + id).addClass('theme-hidden');
     $('figure[data-basename=\"' + id + '\"]').removeClass('theme-app-selected');
