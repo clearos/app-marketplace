@@ -189,10 +189,10 @@ class Ajax extends ClearOS_Controller
 
                 if (is_array($filter)) {
                     if (!$this->_filter($filter['category'], $app->category_en_US)) {
+                        unset($applist[$app_counter]);
                         $app_counter++;
                         continue;
                     } else if (!$this->_filter($filter['price'], $app->pricing->unit_price, $filter['price'])) {
-                        unset($applist[$app_counter]);
                         unset($applist[$app_counter]);
                         $app_counter++;
                         continue;
