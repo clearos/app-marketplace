@@ -132,7 +132,7 @@ class Marketplace extends Rest
     ///////////////////////////////////////////////////////////////////////////////
 
     protected $applist = array();
-    protected $filter_category = array('all', 'cloud', 'server', 'network', 'gateway', 'system', 'report');
+    protected $filter_category = array('all', 'cloud', 'server', 'network', 'gateway', 'system', 'reports');
     protected $filter_price = array('all', 'free', 'paid');
     protected $filter_intro = array('all', '7', '30', '180', '365');
     protected $filter_status = array('all', 'installed', 'upgrade_available', 'new');
@@ -315,7 +315,7 @@ class Marketplace extends Rest
                 'network' => lang('base_category_network'),
                 'gateway' => lang('base_category_gateway'),
                 'system' => lang('base_category_system'),
-                'report' => lang('base_category_reports')
+                'reports' => lang('base_category_reports')
             ),
             'price' => array(
                 'all' => lang('marketplace_filter_by_price'),

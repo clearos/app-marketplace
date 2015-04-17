@@ -82,12 +82,12 @@ $radios = array(
         )
     ),
     radio_set_item(
-        'report',
+        'reports',
         'radio',
         lang('base_category_reports'),
         FALSE,
         array(
-            'label_id' => 'category-report',
+            'label_id' => 'category-reports',
             'class' => 'category-select',
             'orientation' => 'horizontal',
             'buttons' => TRUE
