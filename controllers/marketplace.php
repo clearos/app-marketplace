@@ -17,6 +17,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 use \clearos\apps\marketplace\Marketplace as Market;
+use \clearos\apps\base\Engine_Exception as Engine_Exception;
 
 ///////////////////////////////////////////////////////////////////////////////
 // C L A S S
@@ -206,6 +207,7 @@ class Marketplace extends ClearOS_Controller
 
         clearos_load_language('marketplace');
         $this->load->library('marketplace/Marketplace');
+        $this->load->library('base/Software', Market::APP_PREFIX . preg_replace("/_/", "-", $basename));
 
         if ($confirm_key != NULL && $confirm_key == $this->session->userdata('app_delete_key')) {
             try {
@@ -224,6 +226,8 @@ class Marketplace extends ClearOS_Controller
         );
     
         try {
+            if (!$this->software->is_installed())
+                throw new Engine_Exception(lang('marketplace_not_installed'));
             $data['apps'] = $this->marketplace->get_app_deletion_dependancies($basename);
             $data['app_delete_key'] = rand(0, 10000);
             $this->session->set_userdata(array('app_delete_key' => $data['app_delete_key']));
