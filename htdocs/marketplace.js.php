@@ -1035,7 +1035,7 @@ function get_progress() {
 
             clearos_set_progress_bar('overall', parseInt(json.overall), null);
 
-            if (!json.busy && !json.wc_busy && json.overall != 100)
+            if (json.code === 0 && !json.busy && !json.wc_busy && json.overall != 100)
                 window.location = '/app/marketplace';
 
             if (json.code === 0) {
@@ -1047,6 +1047,7 @@ function get_progress() {
                 clearos_set_progress_bar('progress', 0, null);
                 clearos_set_progress_bar('overall', 0, null);
                 $('#details').html(json.errmsg);
+                $('#details').addClass('theme-text-bad-status');
                 return;
             }
 
