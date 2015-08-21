@@ -262,6 +262,8 @@ $(document).ready(function() {
             update_cart($('#basename').val(), this.id, true, true);
         else if (this.id == 'indiv_buy')
             update_cart($('#basename').val(), this.id, true, true);
+        else if (this.id == 'indiv_eval')
+            update_cart($('#basename').val(), this.id, true, true);
         else if (this.id == 'indiv_install')
             update_cart($('#basename').val(), this.id, true, true);
         else if (this.id == 'free_checkout')
@@ -745,12 +747,18 @@ function get_app_details(basename) {
                 $('#indiv_upgrade').remove();
                 $('#indiv_uninstall').remove();
                 if (data.pricing.unit_price != 0) {
-                    if (data.pricing.exempt) {
+                    if (data.pricing.evaluation > 0) {
+                        $('#indiv_eval').show();
+                        $('#indiv_buy').remove();
+                        $('#indiv_install').remove();
+                    } else if (data.pricing.exempt) {
                         $('#indiv_install').show();
                         $('#indiv_buy').remove();
+                        $('#indiv_eval').remove();
                     } else {
                         $('#indiv_buy').show();
                         $('#indiv_install').remove();
+                        $('#indiv_eval').remove();
                     }
                 } else {
                     $('#indiv_install').show();

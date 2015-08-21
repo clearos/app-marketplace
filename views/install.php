@@ -113,6 +113,8 @@ foreach ($items as $item) {
         $extended = $item->get_currency() . ' ' . money_format('%!i', 0);
         if ($item->get_unit_price() == 0)
             $unit_price = lang('marketplace_free');
+        else if (is_int($item->get_evaluation()) && $item->get_evaluation() > 0)
+            $unit_price = lang('marketplace_free_trial') . ' (' . $item->get_evaluation() . ' ' . lang('base_days') . ')';
         else
             $unit_price = '---';
     } else if ($item->get_exempt() && $item->get_unit_price()> 0) {
