@@ -33,6 +33,7 @@ $rules = array(
         )
     ),
     'requires' => array(
+        'app-remote-backup-1gb' => 'app-remote-backup',
         'app-remote-backup-5gb' => 'app-remote-backup',
         'app-remote-backup-10gb' => 'app-remote-backup',
         'app-remote-backup-25gb' => 'app-remote-backup',

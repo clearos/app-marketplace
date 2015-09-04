@@ -1,7 +1,7 @@
 
 Name: app-marketplace
 Epoch: 1
-Version: 2.1.7
+Version: 2.1.8
 Release: 1%{dist}
 Summary: ClearOS Marketplace
 License: Proprietary
@@ -59,8 +59,6 @@ fi
 
 [ -x /usr/clearos/apps/marketplace/deploy/upgrade ] && /usr/clearos/apps/marketplace/deploy/upgrade
 
-
-
 exit 0
 
 %preun
@@ -73,8 +71,6 @@ if [ $1 -eq 0 ]; then
     logger -p local6.notice -t installer 'app-marketplace-core - uninstalling'
     [ -x /usr/clearos/apps/marketplace/deploy/uninstall ] && /usr/clearos/apps/marketplace/deploy/uninstall
 fi
-
-
 
 exit 0
 
