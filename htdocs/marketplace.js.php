@@ -1014,7 +1014,7 @@ function get_configure(app) {
             button_html += get_button_anchor('/' + app.url_config, '" . lang('marketplace_configure') . "', null);
     } else {
         if (in_wizard_or_novice)
-            button_html += get_button_anchor('http://www.clearcenter.com/marketplace/type/?basename=' + app.basename, '" . lang('marketplace_learn_more') . "', 'blank');
+            button_html += get_button_anchor('http://www.clearos.com/marketplace/apps/' + app.category.toLowerCase() + '/' + app.basename, '" . lang('marketplace_learn_more') . "', 'blank');
         else
             button_html += get_button_anchor('/app/marketplace/view/' + app.basename, '" . lang('marketplace_details') . "', null);
     }

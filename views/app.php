@@ -103,7 +103,7 @@ echo row_close();
 
 $buttons = array(
     form_submit_custom('but_upgrade', lang('marketplace_install_upgrade'), 'high', array ('id' => 'indiv_upgrade', 'hide' => TRUE)),
-    anchor_custom('/app/software_repository/index/detailed', lang('marketplace_enable_repo'), 'high', array('id' => 'indiv_repo', 'hide' => TRUE)),
+    anchor_custom(($software_repo_avail ? '/app/software_repository/index/detailed' : '/app/marketplace/software_repository'), lang('marketplace_enable_repo'), 'high', array('id' => 'indiv_repo', 'hide' => TRUE)),
     anchor_custom('/app/' . $basename, lang('base_configure'), 'high', array('id' => 'indiv_configure', 'hide' => TRUE)),
     form_submit_custom('but_buy', lang('marketplace_buy'), 'high', array ('id' => 'indiv_buy', 'hide' => TRUE)),
     form_submit_custom('but_eval', lang('marketplace_evaluation_start_free_trial'), 'high', array ('id' => 'indiv_eval', 'hide' => TRUE)),

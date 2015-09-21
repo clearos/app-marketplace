@@ -187,6 +187,9 @@ class Marketplace extends ClearOS_Controller
         );
         // Get items in cart
         $data['items'] = $this->cart->get_items();
+
+        $data['software_repo_avail'] = clearos_app_installed('software_repository');
+
         $this->page->view_form('marketplace/install', $data, lang('marketplace_install'),
             array('type' => MY_Page::TYPE_SPOTLIGHT, 'breadcrumb_links' => $breadcrumb_links)
         );

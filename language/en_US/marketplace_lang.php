@@ -135,7 +135,7 @@ $lang['marketplace_marketplace'] = 'Marketplace';
 $lang['marketplace_marketplace_options'] = 'Marketplace Options';
 $lang['marketplace_mode_category_best_practices_help'] = 'Security experts will agree providing separation (physical or virtual) between services providing perimeter security from those that provide userland infrastructure (eg. mail, file, print servers etc.) is always recommended.  For small environments or those where economics play a dominant role, ClearOS can be used to provide as few or as many services across the full Network, Gateway and Server spectrum.';
 $lang['marketplace_mode_category_help'] = 'Marketplace Categories separate apps into groupings based on how they interact and provide services to administrators and users.';
-$lang['marketplace_mode_qsf_best_practices_help'] = 'ClearOS Marketplace Quick Select Files are freely available from the <a href="http://www.clearcenter.com/qsf" target="_blank">ClearCenter website</a> or <a href="http://www.clearcenter.com/qsf-howto" target="_blank">create your own</a>.';
+$lang['marketplace_mode_qsf_best_practices_help'] = 'ClearOS Marketplace Quick Select Files are freely available from the <a href="http://www.clearos.com/qsf" target="_blank">ClearCenter website</a> or <a href="http://www.clearos.com/qsf-howto" target="_blank">create your own</a>.';
 $lang['marketplace_mode_qsf_help'] = 'ClearOS Marketplace Quick Select Files allow you to quickly configure your system by providing pre-configured templates (QSF) around common tasks and policies.';
 $lang['marketplace_mode_slave_invalid'] = 'This app is not available to systems configured in Slave mode.  Please install the plugin on the system acting as the Master node.';
 $lang['marketplace_monthly'] = '/ mo';
@@ -245,7 +245,7 @@ $lang['marketplace_support_2_description'] = 'Developer or organization will mak
 $lang['marketplace_support_2_title'] = 'ClearFoundation Forum Supported - Dedicated';
 $lang['marketplace_support_4_description'] = 'Developer or organization provides a service to submit and track support tickets through a web service or email.  For specific details on the scope of support, conditions, hours of operation, response times etc., please view the app details section in the ClearOS Marketplace.';
 $lang['marketplace_support_4_title'] = 'Developer/ISV Supported';
-$lang['marketplace_support_8_description'] = 'ClearCenter will provide professional support under the conditions appropriate for the paid support subscription this system is subscribed to.  All new support incidents must be initiated via the <a href="http://www.clearcenter.com/clearcare/incident" target="_blank">ClearCARE support incident report</a>.';
+$lang['marketplace_support_8_description'] = 'ClearCenter will provide professional support under the conditions appropriate for the paid support subscription this system is subscribed to.  All new support incidents must be initiated via the <a href="http://www.clearos.com/clearcare/incident" target="_blank">ClearCARE support incident report</a>.';
 $lang['marketplace_support_8_title'] = 'ClearCenter Professionally Supported';
 $lang['marketplace_support_legend'] = 'Support Policy Legend';
 $lang['marketplace_support_policy'] = 'Support Policy';
