@@ -1207,6 +1207,7 @@ class Marketplace extends Rest
         try {
             $app = new App($basename);
             $app->remove();
+            $this->delete_cached_app_install_list();
         } catch (Engine_Exception $e) {
             throw new Engine_Exception(clearos_exception_message($e), CLEAROS_WARNING);
         }
