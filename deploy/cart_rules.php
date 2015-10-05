@@ -14,7 +14,27 @@ $rules = array(
             'app-zarafa-small-business',
             'app-zarafa-professional',
             'app-zarafa-extension',
-            'app-password-policies'
+            'app-shell-extension',
+            'app-password-policies',
+            'app-owncloud',
+            'app-owncloud-business',
+            'app-owncloud-extension',
+            'app-samba-directory'
+        ),
+        'app-samba-directory' => array(
+            'app-google-apps',
+            'app-openldap-directory',
+            'app-openldap-directory-core',
+            'app-zarafa-community',
+            'app-zarafa-small-business',
+            'app-zarafa-professional',
+            'app-zarafa-extension',
+            'app-shell-extension',
+            'app-owncloud',
+            'app-owncloud-business',
+            'app-owncloud-extension',
+            'app-password-policies',
+            'app-active-directory'
         ),
         'app-zarafa-community' => array(
             'app-imap',
