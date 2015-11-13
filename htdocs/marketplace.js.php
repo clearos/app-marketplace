@@ -318,7 +318,7 @@ function update_install_form(data) {
             $('#display_total_field').show();
             $('#display_total_text').html(data.currency + ' ' + (parseFloat($('#total').val())).toFixed(2).toLocaleString());
             if (data.evaluation) {
-                $('#billing_cycle_field').html('" . lang('marketplace_not_applicable') . " - " . lang('marketplace_trial_in_progress') . "');
+                $('#billing_cycle_text').html('" . lang('marketplace_not_applicable') . " - " . lang('marketplace_trial_in_progress') . "');
                 $('#notes_field').show();
                 $('#notes_text').html('<div>" . lang('marketplace_note_evaluation_and_payment') . "</div>');
             } else {

@@ -78,6 +78,7 @@ $rows = array(
     'packages' => array()
 );
 foreach ($items as $item) {
+
     $detail_buttons = button_set(
         array(
             anchor_delete('/app/marketplace/install/delete/' . $item->get_id(), 'high')
@@ -142,7 +143,7 @@ foreach ($items as $item) {
     );
     $rows['apps'][] = $row;
 
-    if (!$item->get_exempt())
+    if (!$item->get_exempt() && !$item->get_evaluation())
         $total += $item->get_quantity() * $item->get_unit_price() * (1 - $item->get_discount()/100);
 }
 

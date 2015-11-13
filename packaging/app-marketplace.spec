@@ -1,7 +1,7 @@
 
 Name: app-marketplace
 Epoch: 1
-Version: 2.1.11
+Version: 2.1.12
 Release: 1%{dist}
 Summary: ClearOS Marketplace
 License: Proprietary
