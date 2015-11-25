@@ -50,6 +50,10 @@ $rules = array(
             'app-imap',
             'app-zarafa-community',
             'app-zarafa-small-business'
+        ),
+        'app-dnsthingy' => array(
+            'app-web-proxy',
+            'app-content-filter'
         )
     ),
     'requires' => array(
