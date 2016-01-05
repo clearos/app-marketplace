@@ -38,16 +38,19 @@ $rules = array(
         ),
         'app-zarafa-community' => array(
             'app-imap',
+            'app-samba-directory'
             'app-zarafa-small-business',
             'app-zarafa-professional'
         ),
         'app-zarafa-small-business' => array(
             'app-imap',
+            'app-samba-directory'
             'app-zarafa-community',
             'app-zarafa-professional'
         ),
         'app-zarafa-professional' => array(
             'app-imap',
+            'app-samba-directory'
             'app-zarafa-community',
             'app-zarafa-small-business'
         ),
