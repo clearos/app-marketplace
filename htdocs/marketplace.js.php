@@ -574,7 +574,7 @@ function get_apps(realtime, offset) {
                 if (!is_option) {
                     applist.push(app);
                     if (novice_set[novice_index].exclusive && app.incart)
-                        exclusive_app_selected = app.basename;
+                        exclusive_app_selected = app;
                 }
             });
 
@@ -640,6 +640,7 @@ $(document).on('click', '.marketplace-app-event', function(e) {
     }
     var clicked_app = new Object();
     clicked_app.id = this.id;
+    clicked_app.basename = this.id;
     clicked_app.name = $('#' + this.id).attr('data-appname'); 
     // Mode one hidden field is novice mode/select by feature
     if ($('#marketplace-novice').length > 0 && novice_set[novice_index].exclusive && $('#' + this.id,'#optional-apps').length != 1) {
@@ -671,9 +672,15 @@ function add_optional_apps(app) {
     var content = '';
     var options = new Object();
     options.optional_apps = true;
+    if ($('#wizard_marketplace_mode').length != 0) {
+        options.wizard = true;
+        options.columns = 2;
+    }
     var applist = [];
+console.log(novice_optional_apps);
+console.log(app.basename);
     $.each(novice_optional_apps, function(index, myapp) { 
-        if (myapp.app_parent == app.id)
+        if (myapp.app_parent == app.basename)
             applist.push(myapp.app_child);
     });
     $('#optional-apps').remove();
