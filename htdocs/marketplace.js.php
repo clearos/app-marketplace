@@ -677,8 +677,6 @@ function add_optional_apps(app) {
         options.columns = 2;
     }
     var applist = [];
-console.log(novice_optional_apps);
-console.log(app.basename);
     $.each(novice_optional_apps, function(index, myapp) { 
         if (myapp.app_parent == app.basename)
             applist.push(myapp.app_child);
