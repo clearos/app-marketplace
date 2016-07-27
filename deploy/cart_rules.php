@@ -20,6 +20,7 @@ $rules = array(
             'app-owncloud-business',
             'app-owncloud-extension',
             'app-samba-directory'
+            'app-wpad'
         ),
         'app-samba-directory' => array(
             'app-google-apps',
@@ -35,6 +36,7 @@ $rules = array(
             'app-owncloud-extension',
             'app-password-policies',
             'app-active-directory'
+            'app-wpad'
         ),
         'app-zarafa-community' => array(
             'app-imap',
