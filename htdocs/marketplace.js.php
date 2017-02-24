@@ -47,7 +47,7 @@ var toggle = 'all';
 var novice_set = [
     {
         search:'99_directory', exclusive: true, title:'Directory Services',
-        description:'A directory service stores, organizes and provides access to information about your users, groups, networked devices and more.', helptitle: 'Directory Services', helpcontent: '<p>The options listed under Directory Services are mutually exclusive - you can select one or the other...not both.</p><p>If you do not have existing Microsoft server infrastructure running Windows Active Directory&trade;, you will almost certainly want to select the OpenLDAP-based directory server.</p>'
+        description:'A directory service stores, organizes and provides access to information about your users, groups, networked devices and more.', helptitle: 'Directory Services', helpcontent: '<p>The options listed under Directory Services are mutually exclusive - you can select one or the other... not both.</p><p>If you do not have existing Microsoft server infrastructure running Windows Active Directory&trade;, you will almost certainly want to select the OpenLDAP-based directory server.</p>'
     },
     {
         search:'99_networking', exclusive: false, title:'Firewall and Networking',
@@ -931,20 +931,20 @@ function checkout(event, type) {
         var processingText = '<p>" . lang('marketplace_patience') . "</p>';
         var whirlyText = '" . lang('marketplace_processing') . "';
         if (type == 'free' || type == 'eval') {
-            whirlyText += '...';
+            whirlyText += ' ... ';
         } else {
             if ($('#preauth').prop('checked'))
-                whirlyText += ' " . strtolower(lang('marketplace_credit_card')) . "...';
+                whirlyText += ' " . strtolower(lang('marketplace_credit_card')) . " ... ';
             if ($('#po').prop('checked'))
-                whirlyText += ' " . strtolower(lang('marketplace_purchase_order')) . "...';
+                whirlyText += ' " . strtolower(lang('marketplace_purchase_order')) . " ... ';
             else if ($('#debit').prop('checked'))
-                whirlyText += ' " . strtolower(lang('marketplace_debit')) . "...';
+                whirlyText += ' " . strtolower(lang('marketplace_debit')) . " ... ';
         }
         var w_options = new Object();
         w_options.text = whirlyText;
         w_options.center = true;
         processingText += clearos_loading(w_options);
-        modal_feedback = clearos_dialog_box('processing_info', '" . lang('marketplace_processing_order') . "...', processingText);
+        modal_feedback = clearos_dialog_box('processing_info', '" . lang('marketplace_processing_order') . " ... ', processingText);
         $('#notes').html(clearos_loading(w_options));
         // Hide buttons and show loading...
         $('#buy_checkout').hide();
