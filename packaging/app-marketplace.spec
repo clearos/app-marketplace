@@ -1,7 +1,7 @@
 
 Name: app-marketplace
 Epoch: 1
-Version: 2.1.18
+Version: 2.3.20
 Release: 1%{dist}
 Summary: ClearOS Marketplace
 License: Proprietary
@@ -83,6 +83,7 @@ exit 0
 %files core
 %defattr(-,root,root)
 %exclude /usr/clearos/apps/marketplace/packaging
+%exclude /usr/clearos/apps/marketplace/unify.json
 %dir /usr/clearos/apps/marketplace
 %dir %attr(755,webconfig,webconfig) /var/clearos/marketplace
 /usr/clearos/apps/marketplace/deploy
