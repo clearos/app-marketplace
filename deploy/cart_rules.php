@@ -42,24 +42,40 @@ $rules = array(
             'app-imap',
             'app-samba-directory',
             'app-zarafa-small-business',
-            'app-zarafa-professional'
+            'app-zarafa-professional',
+            'app-kopano-basic'
         ),
         'app-zarafa-small-business' => array(
             'app-imap',
             'app-samba-directory',
             'app-zarafa-community',
-            'app-zarafa-professional'
+            'app-zarafa-professional',
+            'app-kopano-basic'
         ),
         'app-zarafa-professional' => array(
             'app-imap',
             'app-samba-directory',
             'app-zarafa-community',
-            'app-zarafa-small-business'
+            'app-zarafa-small-business',
+            'app-kopano-basic'
+        ),
+        'app-kopano-basic' => array(
+            'app-imap',
+            'app-samba-directory',
+            'app-zarafa-community',
+            'app-zarafa-small-business',
+            'app-zarafa-professional'
         ),
         'app-dnsthingy' => array(
             'app-web-proxy',
-            'app-content-filter'
-        )
+            'app-content-filter',
+            'app-gateway-management'
+        ),
+        'app-gateway-management' => array(
+            'app-web-proxy',
+            'app-content-filter',
+            'app-dnsthingy',
+        ),
     ),
     'requires' => array(
         'app-remote-backup-1gb' => 'app-remote-backup',
