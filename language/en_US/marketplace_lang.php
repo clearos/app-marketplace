@@ -3,6 +3,8 @@
 $lang['marketplace_1_year'] = '/ yr';
 $lang['marketplace_2_year'] = '/ 2 yrs';
 $lang['marketplace_3_year'] = '/ 3 yrs';
+$lang['marketplace_4_year'] = '/ 4 yrs';
+$lang['marketplace_5_year'] = '/ 5 yrs';
 $lang['marketplace_about_this_app'] = 'About This App';
 $lang['marketplace_account'] = 'Account';
 $lang['marketplace_account_info'] = 'Account Information';
@@ -32,6 +34,8 @@ $lang['marketplace_app_supported'] = 'Support Policy';
 $lang['marketplace_best_practices'] = 'Best Practices';
 $lang['marketplace_billing_cycle_2_years'] = 'Every 2 years';
 $lang['marketplace_billing_cycle_3_years'] = 'Every 3 years';
+$lang['marketplace_billing_cycle_4_years'] = 'Every 4 years';
+$lang['marketplace_billing_cycle_5_years'] = 'Every 5 years';
 $lang['marketplace_billing_cycle'] = 'Billing Cycle';
 $lang['marketplace_billing_cycle_monthly'] = 'Monthly';
 $lang['marketplace_billing_cycle_yearly'] = 'Yearly';
