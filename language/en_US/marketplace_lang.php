@@ -257,6 +257,7 @@ $lang['marketplace_system_apps_description'] = 'Though often the least glamorous
 $lang['marketplace_system_apps'] = 'System Apps';
 $lang['marketplace_system_name_invalid'] = 'System name is invalid.';
 $lang['marketplace_system_name_is_invalid'] = 'System name contains invalid characters.';
+$lang['marketplace_tags'] = 'Tags';
 $lang['marketplace_thankyou'] = 'Thank you for using the ClearOS Marketplace.';
 $lang['marketplace_tile'] = 'Tile';
 $lang['marketplace_tools'] = 'Tools';

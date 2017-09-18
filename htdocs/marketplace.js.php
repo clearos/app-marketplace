@@ -43,6 +43,7 @@ var novice_optional_apps = [];
 var in_wizard_or_novice = false;
 var purchase_button_clicked = false;
 var toggle = 'all';
+var lang_marketplace_no_install_no_review = '" . lang('marketplace_no_install_no_review') . "';
 //TODO Translate
 var novice_set = [
     {
@@ -172,12 +173,6 @@ $(document).ready(function() {
             '<p>" . lang('marketplace_mode_qsf_help') . "</p>' +
             '<p>" . lang('marketplace_mode_qsf_best_practices_help') . "</p>'
         );
-    }
-
-    if ($('#search').val() != '' && $('#search').val() != '" . lang('marketplace_search_terms') . "') {
-        // Change search icon to cancel and add hidden input
-        $('.marketplace-search-bar').addClass('marketplace-search-bar-cancel');
-        $('.marketplace-search-bar').append('<input type=\'hidden\' name=\'search_cancel\' value=\'cancel\'>');
     }
 
     if ($(location).attr('href').match(/.*\/install($|\/.*|\#$)/) != null && $('#total').val() > 0) {
@@ -400,7 +395,7 @@ function update_install_form(data) {
 
 function get_eula(basename, id) {
     $.ajax({
-        type: 'POST',
+        type: 'GET',
         dataType: 'json',
         url: '/app/marketplace/ajax/get_eula',
         data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&id=' + id,
@@ -688,10 +683,9 @@ function add_optional_apps(app) {
 
 function get_app_details(basename) {
     $.ajax({
-        type: 'POST',
+        type: 'GET',
         dataType: 'json',
-        url: '/app/marketplace/ajax/get_app_details',
-        data: 'ci_csrf_token=' + $.cookie('ci_csrf_token') + '&basename=' + basename,
+        url: '/app/marketplace/ajax/get_app_details/' + basename,
         success: function(data) {
             if (data.code != undefined && data.code == 3) {
                 $('#app_overview').remove();

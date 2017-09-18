@@ -292,6 +292,7 @@ class Marketplace extends Rest
                 $this->filter_default['status'],
                 FALSE
             );
+
         } catch (Exception $e) {
             throw new Engine_Exception(clearos_exception_message($e), CLEAROS_ERROR);
         }

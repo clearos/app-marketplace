@@ -69,11 +69,11 @@ class Ajax extends ClearOS_Controller
 
             include_once clearos_app_base('marketplace') . '/libraries/Cart_Item.php';
 
-            if ($this->input->post('realtime'))
+            if ($this->input->get('realtime'))
                 $realtime = TRUE;
 
-            if ($this->input->post('basename'))
-                $basename = $this->input->post('basename');
+            if ($this->input->get('basename'))
+                $basename = $this->input->get('basename');
 
             // Load dependencies
             $this->load->library('marketplace/Marketplace');
@@ -597,7 +597,7 @@ class Ajax extends ClearOS_Controller
                 $realtime = TRUE;
 
             $this->load->library('marketplace/Marketplace');
-            echo $this->marketplace->get_eula($this->input->post('id'), $realtime);
+            echo $this->marketplace->get_eula($this->input->get('id'), $realtime);
         } catch (Exception $e) {
             echo json_encode(Array('code' => clearos_exception_code($e), 'errmsg' => clearos_exception_message($e)));
         }

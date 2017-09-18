@@ -125,14 +125,17 @@ echo marketplace_developer_field('app_devel_contact', lang('marketplace_devel_co
 echo marketplace_developer_field('app_devel_email', lang('base_email_address')); 
 echo marketplace_developer_field('app_devel_website', lang('marketplace_devel_website')); 
 echo row_close();
+echo "<br>";
 
 /* Screenshots */
 echo row_open(array('id' => 'marketplace-screenshot'));
 echo "<h3>" . lang('marketplace_screenshots') . "</h3>";
 echo screenshot_set('app_screenshots');
 echo row_close();
+echo "<br>";
 
 /* Localization */
+/*
 echo row_open(array('id' => 'marketplace-localization'));
 echo "<h3>" . lang('marketplace_localization') . "</h3>";
 echo column_open(5);
@@ -144,6 +147,8 @@ echo "<ol id='app_localization_contributor'>";
 echo "</ol>";
 echo column_close();
 echo row_close();
+echo "<br>";
+*/
 
 /* Reviews */
 echo row_open(array('id' => 'marketplace-review'));
@@ -152,6 +157,7 @@ echo form_submit_custom('review', lang('marketplace_submit_review'), 'high', arr
 echo marketplace_review($basename, $pseudonym);
 echo "<div id='app_ratings' class='marketplace-ratings clearfix'></div>";
 echo row_close();
+echo "<br>";
 
 /* Complimentary */
 echo row_open(array('id' => 'marketplace-complementary'));
@@ -159,12 +165,14 @@ echo "<h3>" . lang('marketplace_complementary_apps') . "</h3>";
 echo "  <p class='complementary'>" . lang('marketplace_complementary_apps_info') . "</p>";
 echo "<div id='app_complementary'></div>";
 echo row_close();
+echo "<br>";
 
 /* Other Apps */
 echo row_open(array('id' => 'marketplace-other'));
 echo "<h3>" . lang('marketplace_other_apps_by_devel') . "</h3>";
 echo "<div id='app_other_by_devel'></div>";
 echo row_close();
+echo "<br>";
 
 echo "</div>";
 
