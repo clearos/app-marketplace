@@ -43,6 +43,7 @@ $app['requires'] = array(
     'app-dashboard',
 );
 
+// NOTE: if you want to remove syswatch dep, make sure it is added to comps file
 $app['core_requires'] = array(
     'app-clearcenter-core => 1:1.5.11',
     'app-registration-core => 1:1.2.4',
