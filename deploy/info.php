@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 $app['basename'] = 'marketplace';
-$app['version'] = '2.4.1';
+$app['version'] = '2.4.2';
 $app['release'] = '1';
 $app['vendor'] = 'ClearCenter';
 $app['packager'] = 'ClearCenter';
@@ -43,23 +43,13 @@ $app['requires'] = array(
     'app-dashboard',
 );
 
-// KLUDGE: The following dependencies should be moved to a new app at some
-// point (e.g. app-clearos). For now, these are here to make sure the packages
-// are installed on ClearOS, but not a barebones ClearVM system.
-// - syswatch
-// - webconfig-php-* (to avoid webconfig restarts)
-
 $app['core_requires'] = array(
     'app-clearcenter-core => 1:1.5.11',
     'app-registration-core => 1:1.2.4',
     'app-base-core => 1:1.4.38',
     'yum-marketplace-plugin >= 1.5',
     'clearos-framework >= 6.4.27',
-    'clearos-release-jws >= 1.1',
-    'syswatch',
-    'webconfig-php-gd',
-    'webconfig-php-ldap',
-    'webconfig-php-mysql'
+    'clearos-release-jws >= 1.1'
 );
 
 $app['core_file_manifest'] = array(
