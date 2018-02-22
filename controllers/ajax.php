@@ -169,12 +169,15 @@ class Ajax extends ClearOS_Controller
             $app_counter = 0;
             $total_apps = 0;
             $applist = $response->list;
-            foreach ($applist as $app) {
+            foreach ($applist as $index => $app) {
                 $cart_item = new \clearos\apps\marketplace\Cart_Item(Marketplace::APP_PREFIX . preg_replace("/_/", "-", $app->basename)); 
                 if ($cart_item->cache_expired()) {
                     $cart_item->set(get_object_vars($app->pricing));
                     // Whether an item has an EULA or not is not in the pricing object
                     $cart_item->set_eula($app->eula);
+                    // Any hardware requirements
+                    if ($app->notes->hw_requirements != null)
+                        $cart_item->set_hw_requirements($app->notes->hw_requirements);
                     $cart_item->serialize($this->session->userdata('sdn_rest_id'));
                 }
 

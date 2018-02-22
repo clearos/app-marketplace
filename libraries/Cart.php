@@ -41,11 +41,13 @@ clearos_load_language('marketplace');
 use \clearos\apps\base\Engine as Engine;
 use \clearos\apps\base\File as File;
 use \clearos\apps\base\Folder as Folder;
+use \clearos\apps\base\Stats as Stats;
 use \clearos\apps\marketplace\Marketplace as Marketplace;
 
 clearos_load_library('base/Engine');
 clearos_load_library('base/File');
 clearos_load_library('base/Folder');
+clearos_load_library('base/Stats');
 clearos_load_library('marketplace/Marketplace');
 
 // Exceptions
@@ -251,6 +253,44 @@ class Cart extends Engine
             $counter++;
         }
 
+        // Minimum Hardware Requirements
+        if ($item->get_hw_requirements() != null) {
+            $requirements = $item->get_hw_requirements();
+            $stats = new Stats();
+            foreach ($requirements as $requirement) {
+                if ($requirement->type == 'memory' && $requirement->enforce && $stats->get_mem_size() < $requirement->minimum) {
+                    throw new Engine_Exception(
+                        sprintf(
+                            lang('marketplace_apps_minimum_hardware_requirements'),
+                            '<b>' . $item->get_description() . '</b>',
+                            '<b>' . $requirement->minimum . lang('base_gigabytes') . '</b>',
+                            strtolower(lang('base_memory')),
+                            '<b>' . $stats->get_mem_size() . lang('base_gigabytes') . '</b>'
+                        ),
+                        CLEAROS_ERROR
+                    );
+                } else if ($requirement->type == 'cpu_cores' && $requirement->enforce && $stats->get_cpu_count() < $requirement->minimum) {
+                    throw new Engine_Exception(
+                        sprintf(
+                            lang('marketplace_apps_minimum_hardware_requirements'),
+                            '<b>' . $item->get_description() . '</b>',
+                            '<b>' . $requirement->minimum . lang('base_gigabytes') . '</b>',
+                            strtolower(lang('base_memory')),
+                            '<b>' . $stats->get_mem_size() . lang('base_gigabytes') . '</b>'
+                        ),
+                        CLEAROS_ERROR
+                    );
+                } else if ($requirement->type == 'cpu_vt' && $requirement->enforce && !$stats->get_cpu_vt_state()) {
+                    throw new Engine_Exception(
+                        sprintf(
+                            lang('marketplace_apps_requires_vt'),
+                            '<b>' . $item->get_description() . '</b>'
+                        ),
+                        CLEAROS_ERROR
+                    );
+                }
+            }
+        }
         if (!$found || empty($this->contents))
             $this->contents[$item->get_id()] = $item;
 

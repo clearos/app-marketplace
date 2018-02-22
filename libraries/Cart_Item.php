@@ -7,7 +7,7 @@
  * @package    marketplace
  * @subpackage libraries
  * @author     ClearCenter <developer@clearcenter.com>
- * @copyright  2011 ClearCenter
+ * @copyright  2011-2018 ClearCenter
  * @license    http://www.clearcenter.com/app_license ClearCenter license
  * @link       http://www.clearcenter.com/support/documentation/clearos/marketplace/
  */
@@ -68,7 +68,7 @@ clearos_load_library('base/Validation_Exception');
  * @package    marketplace
  * @subpackage libraries
  * @author     ClearCenter <developer@clearcenter.com>
- * @copyright  2011 ClearCenter
+ * @copyright  2011-2018 ClearCenter
  * @license    http://www.clearcenter.com/app_license ClearCenter license
  * @link       http://www.clearcenter.com/support/documentation/clearos/marketplace/
  */
@@ -89,6 +89,8 @@ class Cart_Item extends Engine
     const UNIT_1_YEAR = 1000;
     const UNIT_2_YEAR = 2000;
     const UNIT_3_YEAR = 3000;
+    const UNIT_4_YEAR = 4000;
+    const UNIT_5_YEAR = 5000;
 
     ///////////////////////////////////////////////////////////////////////////////
     // V A R I A B L E S
@@ -457,6 +459,22 @@ class Cart_Item extends Engine
     }
 
     /**
+     * Sets the cart item's hardware requirement.
+     *
+     * @param String $hw_requirements any hardware requirements
+     *
+     * @return void
+     * @throws ValidationException
+     */
+
+    public function set_hw_requirements($hw_requirements)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        $this->item[$this->id]['hw_requirements'] = $hw_requirements;
+    }
+
+    /**
      * Get a shopping cart item
      *
      * @return array  cart information
@@ -555,6 +573,10 @@ class Cart_Item extends Engine
             return lang('marketplace_2_year');
         else if ($this->item[$this->id]['unit'] == self::UNIT_3_YEAR)
             return lang('marketplace_3_year');
+        else if ($this->item[$this->id]['unit'] == self::UNIT_4_YEAR)
+            return lang('marketplace_4_year');
+        else if ($this->item[$this->id]['unit'] == self::UNIT_5_YEAR)
+            return lang('marketplace_5_year');
         else
             return "";
     }
@@ -716,6 +738,19 @@ class Cart_Item extends Engine
     }
 
     /**
+     * Gets the cart item's HW requirements.
+     *
+     * @return boolean the item's hardware requirements
+     */
+
+    public function get_hw_requirements()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        return $this->item[$this->id]['hw_requirements'];
+    }
+
+    /**
      * Serializes object and saves to file.
      *
      * @return void
@@ -770,6 +805,7 @@ class Cart_Item extends Engine
             $this->set_group($newobj->get_group());
             $this->set_upgrade($newobj->get_upgrade());
             $this->set_eula($newobj->get_eula());
+            $this->set_hw_requirements($newobj->get_hw_requirements());
         } catch (Exception $e) {
             throw new Engine_Exception(clearos_exception_message($e), CLEAROS_ERROR);
         }
