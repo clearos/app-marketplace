@@ -93,9 +93,9 @@ $rules = array(
             'app-dnsthingy',
         ),
         'app-clearglass-community' => array(
-            'app-clearglass-enterprise',
+            'app-clearglass-business',
         ),
-        'app-clearglass-enterprise' => array(
+        'app-clearglass-business' => array(
             'app-clearglass-community',
         ),
     ),
