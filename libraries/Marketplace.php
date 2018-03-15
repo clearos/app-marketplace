@@ -748,7 +748,7 @@ class Marketplace extends Rest
             $cart_item->set_eula($details->eula);
             // Any hardware requirements
             if (isset($details->notes->hw_requirements))
-                $cart_item->set_hw_requirements($app->notes->hw_requirements);
+                $cart_item->set_hw_requirements($details->notes->hw_requirements);
             $cart_item->serialize($this->CI->session->userdata['sdn_rest_id']);
 
             return $result;
