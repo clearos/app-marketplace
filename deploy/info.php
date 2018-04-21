@@ -5,8 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 $app['basename'] = 'marketplace';
-$app['version'] = '2.4.7';
-$app['release'] = '1';
+$app['version'] = '2.5.0';
 $app['vendor'] = 'ClearCenter';
 $app['packager'] = 'ClearCenter';
 $app['license'] = 'Proprietary';
@@ -35,12 +34,12 @@ $app['controllers']['install']['wizard_description'] = lang('marketplace_app_rev
 // Packaging
 /////////////////////////////////////////////////////////////////////////////
 
-// TODO: push software-updates and dashboard to comps
+// TODO: ... and app-process-viewer and app-events just to get it into default packages
 $app['requires'] = array(
     'app-network',
     'app-registration',
-    'app-software-updates',
-    'app-dashboard',
+    'app-process-viewer',
+    'app-events',
 );
 
 $app['core_requires'] = array(

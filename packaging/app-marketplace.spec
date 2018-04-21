@@ -1,19 +1,21 @@
 
 Name: app-marketplace
 Epoch: 1
-Version: 2.4.7
+Version: 2.5.0
 Release: 1%{dist}
 Summary: ClearOS Marketplace
 License: Proprietary
-Group: ClearOS/Apps
+Group: Applications/Apps
+Packager: ClearCenter
+Vendor: ClearCenter
 Source: %{name}-%{version}.tar.gz
 Buildarch: noarch
 Requires: %{name}-core = 1:%{version}-%{release}
 Requires: app-base
 Requires: app-network
 Requires: app-registration
-Requires: app-software-updates
-Requires: app-dashboard
+Requires: app-process-viewer
+Requires: app-events
 
 %description
 ClearOS Marketplace is where you can add new apps and services to your system.  Apps available in the Marketplace have gone through a stringent quality control process to ensure the quality and security of each submission.
@@ -21,7 +23,7 @@ ClearOS Marketplace is where you can add new apps and services to your system.  
 %package core
 Summary: ClearOS Marketplace - API
 License: LGPLv3
-Group: ClearOS/Libraries
+Group: Applications/API
 Requires: app-base-core
 Requires: app-clearcenter-core => 1:1.5.11
 Requires: app-registration-core => 1:1.2.4
